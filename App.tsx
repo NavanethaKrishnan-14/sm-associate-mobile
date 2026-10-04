@@ -60,7 +60,7 @@ function Login({onLogin}:{onLogin:(u:User)=>void}){
 }
 
 function Main({user,onLogout}:{user:User;onLogout:()=>void}){
-  const tabs=user.role==="ADMIN"?["Home","Services","Customers","Loans","Follow-ups","Cars","Reports"]:["Home","Services","Customers","Loans","Follow-ups","Cars"];
+  const tabs=user.role==="ADMIN"?["Home","Services","Customers","Loans","Follow-ups","Cars","Reports","Profit"]:["Home","Services","Customers","Loans","Follow-ups","Cars"];
   const [tab,setTab]=useState("Home"); const [refreshing,setRefreshing]=useState(false); const [reload,setReload]=useState(0);
   const refresh=async()=>{setRefreshing(true);setReload(x=>x+1);setTimeout(()=>setRefreshing(false),500)};
   return <SafeAreaView style={styles.app}>

@@ -2,6 +2,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 
+const PRODUCTION_API_URL = 'https://sm-associate-backend.vercel.app/api/v1';
+
 function getExpoHost() {
   const hostUri =
     Constants.expoConfig?.hostUri ||
@@ -14,7 +16,7 @@ function getExpoHost() {
 function normalizeApiUrl(value) {
   return String(value || '')
     .trim()
-    .replace(/\\:/g, ':')
+    .replace(/\:/g, ':')
     .replace(/,+$/g, '')
     .replace(/\/$/, '');
 }
@@ -32,10 +34,12 @@ const configuredIsLoopback =
 const localLanHost = expoHost || '192.168.1.10';
 const detectedApiUrl = `http://${localLanHost}:5000/api/v1`;
 
+// Production Vercel backend is the APK-safe default.
+// A non-loopback EXPO_PUBLIC_API_BASE_URL can still override it.
 export const API_BASE_URL =
   configuredApiUrl && !configuredIsLoopback
     ? configuredApiUrl
-    : detectedApiUrl;
+    : PRODUCTION_API_URL;
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -98,7 +102,7 @@ export async function login(email, password) {
     }
 
     throw new Error(
-      `Cannot connect to SM Associate backend at ${API_BASE_URL}. Check that the backend is running, Windows Firewall allows TCP 5000, and the phone and PC are on the same Wi-Fi.`
+      `Cannot connect to SM Associate backend at ${API_BASE_URL}. Check the backend URL and your internet connection.`
     );
   }
 }

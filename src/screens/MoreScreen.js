@@ -7,6 +7,7 @@ import {logout} from '../api/client';
 
 export default function MoreScreen({navigation}){
  const items=[
+  ['Car Sold','car-sport-outline','CarSale'],
   ['User Management','users-outline','Users'],
   ['Vehicle Expenses','receipt-outline','Expenses'],
   ['Car Profit','trending-up-outline','Car Profit'],
@@ -18,7 +19,7 @@ export default function MoreScreen({navigation}){
    <Logo width={154}/><Text style={{color:colors.white,fontSize:18,fontWeight:'900',marginTop:16}}>SM Associate</Text><Text style={{color:'rgba(255,255,255,.62)',fontSize:12,marginTop:4}}>Finance · Mobility · Assistance</Text>
   </View>
   <View style={{marginTop:18,backgroundColor:colors.white,borderRadius:22,padding:8}}>
-   {items.map(([label,icon,section])=><Pressable key={label} onPress={()=>navigation.navigate('AdminTools',{section})} style={{flexDirection:'row',alignItems:'center',padding:15,borderBottomWidth:1,borderBottomColor:'#F0F1EF'}}>
+   {items.map(([label,icon,section])=><Pressable key={label} onPress={()=>section==='CarSale'?navigation.navigate('CarSale'):navigation.navigate('AdminTools',{section})} style={{flexDirection:'row',alignItems:'center',padding:15,borderBottomWidth:1,borderBottomColor:'#F0F1EF'}}>
     <Ionicons name={icon} size={20} color={colors.gold}/><Text style={{flex:1,marginLeft:12,color:colors.ink,fontWeight:'800'}}>{label}</Text><Ionicons name="chevron-forward" size={17} color={colors.muted}/>
    </Pressable>)}
   </View>

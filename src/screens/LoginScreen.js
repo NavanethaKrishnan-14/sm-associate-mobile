@@ -25,7 +25,7 @@ export default function LoginScreen({navigation}){
     <KeyboardAvoidingView style={{flex:1,padding:24,justifyContent:'center'}} behavior={Platform.OS==='ios'?'padding':undefined}>
       <View style={{alignItems:'center',marginBottom:38}}>
         <View style={{marginBottom:24,alignItems:'center',justifyContent:'center'}}>
-          <Logo width={255}/>
+          <Logo width={320}/>
         </View>
         <Text style={{color:colors.white,fontSize:27,fontWeight:'800',textAlign:'center'}}>Welcome back</Text>
         <Text style={{color:'rgba(255,255,255,.72)',fontSize:14,marginTop:7,textAlign:'center'}}>Manage finance, customers, loans and vehicles in one place.</Text>

@@ -1,32 +1,54 @@
 # SM Associate Mobile
 
-React Native + Expo + TypeScript.
+Premium Expo / React Native mobile application for the SM Associate internal management system.
 
-## Local development
+## Backend
+
+Configure `EXPO_PUBLIC_API_BASE_URL` with the deployed backend URL including `/api/v1`.
+
+The mobile app is wired to the existing authenticated modules:
+
+- Authentication: `/auth`
+- Customers: `/customers`
+- Cars and sales: `/cars`
+- Loans and follow-ups: `/loans`
+- Dashboard and reports: `/reports`
+- Finance services: `/finance-services`
+- Finance enquiries: `/finance-enquiries`
+
+The API client automatically attaches the stored bearer token after login.
+
+## Branding
+
+The app uses the same SM Associate website logo asset:
+
+`https://raw.githubusercontent.com/NavanethaKrishnan-14/SM_Associate/main/public/sm-associate-site-logo.webp`
+
+Override it with `EXPO_PUBLIC_WEB_LOGO_URL` when required.
+
+## Design
+
+The mobile UI uses the website's premium identity as its foundation:
+
+- Deep midnight navy
+- Warm ivory surfaces
+- Champagne / muted gold accents
+- Teal and burgundy for status emphasis
+- High-contrast typography
+- Rounded premium surfaces with restrained borders and shadows
+- Mobile-first touch targets and bottom navigation
+
+## Run locally
 
 ```bash
 npm install
-npm start
+npx expo start
 ```
 
-Android emulator uses `http://10.0.2.2:5000/api/v1`. A physical phone should use your computer LAN IP.
-
-## Android APK test build
-
-This project is configured for an Expo EAS preview APK:
+For Android:
 
 ```bash
-npm install
-npx eas login
-npm run build:android
+npx expo start --android
 ```
 
-The `preview` profile produces an installable Android APK.
-
-For a real phone test, set `EXPO_PUBLIC_API_URL` to a backend URL reachable from the phone before building, for example:
-
-```bash
-EXPO_PUBLIC_API_URL=https://your-backend.example.com/api/v1 npm run build:android
-```
-
-Do not use `localhost` or `10.0.2.2` for a physical-phone production-style APK.
+Create `.env` from `.env.example` before connecting to the deployed backend.

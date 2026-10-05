@@ -8,7 +8,7 @@ import {logout} from '../api/client';
 export default function MoreScreen({navigation}){
  const items=[
   ['Car Sold','car-sport-outline','CarSale'],
-  ['User Management','users-outline','Users'],
+  ['User Management','people-outline','Users'],
   ['Vehicle Expenses','receipt-outline','Expenses'],
   ['Car Profit','trending-up-outline','Car Profit'],
   ['Loan Revenue','cash-outline','Loan Revenue'],

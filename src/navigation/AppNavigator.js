@@ -21,16 +21,15 @@ const Tabs=createBottomTabNavigator();
 function MainTabs(){
   const {width:screenWidth}=useWindowDimensions();
   const tabWidth=screenWidth*0.72;
-  const sideGap=(screenWidth-tabWidth)/2;
   return <Tabs.Navigator screenOptions={({route})=>({
     headerShown:false,
     tabBarActiveTintColor:'#0F766E',
     tabBarInactiveTintColor:'#6B7780',
     tabBarStyle:{
       position:'absolute',
-      left:'50%',
+      left:(screenWidth-tabWidth)/2,
       width:tabWidth,
-      marginLeft:-tabWidth/2,
+      marginLeft:0,
       bottom:16,
       height:52,
       paddingTop:3,

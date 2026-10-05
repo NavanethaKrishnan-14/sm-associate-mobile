@@ -41,24 +41,30 @@ export default function DashboardScreen({navigation}){
       <View style={styles.topBar}>
         <View style={styles.topBarLeft}>
           <View style={styles.logoMark}>
-            <Logo width={104}/>
+            <Logo width={108}/>
           </View>
           <View style={styles.topBarText}>
-            <Text style={styles.topBarEyebrow}>SM ASSOCIATE</Text>
+            <Text style={styles.topBarEyebrow}>BUSINESS OVERVIEW</Text>
             <Text style={styles.topBarTitle}>Dashboard</Text>
           </View>
         </View>
 
-        <Pressable
-          onPress={()=>navigation.navigate('More')}
-          style={styles.notificationButton}
-        >
-          <Ionicons
-            name="notifications-outline"
-            size={20}
-            color={colors.goldLight}
-          />
-        </Pressable>
+        <View style={styles.topBarRight}>
+          <View style={styles.statusPill}>
+            <View style={styles.statusDot}/>
+            <Text style={styles.statusText}>LIVE</Text>
+          </View>
+          <Pressable
+            onPress={()=>navigation.navigate('More')}
+            style={styles.notificationButton}
+          >
+            <Ionicons
+              name="notifications-outline"
+              size={19}
+              color={colors.goldLight}
+            />
+          </Pressable>
+        </View>
       </View>
 
       <ScrollView
@@ -157,30 +163,60 @@ topBar:{
     flex:1
   },
   logoMark:{
-    width:112,
-    height:48,
+    width:116,
+    height:52,
     justifyContent:'center',
     alignItems:'flex-start'
   },
   topBarText:{
-    marginLeft:8
+    marginLeft:8,
+    justifyContent:'center'
   },
   topBarEyebrow:{
     color:colors.goldLight,
-    fontSize:9,
+    fontSize:8,
     fontWeight:'900',
-    letterSpacing:1.5
+    letterSpacing:1.8,
+    marginBottom:2
   },
   topBarTitle:{
     color:colors.white,
-    fontSize:19,
+    fontSize:20,
     fontWeight:'900',
-    marginTop:2
+    letterSpacing:0.2
+  },
+  topBarRight:{
+    flexDirection:'row',
+    alignItems:'center',
+    gap:9
+  },
+  statusPill:{
+    height:30,
+    paddingHorizontal:10,
+    borderRadius:15,
+    backgroundColor:'rgba(232,216,173,0.09)',
+    borderWidth:1,
+    borderColor:'rgba(232,216,173,0.18)',
+    flexDirection:'row',
+    alignItems:'center',
+    gap:6
+  },
+  statusDot:{
+    width:6,
+    height:6,
+    borderRadius:3,
+    backgroundColor:colors.teal
+  },
+  statusText:{
+    color:colors.goldLight,
+    fontSize:9,
+    fontWeight:'900',
+    letterSpacing:1
   },
   notificationButton:{
-    width:42,
-    height:42,
-    borderRadius:14,
+    width:44,
+    height:44,
+    borderRadius:15,
     borderWidth:1,
     borderColor:'rgba(232,216,173,0.25)',
     alignItems:'center',

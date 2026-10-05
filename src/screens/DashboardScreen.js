@@ -44,7 +44,7 @@ export default function DashboardScreen({navigation}){
       <View style={styles.fixedTopBar}>
         <View style={styles.headerRow}>
           <View style={styles.brandGroup}>
-            <Logo width={148}/>
+            <Logo width={126}/>
             <Text style={styles.brandTitle}>SM Associate Management</Text>
           </View>
           <Pressable
@@ -201,8 +201,8 @@ const styles=StyleSheet.create({
   },
   brandTitle:{
     color:colors.white,
-    fontSize:14,
-    fontWeight:'800',
+    fontSize:17,
+    fontWeight:'900',
     marginLeft:8,
     letterSpacing:0.2
   },

@@ -43,7 +43,10 @@ export default function DashboardScreen({navigation}){
     <View style={styles.page}>
       <View style={styles.fixedTopBar}>
         <View style={styles.headerRow}>
-          <Logo width={126}/>
+          <View style={styles.brandGroup}>
+            <Logo width={126}/>
+            <Text style={styles.brandTitle}>SM Associate Management</Text>
+          </View>
           <Pressable
             onPress={()=>navigation.navigate('More')}
             style={styles.notification}
@@ -190,6 +193,18 @@ const styles=StyleSheet.create({
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'space-between'
+  },
+  brandGroup:{
+    flex:1,
+    flexDirection:'row',
+    alignItems:'center'
+  },
+  brandTitle:{
+    color:colors.white,
+    fontSize:13,
+    fontWeight:'800',
+    marginLeft:8,
+    letterSpacing:0.2
   },
   notification:{
     width:44,

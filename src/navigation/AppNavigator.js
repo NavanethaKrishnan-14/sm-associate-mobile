@@ -12,7 +12,6 @@ import MoreScreen from '../screens/MoreScreen';
 import AdminToolsScreen from '../screens/AdminToolsScreen';
 import CarSaleScreen from '../screens/CarSaleScreen';
 import DocumentsScreen from '../screens/DocumentsScreen';
-import {colors} from '../theme/colors';
 
 const Stack=createNativeStackNavigator();
 const Tabs=createBottomTabNavigator();
@@ -21,7 +20,7 @@ function MainTabs(){
   return <Tabs.Navigator screenOptions={({route})=>({
     headerShown:false,
     tabBarActiveTintColor:'#0F766E',
-    tabBarInactiveTintColor:'#36454F',
+    tabBarInactiveTintColor:'#1F3038',
     tabBarStyle:{
       position:'absolute',
       left:14,
@@ -32,20 +31,20 @@ function MainTabs(){
       paddingBottom:8,
       paddingHorizontal:6,
       borderTopWidth:1,
-      borderTopColor:'rgba(255,255,255,0.55)',
+      borderTopColor:'rgba(255,255,255,0.90)',
       borderWidth:1,
-      borderColor:'rgba(255,255,255,0.42)',
+      borderColor:'rgba(255,255,255,0.72)',
       borderRadius:24,
-      backgroundColor:'rgba(255,255,255,0.14)',
+      backgroundColor:'rgba(255,255,255,0.72)',
       shadowColor:'#000',
       shadowOffset:{width:0,height:8},
-      shadowOpacity:0.24,
+      shadowOpacity:0.20,
       shadowRadius:18,
       elevation:14,
     },
     tabBarLabelStyle:{
       fontSize:10,
-      fontWeight:'700',
+      fontWeight:'800',
       marginTop:2,
     },
     tabBarIconStyle:{
@@ -59,7 +58,7 @@ function MainTabs(){
         Loans:focused?'cash':'cash-outline',
         More:focused?'menu':'menu-outline'
       };
-      return <Ionicons name={icons[route.name]} size={focused?21:size} color={color}/>;
+      return <Ionicons name={icons[route.name]} size={focused?23:22} color={color}/>;
     }
   })}>
     <Tabs.Screen name="Dashboard" component={DashboardScreen}/>

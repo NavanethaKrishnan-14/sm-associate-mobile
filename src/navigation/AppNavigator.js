@@ -15,6 +15,7 @@ import MoreScreen from '../screens/MoreScreen';
 import AdminToolsScreen from '../screens/AdminToolsScreen';
 import CarSaleScreen from '../screens/CarSaleScreen';
 import DocumentsScreen from '../screens/DocumentsScreen';
+import {CarProfitScreen,LoanRevenueScreen,OperationalReportsScreen} from '../screens/ReportScreens';
 
 const Stack=createNativeStackNavigator();
 const Tabs=createBottomTabNavigator();
@@ -139,6 +140,9 @@ export default function AppNavigator(){
       <Stack.Screen name="AdminTools" component={AdminToolsScreen}/>
       <Stack.Screen name="CarSale" component={CarSaleScreen}/>
       <Stack.Screen name="Documents" component={DocumentsScreen}/>
+      <Stack.Screen name="CarProfit" component={CarProfitScreen}/>
+      <Stack.Screen name="LoanRevenue" component={LoanRevenueScreen}/>
+      <Stack.Screen name="OperationalReports" component={OperationalReportsScreen}/>
     </Stack.Navigator>
   </NavigationContainer>
 }

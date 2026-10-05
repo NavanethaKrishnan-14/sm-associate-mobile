@@ -6,7 +6,8 @@
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "android": {
-      "package": "com.smassociate.management"
+      "package": "com.smassociate.management",
+      "usesCleartextTraffic": true
     },
     "newArchEnabled": true
   }

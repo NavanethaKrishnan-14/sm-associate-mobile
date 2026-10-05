@@ -40,7 +40,7 @@ function CustomTabBar({state,descriptors,navigation}){
       if(!focused&&!event.defaultPrevented) navigation.navigate(route.name);
     };
     return (
-      <Pressable key={route.key} accessibilityRole="button" onPress={onPress} style={styles.tabItem}>
+      <Pressable key={route.key} accessibilityRole="button" onPress={onPress} style={[styles.tabItem,focused&&styles.activeTabItem]}>
         <Ionicons name={icons[route.name]} size={20} color={color}/>
         <Text style={[styles.tabLabel,{color}]}>{label}</Text>
       </Pressable>
@@ -103,6 +103,12 @@ const styles=StyleSheet.create({
     alignItems:'center',
     justifyContent:'center',
     gap:1,
+    borderRadius:22,
+  },
+  activeTabItem:{
+    backgroundColor:'rgba(39,168,154,0.14)',
+    borderWidth:1,
+    borderColor:'rgba(39,168,154,0.22)',
   },
   tabLabel:{
     fontSize:9,

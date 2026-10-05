@@ -1,12 +1,9 @@
 import React,{useEffect,useState} from 'react';
 import {Pressable,RefreshControl,ScrollView,Text,View,StyleSheet} from 'react-native';
-import {LinearGradient} from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {api} from '../api/client';
 import {colors} from '../theme/colors';
 import Logo from '../components/Logo';
-import MetricCard from '../components/MetricCard';
-import Surface from '../components/Surface';
 
 export default function DashboardScreen({navigation}){
   const [data,setData]=useState(null);
@@ -25,65 +22,29 @@ export default function DashboardScreen({navigation}){
 
   useEffect(()=>{load();},[]);
 
-
   const loanPipeline=data?.loanPipeline||{};
   const actions=[
-    ['Customer','people-outline','Customers'],
     ['Car Buying','car-sport-outline','Cars'],
     ['Car Sold','car-sport-outline','CarSale'],
+    ['Customer','people-outline','Customers'],
     ['Loan','cash-outline','Loans'],
     ['Documents','folder-open-outline','Documents'],
     ['Reports','bar-chart-outline','More']
   ];
 
+  const metrics=[
+    ['Customers',data?.customers??'—','people-outline',colors.gold],
+    ['Active Loans',data?.activeLoans??'—','cash-outline',colors.teal],
+    ['Inventory',data?.carsInInventory??'—','car-sport-outline',colors.burgundy],
+    ['Follow-ups',data?.openFollowUps??'—','call-outline',colors.royal]
+  ];
+
   return (
     <View style={styles.page}>
-      <View style={styles.heroHeader}>
-        <View style={styles.heroTopRow}>
-          <View style={styles.brandArea}>
-            <View style={styles.brandLogo}>
-              <Logo width={118}/>
-            </View>
-          </View>
-
-          <View style={styles.heroActions}>
-            <View style={styles.liveBadge}>
-              <View style={styles.liveDot}/>
-              <Text style={styles.liveText}>LIVE</Text>
-            </View>
-            <Pressable
-              onPress={()=>navigation.navigate('More')}
-              style={styles.bellButton}
-            >
-              <Ionicons name="notifications-outline" size={20} color={colors.white}/>
-            </Pressable>
-          </View>
-        </View>
-
-        <View style={styles.heroGreeting}>
-          <Text style={styles.heroEyebrow}>OPERATIONS OVERVIEW</Text>
-          <Text style={styles.heroTitle}>Good morning.</Text>
-          <Text style={styles.heroSubtitle}>
-            Everything you need to manage your business, in one place.
-          </Text>
-        </View>
-
-        <View style={styles.heroFooter}>
-          <View>
-            <Text style={styles.footerLabel}>TODAY'S OVERVIEW</Text>
-            <Text style={styles.footerValue}>Business at a glance</Text>
-          </View>
-          <View style={styles.footerArrow}>
-            <Ionicons name="arrow-down" size={17} color={colors.midnight}/>
-          </View>
-        </View>
-      </View>
-
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -92,16 +53,64 @@ export default function DashboardScreen({navigation}){
           />
         }
       >
-        <View style={styles.metrics}>
-          <MetricCard label="Customers" value={data?.customers??'—'} accent={colors.gold}/>
-          <MetricCard label="Active loans" value={data?.activeLoans??'—'} accent={colors.teal}/>
-          <MetricCard label="Inventory" value={data?.carsInInventory??'—'} accent={colors.burgundy}/>
-          <MetricCard label="Open follow-ups" value={data?.openFollowUps??'—'} accent={colors.royal}/>
+        <View style={styles.header}>
+          <View style={styles.headerRow}>
+            <Logo width={126}/>
+            <Pressable
+              onPress={()=>navigation.navigate('More')}
+              style={styles.notification}
+            >
+              <Ionicons name="notifications-outline" size={20} color={colors.goldLight}/>
+            </Pressable>
+          </View>
+
+          <View style={styles.greeting}>
+            <Text style={styles.eyebrow}>BUSINESS DASHBOARD</Text>
+            <Text style={styles.title}>Good morning.</Text>
+            <Text style={styles.subtitle}>Your business at a glance.</Text>
+          </View>
+
+          <View style={styles.summaryStrip}>
+            <View>
+              <Text style={styles.summaryLabel}>OPERATIONS</Text>
+              <Text style={styles.summaryText}>Everything is in one place</Text>
+            </View>
+            <View style={styles.summaryIcon}>
+              <Ionicons name="arrow-up-outline" size={18} color={colors.midnight}/>
+            </View>
+          </View>
         </View>
 
-        <Text style={styles.sectionTitle}>Quick actions</Text>
+        <View style={styles.sectionHeader}>
+          <View>
+            <Text style={styles.sectionTitle}>Overview</Text>
+            <Text style={styles.sectionCaption}>Today's business snapshot</Text>
+          </View>
+        </View>
 
-        <View style={styles.actions}>
+        <View style={styles.metricsGrid}>
+          {metrics.map(([label,value,icon,accent])=>(
+            <View key={label} style={styles.metric}>
+              <View style={[styles.metricIcon,{backgroundColor:accent}]}>
+                <Ionicons name={icon} size={19} color={colors.white}/>
+              </View>
+              <Text style={styles.metricValue}>{value}</Text>
+              <Text style={styles.metricLabel}>{label}</Text>
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.sectionHeader}>
+          <View>
+            <Text style={styles.sectionTitle}>Quick actions</Text>
+            <Text style={styles.sectionCaption}>Jump into your daily tasks</Text>
+          </View>
+          <View style={styles.sectionBadge}>
+            <Ionicons name="flash-outline" size={15} color={colors.midnight}/>
+          </View>
+        </View>
+
+        <View style={styles.actionsGrid}>
           {actions.map(([label,icon,screen])=>(
             <Pressable
               key={label}
@@ -111,330 +120,119 @@ export default function DashboardScreen({navigation}){
               <View style={styles.actionIcon}>
                 <Ionicons name={icon} size={20} color={colors.midnight}/>
               </View>
-              <Text style={styles.actionText}>{label}</Text>
-              <Ionicons name="arrow-forward" size={15} color={colors.muted}/>
+              <View style={styles.actionBody}>
+                <Text style={styles.actionText}>{label}</Text>
+                <Text style={styles.actionHint}>Open</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={17} color={colors.muted}/>
             </Pressable>
           ))}
         </View>
 
-        <Text style={[styles.sectionTitle,{marginTop:26}]}>
-          Loan pipeline
-        </Text>
+        <View style={styles.sectionHeader}>
+          <View>
+            <Text style={styles.sectionTitle}>Loan pipeline</Text>
+            <Text style={styles.sectionCaption}>Current application movement</Text>
+          </View>
+          <View style={styles.pipelineBadge}>
+            <Ionicons name="trending-up-outline" size={16} color={colors.teal}/>
+          </View>
+        </View>
 
-        <Surface>
-          <PipelineRow name="Entered" value={loanPipeline.ENTERED}/>
+        <View style={styles.pipelineCard}>
+          <PipelineRow name="Entered" value={loanPipeline.ENTERED} first/>
           <PipelineRow name="Documents pending" value={loanPipeline.DOCUMENTS_PENDING}/>
           <PipelineRow name="Submitted" value={loanPipeline.SUBMITTED}/>
           <PipelineRow name="Under review" value={loanPipeline.UNDER_REVIEW}/>
-          <PipelineRow name="Approved" value={loanPipeline.APPROVED}/>
-        </Surface>
+          <PipelineRow name="Approved" value={loanPipeline.APPROVED} last/>
+        </View>
 
-        <View style={{height:32}}/>
+        <View style={styles.bottomSpace}/>
       </ScrollView>
     </View>
   );
 }
 
-function PipelineRow({name,value}){
+function PipelineRow({name,value,first,last}){
   return (
-    <View style={styles.pipelineRow}>
+    <View style={[styles.pipelineRow,!first&&styles.pipelineBorder,last&&styles.pipelineLast]}>
+      <View style={styles.pipelineDot}/>
       <Text style={styles.pipelineName}>{name}</Text>
-      <Text style={styles.pipelineValue}>{value??0}</Text>
+      <View style={styles.pipelineValueBox}>
+        <Text style={styles.pipelineValue}>{value??0}</Text>
+      </View>
     </View>
   );
 }
 
 const styles=StyleSheet.create({
-  page:{
-    flex:1,
-    backgroundColor:colors.ivory
-  },
-topBar:{
-    height:78,
-    backgroundColor:colors.midnight,
-    paddingHorizontal:18,
-    paddingTop:10,
-    paddingBottom:10,
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'space-between',
-    borderBottomLeftRadius:24,
-    borderBottomRightRadius:24,
-    borderBottomWidth:1,
-    borderBottomColor:'rgba(232,216,173,0.18)',
-    elevation:8,
-    shadowColor:'#000',
-    shadowOffset:{width:0,height:3},
-    shadowOpacity:0.16,
-    shadowRadius:7,
-    zIndex:10
-  },
-  topBarLeft:{
-    flexDirection:'row',
-    alignItems:'center',
-    flex:1
-  },
-  logoMark:{
-    width:116,
-    height:52,
-    justifyContent:'center',
-    alignItems:'flex-start'
-  },
-  topBarText:{
-    marginLeft:8,
-    justifyContent:'center'
-  },
-  topBarEyebrow:{
-    color:colors.goldLight,
-    fontSize:8,
-    fontWeight:'900',
-    letterSpacing:1.8,
-    marginBottom:2
-  },
-  topBarTitle:{
-    color:colors.white,
-    fontSize:20,
-    fontWeight:'900',
-    letterSpacing:0.2
-  },
-  topBarRight:{
-    flexDirection:'row',
-    alignItems:'center',
-    gap:9
-  },
-  statusPill:{
-    height:30,
-    paddingHorizontal:10,
-    borderRadius:15,
-    backgroundColor:'rgba(232,216,173,0.09)',
-    borderWidth:1,
-    borderColor:'rgba(232,216,173,0.18)',
-    flexDirection:'row',
-    alignItems:'center',
-    gap:6
-  },
-  statusDot:{
-    width:6,
-    height:6,
-    borderRadius:3,
-    backgroundColor:colors.teal
-  },
-  statusText:{
-    color:colors.goldLight,
-    fontSize:9,
-    fontWeight:'900',
-    letterSpacing:1
-  },
-  notificationButton:{
-    width:44,
-    height:44,
-    borderRadius:15,
-    borderWidth:1,
-    borderColor:'rgba(232,216,173,0.25)',
-    alignItems:'center',
-    justifyContent:'center'
-  },
-  largeContent:{
-    marginTop:18
-  },
-  kicker:{
-    color:colors.goldLight,
-    fontSize:10,
-    fontWeight:'900',
-    letterSpacing:1.7
-  },
-  title:{
-    color:colors.white,
-    fontSize:31,
-    fontWeight:'900',
-    marginTop:6
-  },
-  sub:{
-    color:'rgba(255,255,255,0.68)',
-    fontSize:14,
-    lineHeight:20,
-    marginTop:5,
-    maxWidth:330
-  },
-  scroll:{
-    flex:1
-  },
-  scrollContent:{
-    padding:18,
-    paddingTop:18
-  },
-  metrics:{
-    flexDirection:'row',
-    flexWrap:'wrap',
-    justifyContent:'space-between',
-    paddingTop:18
-  },
-  sectionTitle:{
-    color:colors.ink,
-    fontSize:18,
-    fontWeight:'900',
-    marginBottom:12
-  },
-  actions:{
-    flexDirection:'row',
-    flexWrap:'wrap',
-    gap:10
-  },
-  action:{
-    backgroundColor:colors.white,
-    borderRadius:18,
-    padding:12,
-    flexDirection:'row',
-    alignItems:'center',
-    gap:10,
-    width:'48%',
-    borderWidth:1,
-    borderColor:'rgba(17,26,35,0.06)'
-  },
-  actionIcon:{
-    width:38,
-    height:38,
-    borderRadius:13,
-    backgroundColor:colors.goldLight,
-    alignItems:'center',
-    justifyContent:'center'
-  },
-  actionText:{
-    flex:1,
-    color:colors.ink,
-    fontSize:13,
-    fontWeight:'800'
-  },
-  pipelineRow:{
-    flexDirection:'row',
-    alignItems:'center',
-    paddingVertical:10,
-    borderBottomWidth:1,
-    borderBottomColor:'#EFF0EE'
-  },
-  pipelineName:{
-    flex:1,
-    color:colors.ink,
-    fontSize:13,
-    fontWeight:'600'
-  },
-  pipelineValue:{
-    fontSize:14,
-    fontWeight:'900',
-    color:colors.midnight
-  }
-});  heroHeader:{
+  page:{flex:1,backgroundColor:colors.ivory},
+  scroll:{flex:1},
+  content:{paddingBottom:20},
+  header:{
     backgroundColor:colors.midnight,
     paddingHorizontal:20,
     paddingTop:18,
-    paddingBottom:18,
+    paddingBottom:20,
     borderBottomLeftRadius:34,
-    borderBottomRightRadius:34,
-    overflow:'hidden',
-    elevation:10,
-    shadowColor:'#000',
-    shadowOffset:{width:0,height:6},
-    shadowOpacity:0.18,
-    shadowRadius:12
+    borderBottomRightRadius:34
   },
-  heroTopRow:{
+  headerRow:{
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'space-between'
   },
-  brandArea:{
-    flex:1,
-    justifyContent:'center'
-  },
-  brandLogo:{
-    height:46,
+  notification:{
+    width:44,
+    height:44,
+    borderRadius:15,
+    alignItems:'center',
     justifyContent:'center',
-    alignItems:'flex-start'
-  },
-  heroActions:{
-    flexDirection:'row',
-    alignItems:'center',
-    gap:9
-  },
-  liveBadge:{
-    height:30,
-    paddingHorizontal:10,
-    borderRadius:15,
-    backgroundColor:'rgba(255,255,255,0.07)',
-    borderWidth:1,
-    borderColor:'rgba(232,216,173,0.2)',
-    flexDirection:'row',
-    alignItems:'center',
-    gap:6
-  },
-  liveDot:{
-    width:6,
-    height:6,
-    borderRadius:3,
-    backgroundColor:colors.teal
-  },
-  liveText:{
-    color:colors.goldLight,
-    fontSize:9,
-    fontWeight:'900',
-    letterSpacing:1.2
-  },
-  bellButton:{
-    width:42,
-    height:42,
-    borderRadius:15,
     backgroundColor:'rgba(255,255,255,0.08)',
     borderWidth:1,
-    borderColor:'rgba(255,255,255,0.12)',
-    alignItems:'center',
-    justifyContent:'center'
+    borderColor:'rgba(232,216,173,0.22)'
   },
-  heroGreeting:{
-    marginTop:24,
-    paddingRight:20
-  },
-  heroEyebrow:{
+  greeting:{marginTop:28},
+  eyebrow:{
     color:colors.goldLight,
     fontSize:9,
     fontWeight:'900',
     letterSpacing:2
   },
-  heroTitle:{
+  title:{
     color:colors.white,
     fontSize:32,
+    lineHeight:38,
     fontWeight:'900',
-    marginTop:6,
-    letterSpacing:-0.5
+    marginTop:5
   },
-  heroSubtitle:{
-    color:'rgba(255,255,255,0.65)',
+  subtitle:{
+    color:'rgba(255,255,255,0.62)',
     fontSize:14,
-    lineHeight:20,
-    marginTop:5,
-    maxWidth:340
+    marginTop:4
   },
-  heroFooter:{
+  summaryStrip:{
     marginTop:22,
     paddingTop:14,
     borderTopWidth:1,
-    borderTopColor:'rgba(232,216,173,0.16)',
+    borderTopColor:'rgba(232,216,173,0.15)',
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'space-between'
   },
-  footerLabel:{
-    color:'rgba(255,255,255,0.42)',
+  summaryLabel:{
+    color:'rgba(255,255,255,0.4)',
     fontSize:8,
     fontWeight:'900',
     letterSpacing:1.5
   },
-  footerValue:{
+  summaryText:{
     color:colors.white,
     fontSize:13,
     fontWeight:'800',
     marginTop:3
   },
-  footerArrow:{
+  summaryIcon:{
     width:34,
     height:34,
     borderRadius:12,
@@ -442,38 +240,90 @@ topBar:{
     alignItems:'center',
     justifyContent:'center'
   },
-  scroll:{
-    flex:1
-  },
-  scrollContent:{
-    padding:18,
-    paddingTop:18
-  },
-  metrics:{
+  sectionHeader:{
+    marginHorizontal:18,
+    marginTop:24,
+    marginBottom:12,
     flexDirection:'row',
-    flexWrap:'wrap',
-    justifyContent:'space-between',
-    paddingTop:18
+    alignItems:'center',
+    justifyContent:'space-between'
   },
   sectionTitle:{
     color:colors.ink,
-    fontSize:18,
-    fontWeight:'900',
-    marginBottom:12
+    fontSize:19,
+    fontWeight:'900'
   },
-  actions:{
+  sectionCaption:{
+    color:colors.muted,
+    fontSize:11,
+    marginTop:3
+  },
+  sectionBadge:{
+    width:34,
+    height:34,
+    borderRadius:12,
+    backgroundColor:colors.goldLight,
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  pipelineBadge:{
+    width:34,
+    height:34,
+    borderRadius:12,
+    backgroundColor:'rgba(38,166,154,0.12)',
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  metricsGrid:{
+    marginHorizontal:18,
     flexDirection:'row',
     flexWrap:'wrap',
-    gap:10
+    justifyContent:'space-between'
+  },
+  metric:{
+    width:'48%',
+    minHeight:132,
+    backgroundColor:colors.white,
+    borderRadius:22,
+    padding:15,
+    marginBottom:10,
+    borderWidth:1,
+    borderColor:'rgba(17,26,35,0.06)',
+    justifyContent:'space-between'
+  },
+  metricIcon:{
+    width:38,
+    height:38,
+    borderRadius:13,
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  metricValue:{
+    color:colors.ink,
+    fontSize:27,
+    fontWeight:'900',
+    marginTop:10
+  },
+  metricLabel:{
+    color:colors.muted,
+    fontSize:12,
+    fontWeight:'700'
+  },
+  actionsGrid:{
+    marginHorizontal:18,
+    flexDirection:'row',
+    flexWrap:'wrap',
+    justifyContent:'space-between'
   },
   action:{
+    width:'48%',
+    minHeight:76,
     backgroundColor:colors.white,
-    borderRadius:18,
-    padding:12,
+    borderRadius:19,
+    padding:11,
+    marginBottom:10,
     flexDirection:'row',
     alignItems:'center',
-    gap:10,
-    width:'48%',
     borderWidth:1,
     borderColor:'rgba(17,26,35,0.06)'
   },
@@ -485,28 +335,64 @@ topBar:{
     alignItems:'center',
     justifyContent:'center'
   },
-  actionText:{
+  actionBody:{
     flex:1,
+    marginLeft:9
+  },
+  actionText:{
     color:colors.ink,
-    fontSize:13,
-    fontWeight:'800'
+    fontSize:12,
+    fontWeight:'900'
+  },
+  actionHint:{
+    color:colors.muted,
+    fontSize:9,
+    marginTop:2
+  },
+  pipelineCard:{
+    marginHorizontal:18,
+    backgroundColor:colors.white,
+    borderRadius:22,
+    paddingHorizontal:15,
+    borderWidth:1,
+    borderColor:'rgba(17,26,35,0.06)'
   },
   pipelineRow:{
+    minHeight:58,
     flexDirection:'row',
-    alignItems:'center',
-    paddingVertical:10,
-    borderBottomWidth:1,
-    borderBottomColor:'#EFF0EE'
+    alignItems:'center'
+  },
+  pipelineBorder:{
+    borderTopWidth:1,
+    borderTopColor:'#EFF0EE'
+  },
+  pipelineLast:{},
+  pipelineDot:{
+    width:9,
+    height:9,
+    borderRadius:5,
+    backgroundColor:colors.gold
   },
   pipelineName:{
     flex:1,
     color:colors.ink,
     fontSize:13,
-    fontWeight:'600'
+    fontWeight:'700',
+    marginLeft:10
+  },
+  pipelineValueBox:{
+    minWidth:36,
+    height:30,
+    paddingHorizontal:9,
+    borderRadius:10,
+    backgroundColor:colors.ivory,
+    alignItems:'center',
+    justifyContent:'center'
   },
   pipelineValue:{
-    fontSize:14,
-    fontWeight:'900',
-    color:colors.midnight
-  }
+    color:colors.midnight,
+    fontSize:13,
+    fontWeight:'900'
+  },
+  bottomSpace:{height:20}
 });

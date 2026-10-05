@@ -8,18 +8,9 @@ import Logo from '../components/Logo';
 import MetricCard from '../components/MetricCard';
 import Surface from '../components/Surface';
 
-const clamp=(value,min,max)=>Math.min(Math.max(value,min),max);
-const lerp=(from,to,progress)=>from+(to-from)*progress;
-const range=(value,start,end)=>{
-  if(value<=start)return 0;
-  if(value>=end)return 1;
-  return (value-start)/(end-start);
-};
-
 export default function DashboardScreen({navigation}){
   const [data,setData]=useState(null);
   const [refreshing,setRefreshing]=useState(false);
-  const [scrollY,setScrollY]=useState(0);
 
   async function load(){
     try{
@@ -34,13 +25,6 @@ export default function DashboardScreen({navigation}){
 
   useEffect(()=>{load();},[]);
 
-  const y=clamp(scrollY,0,160);
-  const collapse=range(y,0,160);
-  const headerHeight=lerp(190,72,collapse);
-  const logoScale=lerp(1,0.62,collapse);
-  const topPadding=lerp(58,10,collapse);
-  const largeOpacity=1-range(y,35,95);
-  const largeTranslateY=lerp(0,-18,collapse);
 
   const loanPipeline=data?.loanPipeline||{};
   const actions=[
@@ -54,44 +38,27 @@ export default function DashboardScreen({navigation}){
 
   return (
     <View style={styles.page}>
-      <View style={[styles.hero,{height:headerHeight}]}>
-        <LinearGradient
-          colors={[colors.midnight,colors.navy]}
-          style={StyleSheet.absoluteFillObject}
-        />
-
-        <View style={[styles.headerInner,{paddingTop:topPadding}]}>
-          <View style={styles.topRow}>
-            <View style={{transform:[{scale:logoScale}]}}>
-              <Logo width={142}/>
-            </View><Pressable
-              onPress={()=>navigation.navigate('More')}
-              style={styles.notificationButton}
-            >
-              <Ionicons
-                name="notifications-outline"
-                size={21}
-                color={colors.goldLight}
-              />
-            </Pressable>
+      <View style={styles.topBar}>
+        <View style={styles.topBarLeft}>
+          <View style={styles.logoMark}>
+            <Logo width={104}/>
           </View>
-
-          <View
-            style={[
-              styles.largeContent,
-              {
-                opacity:largeOpacity,
-                transform:[{translateY:largeTranslateY}]
-              }
-            ]}
-          >
-            <Text style={styles.kicker}>OPERATIONS OVERVIEW</Text>
-            <Text style={styles.title}>Good morning.</Text>
-            <Text style={styles.sub}>
-              A sharper view of your business, all from your phone.
-            </Text>
+          <View style={styles.topBarText}>
+            <Text style={styles.topBarEyebrow}>SM ASSOCIATE</Text>
+            <Text style={styles.topBarTitle}>Dashboard</Text>
           </View>
         </View>
+
+        <Pressable
+          onPress={()=>navigation.navigate('More')}
+          style={styles.notificationButton}
+        >
+          <Ionicons
+            name="notifications-outline"
+            size={20}
+            color={colors.goldLight}
+          />
+        </Pressable>
       </View>
 
       <ScrollView
@@ -99,10 +66,6 @@ export default function DashboardScreen({navigation}){
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
-        onScroll={(event)=>{
-          const offset=event.nativeEvent.contentOffset.y;
-          setScrollY(offset<0?0:offset);
-        }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -168,26 +131,51 @@ const styles=StyleSheet.create({
     flex:1,
     backgroundColor:colors.ivory
   },
-  hero:{
-    position:'absolute',
-    top:0,
-    left:0,
-    right:0,
-    zIndex:20,
-    elevation:20,
-    overflow:'hidden',
-    borderBottomLeftRadius:28,
-    borderBottomRightRadius:28
-  },
-  headerInner:{
-    paddingHorizontal:20,
-    paddingBottom:14
-  },
-  topRow:{
-    height:48,
+topBar:{
+    height:78,
+    backgroundColor:colors.midnight,
+    paddingHorizontal:18,
+    paddingTop:10,
+    paddingBottom:10,
     flexDirection:'row',
     alignItems:'center',
-    justifyContent:'space-between'
+    justifyContent:'space-between',
+    borderBottomLeftRadius:24,
+    borderBottomRightRadius:24,
+    borderBottomWidth:1,
+    borderBottomColor:'rgba(232,216,173,0.18)',
+    elevation:8,
+    shadowColor:'#000',
+    shadowOffset:{width:0,height:3},
+    shadowOpacity:0.16,
+    shadowRadius:7,
+    zIndex:10
+  },
+  topBarLeft:{
+    flexDirection:'row',
+    alignItems:'center',
+    flex:1
+  },
+  logoMark:{
+    width:112,
+    height:48,
+    justifyContent:'center',
+    alignItems:'flex-start'
+  },
+  topBarText:{
+    marginLeft:8
+  },
+  topBarEyebrow:{
+    color:colors.goldLight,
+    fontSize:9,
+    fontWeight:'900',
+    letterSpacing:1.5
+  },
+  topBarTitle:{
+    color:colors.white,
+    fontSize:19,
+    fontWeight:'900',
+    marginTop:2
   },
   notificationButton:{
     width:42,
@@ -225,7 +213,7 @@ const styles=StyleSheet.create({
   },
   scrollContent:{
     padding:18,
-    paddingTop:208
+    paddingTop:18
   },
   metrics:{
     flexDirection:'row',

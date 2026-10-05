@@ -25,17 +25,17 @@ function MainTabs(){
     tabBarInactiveTintColor:'#6B7780',
     tabBarStyle:{
       position:'absolute',
-      left:24,
-      right:24,
-      bottom:14,
-      height:60,
-      paddingTop:5,
-      paddingBottom:5,
-      paddingHorizontal:6,
+      left:52,
+      right:52,
+      bottom:16,
+      height:52,
+      paddingTop:3,
+      paddingBottom:3,
+      paddingHorizontal:4,
       borderTopWidth:0,
       borderWidth:1,
       borderColor:'rgba(20,34,42,0.08)',
-      borderRadius:30,
+      borderRadius:26,
       backgroundColor:'transparent',
       shadowColor:'#14232B',
       shadowOffset:{width:0,height:6},
@@ -51,16 +51,16 @@ function MainTabs(){
       />
     ),
     tabBarLabelStyle:{
-      fontSize:9,
+      fontSize:8,
       fontWeight:'700',
-      marginTop:1,
+      marginTop:0,
     },
     tabBarIconStyle:{
       marginTop:0,
     },
     tabBarItemStyle:{
-      borderRadius:24,
-      marginHorizontal:2,
+      borderRadius:22,
+      marginHorizontal:1,
     },
     tabBarIcon:({color,size,focused})=>{
       const icons={
@@ -73,7 +73,7 @@ function MainTabs(){
       return (
         <Ionicons
           name={icons[route.name]}
-          size={focused?22:20}
+          size={focused?20:18}
           color={color}
         />
       );
@@ -90,7 +90,7 @@ function MainTabs(){
 const styles=StyleSheet.create({
   glassTabBar:{
     ...StyleSheet.absoluteFillObject,
-    borderRadius:30,
+    borderRadius:26,
     overflow:'hidden',
     backgroundColor:'rgba(255,255,255,0.20)',
   },

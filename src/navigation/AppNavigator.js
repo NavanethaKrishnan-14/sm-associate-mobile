@@ -21,8 +21,7 @@ const Tabs=createBottomTabNavigator();
 
 function CustomTabBar({state,descriptors,navigation}){
   const {bottom}=useSafeAreaInsets();
-  const tabRoutes=state.routes.slice(0,4);
-  const moreRoute=state.routes[4];
+  const tabRoutes=state.routes;
 
   const renderTab=(route,index)=>{
     const {options}=descriptors[route.key];
@@ -32,7 +31,8 @@ function CustomTabBar({state,descriptors,navigation}){
       Dashboard:focused?'grid':'grid-outline',
       Customers:focused?'people':'people-outline',
       Cars:focused?'car-sport':'car-sport-outline',
-      Loans:focused?'cash':'cash-outline'
+      Loans:focused?'cash':'cash-outline',
+      More:focused?'menu':'menu-outline'
     };
     const label=options.tabBarLabel??options.title??route.name;
     const onPress=()=>{
@@ -47,22 +47,11 @@ function CustomTabBar({state,descriptors,navigation}){
     );
   };
 
-  const onMorePress=()=>{
-    const event=navigation.emit({type:'tabPress',target:moreRoute.key,canPreventDefault:true});
-    if(state.index!==4&&!event.defaultPrevented) navigation.navigate(moreRoute.name);
-  };
-
   return (
     <View pointerEvents="box-none" style={[styles.bottomBarWrap,{bottom:Math.max(bottom,10)}]}>
-      <View style={styles.bottomBarRow}>
-        <View style={styles.glassPill}>
-          <BlurView tint="light" intensity={72} style={styles.glassFill}/>
-          {tabRoutes.map(renderTab)}
-        </View>
-        <Pressable accessibilityRole="button" onPress={onMorePress} style={styles.moreButton}>
-          <BlurView tint="light" intensity={72} style={styles.glassFill}/>
-          <Ionicons name={state.index===4?'menu':'menu-outline'} size={21} color={state.index===4?'#27A89A':'#71808A'}/>
-        </Pressable>
+      <View style={styles.glassPill}>
+        <BlurView tint="light" intensity={72} style={styles.glassFill}/>
+        {tabRoutes.map(renderTab)}
       </View>
     </View>
   );
@@ -87,36 +76,14 @@ const styles=StyleSheet.create({
     right:0,
     alignItems:'center',
   },
-  bottomBarRow:{
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'center',
-    gap:10,
-  },
   glassPill:{
-    width:250,
+    width:300,
     height:52,
     borderRadius:26,
     overflow:'hidden',
     flexDirection:'row',
     alignItems:'center',
     paddingHorizontal:5,
-    borderWidth:1,
-    borderColor:'rgba(255,255,255,0.55)',
-    backgroundColor:'rgba(255,255,255,0.18)',
-    shadowColor:'#14232B',
-    shadowOffset:{width:0,height:6},
-    shadowOpacity:0.16,
-    shadowRadius:14,
-    elevation:10,
-  },
-  moreButton:{
-    width:52,
-    height:52,
-    borderRadius:26,
-    overflow:'hidden',
-    alignItems:'center',
-    justifyContent:'center',
     borderWidth:1,
     borderColor:'rgba(255,255,255,0.55)',
     backgroundColor:'rgba(255,255,255,0.18)',

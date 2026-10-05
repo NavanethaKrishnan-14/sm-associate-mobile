@@ -1,27 +1,45 @@
 import React,{useEffect,useState} from 'react';
-import {ActivityIndicator,ScrollView,Text,View} from 'react-native';
-import {api} from '../api/client';
+import {Alert,ActivityIndicator,Modal,Pressable,ScrollView,Text,TextInput,View} from 'react-native';
+import {Ionicons} from '@expo/vector-icons';
+import {api,uploadDocument} from '../api/client';
 import {colors} from '../theme/colors';
+import DocumentPickerButton from '../components/DocumentPickerButton';
+
+const blank={customerId:'',loanType:'Home Loan',requiredAmount:'',approvedAmount:'',financeCompany:'',commission:'0',applicationDate:'',expectedDisbursementDate:'',disbursementDate:'',rejectionReason:'',notes:'',status:'ENTERED'};
+const docs=[['idProof','ID Proof'],['addressProof','Address Proof'],['incomeProof','Income Proof'],['bankStatement','Bank Statement']];
 
 export default function LoansScreen(){
-  const [items,setItems]=useState([]),[busy,setBusy]=useState(true);
-  useEffect(()=>{(async()=>{try{const r=await api.get('/loans');setItems(r.data?.data||r.data?.loans||[])}catch(e){}finally{setBusy(false)}})()},[]);
-  return <View style={{flex:1,backgroundColor:colors.ivory,paddingTop:58}}>
-    <View style={{paddingHorizontal:18}}>
-      <Text style={{fontSize:28,fontWeight:'900',color:colors.ink}}>Loans</Text>
-      <Text style={{color:colors.muted,fontSize:13,marginTop:4}}>Pipeline, amounts and application status.</Text>
-    </View>
-    {busy?<ActivityIndicator style={{marginTop:40}} color={colors.gold}/>:<ScrollView contentContainerStyle={{padding:18}}>
-      {items.map((l,i)=><View key={l._id||l.loanId||i} style={{backgroundColor:colors.white,borderRadius:22,padding:17,marginBottom:10,borderWidth:1,borderColor:'rgba(17,26,35,.06)'}}>
-        <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-          <View><Text style={{color:colors.muted,fontSize:10,fontWeight:'900',letterSpacing:1}}>{l.loanId||'LOAN'}</Text><Text style={{color:colors.ink,fontSize:16,fontWeight:'900',marginTop:4}}>{l.loanType}</Text></View>
-          <Text style={{color:colors.gold,fontWeight:'900',fontSize:13}}>{l.status}</Text>
-        </View>
-        <View style={{flexDirection:'row',marginTop:16}}>
-          <Money label="Required" value={l.requiredAmount}/><Money label="Approved" value={l.approvedAmount}/><Money label="Commission" value={l.commission} green/>
-        </View>
-      </View>)}
-    </ScrollView>}
-  </View>
+ const[items,setItems]=useState([]),[customers,setCustomers]=useState([]),[busy,setBusy]=useState(true),[modal,setModal]=useState(false),[editing,setEditing]=useState(null),[form,setForm]=useState(blank),[files,setFiles]=useState({}),[saving,setSaving]=useState(false),[customerPicker,setCustomerPicker]=useState(false);
+ async function load(){setBusy(true);try{const[r,c]=await Promise.all([api.get('/loans'),api.get('/customers')]);setItems(r.data?.data||[]);setCustomers(c.data?.data||[])}catch(e){Alert.alert('Loans',e?.response?.data?.message||'Unable to load loans.')}finally{setBusy(false)}}
+ useEffect(()=>{load()},[]);
+ function openAdd(){setEditing(null);setForm({...blank});setFiles({});setModal(true)}
+ function openEdit(l){setEditing(l);setForm({customerId:l.customerId?._id||l.customerId||'',loanType:l.loanType||'Home Loan',requiredAmount:String(l.requiredAmount||''),approvedAmount:String(l.approvedAmount||''),financeCompany:l.financeCompany||'',commission:String(l.commission||0),applicationDate:l.applicationDate?String(l.applicationDate).slice(0,10):'',expectedDisbursementDate:l.expectedDisbursementDate?String(l.expectedDisbursementDate).slice(0,10):'',disbursementDate:l.disbursementDate?String(l.disbursementDate).slice(0,10):'',rejectionReason:l.rejectionReason||'',notes:l.notes||'',status:l.status||'ENTERED'});setFiles({});setModal(true)}
+ function set(key,value){setForm(p=>({...p,[key]:value}))}
+ async function save(){
+  if(!form.customerId||!form.loanType||!form.requiredAmount)return Alert.alert('Loan','Customer, loan type and required amount are required.');
+  setSaving(true);
+  try{
+   let id=editing?editing._id:null;
+   const payload={...form,requiredAmount:Number(form.requiredAmount),approvedAmount:form.approvedAmount?Number(form.approvedAmount):undefined,commission:Number(form.commission||0)};
+   if(editing)await api.patch('/loans/'+id,payload);else{const r=await api.post('/loans',payload);id=r.data?.data?._id}
+   if(id)for(const [key] of docs)if(files[key])await uploadDocument('/loans/'+id+'/documents/'+key,files[key]);
+   setModal(false);await load();
+  }catch(e){Alert.alert('Loan',e?.response?.data?.message||'Unable to save loan.')}finally{setSaving(false)}
+ }
+ function remove(l){Alert.alert('Delete loan','Delete '+l.loanId+'? This cannot be undone.',[{text:'Cancel',style:'cancel'},{text:'Delete',style:'destructive',onPress:async()=>{try{await api.delete('/loans/'+l._id);load()}catch(e){Alert.alert('Delete',e?.response?.data?.message||'Unable to delete loan.')}}}])}
+ const selected=customers.find(c=>c._id===form.customerId);
+ return <View style={s.page}>
+  <View style={s.header}><View><Text style={s.title}>Loans</Text><Text style={s.subtitle}>Applications, active loans and follow-up records.</Text></View><Pressable onPress={openAdd} style={s.add}><Ionicons name="add" size={22} color={colors.goldLight}/></Pressable></View>
+  {busy?<ActivityIndicator style={{marginTop:40}} color={colors.gold}/>:<ScrollView contentContainerStyle={s.list}>{items.map(l=><View key={l._id} style={s.card}><View style={s.cardTop}><View style={{flex:1}}><Text style={s.id}>{l.loanId}</Text><Text style={s.cardTitle}>{l.loanType}</Text><Text style={s.muted}>{l.customerId?.name||'Customer'} · {l.customerId?.mobile||''}</Text></View><Text style={s.status}>{l.status}</Text></View><View style={s.stats}><Spec l="Required" v={'₹'+Number(l.requiredAmount||0).toLocaleString('en-IN')}/><Spec l="Approved" v={'₹'+Number(l.approvedAmount||0).toLocaleString('en-IN')}/><Spec l="Commission" v={'₹'+Number(l.commission||0).toLocaleString('en-IN')}/></View><View style={s.actions}><Pressable onPress={()=>openEdit(l)} style={s.secondary}><Text style={s.secondaryText}>Edit / Documents</Text></Pressable><Pressable onPress={()=>remove(l)} style={s.delete}><Text style={s.deleteText}>Delete</Text></Pressable></View></View>)}</ScrollView>}
+  <Modal visible={modal} animationType="slide" transparent onRequestClose={()=>setModal(false)}><View style={s.overlay}><View style={s.modal}><View style={s.modalHead}><Text style={s.modalTitle}>{editing?'Edit Loan':'New Loan'}</Text><Pressable onPress={()=>setModal(false)}><Ionicons name="close" size={24} color={colors.ink}/></Pressable></View><ScrollView contentContainerStyle={s.form}>
+    <Text style={s.label}>Customer</Text><Pressable onPress={()=>setCustomerPicker(true)} style={s.select}><Text style={{color:selected?colors.ink:'#9AA4AD',fontWeight:selected?'700':'400'}}>{selected?selected.customerId+' — '+selected.name+' — '+selected.mobile:'Select customer'}</Text><Ionicons name="chevron-down" size={18} color={colors.muted}/></Pressable>
+    <Field label="Loan Type" value={form.loanType} onChangeText={v=>set('loanType',v)}/><Field label="Required Amount" value={form.requiredAmount} onChangeText={v=>set('requiredAmount',v)} keyboardType="numeric"/><Field label="Approved Amount" value={form.approvedAmount} onChangeText={v=>set('approvedAmount',v)} keyboardType="numeric"/><Field label="Finance Company" value={form.financeCompany} onChangeText={v=>set('financeCompany',v)}/><Field label="Commission" value={form.commission} onChangeText={v=>set('commission',v)} keyboardType="numeric"/><Field label="Application Date" value={form.applicationDate} onChangeText={v=>set('applicationDate',v)} placeholder="YYYY-MM-DD"/><Field label="Expected Disbursement Date" value={form.expectedDisbursementDate} onChangeText={v=>set('expectedDisbursementDate',v)} placeholder="YYYY-MM-DD"/><Field label="Disbursement Date" value={form.disbursementDate} onChangeText={v=>set('disbursementDate',v)} placeholder="YYYY-MM-DD"/><Field label="Status" value={form.status} onChangeText={v=>set('status',v)}/><Field label="Rejection Reason" value={form.rejectionReason} onChangeText={v=>set('rejectionReason',v)}/><Field label="Notes" value={form.notes} onChangeText={v=>set('notes',v)}/>
+    <Text style={s.section}>Documents</Text>{docs.map(([key,title])=><View key={key} style={s.doc}><Text style={s.docTitle}>{title}</Text><DocumentPickerButton file={files[key]} onPick={f=>setFiles(p=>({...p,[key]:f}))}/></View>)}
+    <Pressable disabled={saving} onPress={save} style={s.primary}><Text style={s.primaryText}>{saving?'Saving...':editing?'Update Loan':'Create Loan'}</Text></Pressable>
+  </ScrollView></View></View></Modal>
+  <Modal visible={customerPicker} transparent animationType="fade" onRequestClose={()=>setCustomerPicker(false)}><View style={s.pickerOverlay}><View style={s.picker}><View style={s.modalHead}><Text style={s.modalTitle}>Select Customer</Text><Pressable onPress={()=>setCustomerPicker(false)}><Ionicons name="close" size={24} color={colors.ink}/></Pressable></View><ScrollView>{customers.map(c=><Pressable key={c._id} onPress={()=>{set('customerId',c._id);setCustomerPicker(false)}} style={s.customerOption}><Text style={s.cardTitle}>{c.name}</Text><Text style={s.muted}>{c.customerId} · {c.mobile}</Text></Pressable>)}</ScrollView></View></View></Modal>
+ </View>
 }
-function Money({label,value,green}){return <View style={{flex:1}}><Text style={{fontSize:10,color:colors.muted}}>{label}</Text><Text style={{fontSize:15,color:green?colors.teal:colors.ink,fontWeight:'900',marginTop:3}}>₹{Number(value||0).toLocaleString('en-IN')}</Text></View>}
+function Field({label,value,onChangeText,keyboardType,placeholder}){return <View style={{marginBottom:11}}><Text style={s.label}>{label}</Text><TextInput value={String(value??'')} onChangeText={onChangeText} keyboardType={keyboardType} placeholder={placeholder||'Enter '+label.toLowerCase()} placeholderTextColor="#9AA4AD" style={s.input}/></View>}
+function Spec({l,v}){return <View style={{flex:1}}><Text style={s.helper}>{l}</Text><Text style={s.spec}>{v}</Text></View>}
+const s={page:{flex:1,backgroundColor:colors.ivory,paddingTop:58},header:{paddingHorizontal:18,flexDirection:'row',justifyContent:'space-between',alignItems:'center'},title:{fontSize:28,fontWeight:'900',color:colors.ink},subtitle:{color:colors.muted,fontSize:13,marginTop:4},add:{width:46,height:46,borderRadius:15,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center'},list:{padding:18,paddingBottom:30},card:{backgroundColor:colors.white,borderRadius:22,padding:16,marginBottom:12,borderWidth:1,borderColor:'#E5E7E4'},cardTop:{flexDirection:'row',alignItems:'center'},id:{fontSize:10,fontWeight:'900',color:colors.gold,letterSpacing:1},cardTitle:{fontSize:17,fontWeight:'900',color:colors.ink,marginTop:3},muted:{color:colors.muted,fontSize:12,marginTop:4},status:{color:colors.teal,fontWeight:'900',fontSize:11},stats:{flexDirection:'row',marginTop:16},helper:{fontSize:11,color:colors.muted,marginTop:3},spec:{fontSize:13,fontWeight:'900',color:colors.ink,marginTop:3},actions:{flexDirection:'row',gap:8,marginTop:15},secondary:{flex:1,height:44,borderRadius:13,borderWidth:1,borderColor:'#DDE1DE',alignItems:'center',justifyContent:'center'},secondaryText:{color:colors.midnight,fontWeight:'900'},delete:{flex:1,height:44,borderRadius:13,backgroundColor:'#FFF2F2',alignItems:'center',justifyContent:'center'},deleteText:{color:colors.danger,fontWeight:'900'},overlay:{flex:1,backgroundColor:'rgba(0,0,0,.45)',justifyContent:'flex-end'},modal:{backgroundColor:colors.ivory,maxHeight:'94%',borderTopLeftRadius:28,borderTopRightRadius:28,padding:18},modalHead:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',marginBottom:12},modalTitle:{fontSize:21,fontWeight:'900',color:colors.ink},form:{paddingBottom:35},label:{fontSize:11,fontWeight:'900',color:colors.ink,marginBottom:6},input:{height:49,borderRadius:14,borderWidth:1,borderColor:'#DDE1DE',backgroundColor:colors.white,paddingHorizontal:13,color:colors.ink},select:{height:49,borderRadius:14,borderWidth:1,borderColor:'#DDE1DE',backgroundColor:colors.white,paddingHorizontal:13,flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginBottom:11},section:{fontSize:17,fontWeight:'900',color:colors.ink,marginTop:8,marginBottom:3},doc:{backgroundColor:colors.white,borderRadius:16,padding:12,marginTop:10,borderWidth:1,borderColor:'#E5E7E4'},docTitle:{fontWeight:'900',color:colors.ink,marginBottom:8},primary:{height:54,borderRadius:16,backgroundColor:colors.gold,alignItems:'center',justifyContent:'center',marginTop:18},primaryText:{color:colors.midnight,fontWeight:'900',fontSize:15},pickerOverlay:{flex:1,backgroundColor:'rgba(0,0,0,.45)',justifyContent:'center',padding:18},picker:{backgroundColor:colors.ivory,maxHeight:'80%',borderRadius:24,padding:18},customerOption:{backgroundColor:colors.white,borderRadius:14,padding:14,marginBottom:8}};

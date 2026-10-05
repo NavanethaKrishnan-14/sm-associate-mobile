@@ -26,7 +26,7 @@ function CustomTabBar({state,descriptors,navigation}){
   const renderTab=(route,index)=>{
     const {options}=descriptors[route.key];
     const focused=state.index===index;
-    const color=focused?'#27A89A':'#71808A';
+    const color=focused?'#138F84':'#53636D';
     const icons={
       Dashboard:focused?'grid':'grid-outline',
       Customers:focused?'people':'people-outline',
@@ -41,7 +41,7 @@ function CustomTabBar({state,descriptors,navigation}){
     };
     return (
       <Pressable key={route.key} accessibilityRole="button" onPress={onPress} style={styles.tabItem}>
-        <Ionicons name={icons[route.name]} size={18} color={color}/>
+        <Ionicons name={icons[route.name]} size={20} color={color}/>
         <Text style={[styles.tabLabel,{color}]}>{label}</Text>
       </Pressable>
     );
@@ -105,8 +105,8 @@ const styles=StyleSheet.create({
     gap:1,
   },
   tabLabel:{
-    fontSize:8,
-    fontWeight:'700',
+    fontSize:9,
+    fontWeight:'900',
   },
 });
 

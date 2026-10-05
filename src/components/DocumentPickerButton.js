@@ -16,6 +16,10 @@ export async function pickDocument(){
 
 export default function DocumentPickerButton({label='Upload Document',file,onPick}){
   async function choose(){
+    if(file){
+      onPick?.(null);
+      return;
+    }
     try{
       const asset=await pickDocument();
       if(asset)onPick?.(asset);
@@ -26,7 +30,8 @@ export default function DocumentPickerButton({label='Upload Document',file,onPic
 
   return <Pressable onPress={choose} style={({pressed})=>[
     styles.dropZone,
-    pressed&&styles.pressed
+    pressed&&styles.pressed,
+    file&&styles.selected
   ]}>
     <View style={styles.iconBox}>
       <Ionicons name={file?'document-text-outline':'cloud-upload-outline'} size={25} color={colors.teal}/>
@@ -34,13 +39,13 @@ export default function DocumentPickerButton({label='Upload Document',file,onPic
     <View style={styles.content}>
       <Text style={styles.title} numberOfLines={1}>{file?.name||label}</Text>
       <Text style={styles.hint} numberOfLines={2}>
-        {file?'Document selected • Tap to change':'Click here or drag & drop your document'}
+        {file?'Document selected • Tap again to deselect':'Click here or drag & drop your document'}
       </Text>
       <Text style={styles.supported}>PDF, JPG, PNG or other supported files</Text>
     </View>
-    <View style={styles.action}>
-      <Ionicons name={file?'swap-horizontal-outline':'add-circle-outline'} size={18} color={colors.midnight}/>
-      <Text style={styles.actionText}>{file?'Change':'Choose'}</Text>
+    <View style={[styles.action,file&&styles.removeAction]}>
+      <Ionicons name={file?'close-circle-outline':'add-circle-outline'} size={18} color={file?colors.white:colors.midnight}/>
+      <Text style={[styles.actionText,file&&styles.removeText]}>{file?'Remove':'Choose'}</Text>
     </View>
   </Pressable>;
 }
@@ -60,7 +65,11 @@ const styles={
     marginTop:6,
     marginBottom:6
   },
-  pressed:{backgroundColor:colors.goldLight,borderColor:colors.teal},
+  selected:{
+    borderColor:colors.teal,
+    backgroundColor:colors.goldLight
+  },
+  pressed:{backgroundColor:'#E4F5F1',borderColor:colors.teal},
   iconBox:{
     width:46,height:46,borderRadius:14,
     backgroundColor:colors.goldLight,
@@ -72,8 +81,12 @@ const styles={
   supported:{fontSize:9,color:'#9AA4AD',marginTop:3},
   action:{
     minWidth:66,height:38,paddingHorizontal:9,borderRadius:12,
-    backgroundColor:colors.gold,alignItems:'center',justifyContent:'center',
+    borderRadius:12,
+    backgroundColor:colors.gold,
+    alignItems:'center',justifyContent:'center',
     flexDirection:'row',gap:4
   },
-  actionText:{fontSize:10,fontWeight:'900',color:colors.midnight}
+  removeAction:{backgroundColor:colors.midnight},
+  actionText:{fontSize:10,fontWeight:'900',color:colors.midnight},
+  removeText:{color:colors.white}
 };

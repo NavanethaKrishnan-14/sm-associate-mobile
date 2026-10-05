@@ -4,7 +4,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons';
 import {BlurView} from 'expo-blur';
-import {StyleSheet, useWindowDimensions} from 'react-native';
+import {StyleSheet, Pressable, Text, View} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import LoginScreen from '../screens/LoginScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import CustomersScreen from '../screens/CustomersScreen';
@@ -18,71 +19,60 @@ import DocumentsScreen from '../screens/DocumentsScreen';
 const Stack=createNativeStackNavigator();
 const Tabs=createBottomTabNavigator();
 
+function CustomTabBar({state,descriptors,navigation}){
+  const {bottom}=useSafeAreaInsets();
+  const tabRoutes=state.routes.slice(0,4);
+  const moreRoute=state.routes[4];
+
+  const renderTab=(route,index)=>{
+    const {options}=descriptors[route.key];
+    const focused=state.index===index;
+    const color=focused?'#27A89A':'#71808A';
+    const icons={
+      Dashboard:focused?'grid':'grid-outline',
+      Customers:focused?'people':'people-outline',
+      Cars:focused?'car-sport':'car-sport-outline',
+      Loans:focused?'cash':'cash-outline'
+    };
+    const label=options.tabBarLabel??options.title??route.name;
+    const onPress=()=>{
+      const event=navigation.emit({type:'tabPress',target:route.key,canPreventDefault:true});
+      if(!focused&&!event.defaultPrevented) navigation.navigate(route.name);
+    };
+    return (
+      <Pressable key={route.key} accessibilityRole="button" onPress={onPress} style={styles.tabItem}>
+        <Ionicons name={icons[route.name]} size={18} color={color}/>
+        <Text style={[styles.tabLabel,{color}]}>{label}</Text>
+      </Pressable>
+    );
+  };
+
+  const onMorePress=()=>{
+    const event=navigation.emit({type:'tabPress',target:moreRoute.key,canPreventDefault:true});
+    if(state.index!==4&&!event.defaultPrevented) navigation.navigate(moreRoute.name);
+  };
+
+  return (
+    <View pointerEvents="box-none" style={[styles.bottomBarWrap,{bottom:Math.max(bottom,10)}]}>
+      <View style={styles.bottomBarRow}>
+        <View style={styles.glassPill}>
+          <BlurView tint="light" intensity={72} style={styles.glassFill}/>
+          {tabRoutes.map(renderTab)}
+        </View>
+        <Pressable accessibilityRole="button" onPress={onMorePress} style={styles.moreButton}>
+          <BlurView tint="light" intensity={72} style={styles.glassFill}/>
+          <Ionicons name={state.index===4?'menu':'menu-outline'} size={21} color={state.index===4?'#27A89A':'#71808A'}/>
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
 function MainTabs(){
-  const {width:screenWidth}=useWindowDimensions();
-  const tabWidth=screenWidth*0.72;
-  return <Tabs.Navigator screenOptions={({route})=>({
-    headerShown:false,
-    tabBarActiveTintColor:'#0F766E',
-    tabBarInactiveTintColor:'#6B7780',
-    tabBarStyle:{
-      position:'absolute',
-      left:'14%',
-      right:'14%',
-      width:undefined,
-      marginLeft:0,
-      bottom:16,
-      height:52,
-      paddingTop:3,
-      paddingBottom:3,
-      paddingHorizontal:4,
-      borderTopWidth:0,
-      borderWidth:1,
-      borderColor:'rgba(20,34,42,0.08)',
-      borderRadius:26,
-      backgroundColor:'transparent',
-      shadowColor:'#14232B',
-      shadowOffset:{width:0,height:6},
-      shadowOpacity:0.18,
-      shadowRadius:16,
-      elevation:12,
-    },
-    tabBarBackground:()=> (
-      <BlurView
-        tint="light"
-        intensity={72}
-        style={styles.glassTabBar}
-      />
-    ),
-    tabBarLabelStyle:{
-      fontSize:8,
-      fontWeight:'700',
-      marginTop:0,
-    },
-    tabBarIconStyle:{
-      marginTop:0,
-    },
-    tabBarItemStyle:{
-      borderRadius:22,
-      marginHorizontal:1,
-    },
-    tabBarIcon:({color,size,focused})=>{
-      const icons={
-        Dashboard:focused?'grid':'grid-outline',
-        Customers:focused?'people':'people-outline',
-        Cars:focused?'car-sport':'car-sport-outline',
-        Loans:focused?'cash':'cash-outline',
-        More:focused?'menu':'menu-outline'
-      };
-      return (
-        <Ionicons
-          name={icons[route.name]}
-          size={focused?20:18}
-          color={color}
-        />
-      );
-    }
-  })}>
+  return <Tabs.Navigator
+    tabBar={(props)=><CustomTabBar {...props}/>} 
+    screenOptions={{headerShown:false}}
+  >
     <Tabs.Screen name="Dashboard" component={DashboardScreen}/>
     <Tabs.Screen name="Customers" component={CustomersScreen}/>
     <Tabs.Screen name="Cars" component={CarsScreen}/>
@@ -90,13 +80,66 @@ function MainTabs(){
     <Tabs.Screen name="More" component={MoreScreen}/>
   </Tabs.Navigator>
 }
-
 const styles=StyleSheet.create({
-  glassTabBar:{
-    ...StyleSheet.absoluteFillObject,
+  bottomBarWrap:{
+    position:'absolute',
+    left:0,
+    right:0,
+    alignItems:'center',
+  },
+  bottomBarRow:{
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+    gap:10,
+  },
+  glassPill:{
+    width:250,
+    height:52,
     borderRadius:26,
     overflow:'hidden',
-    backgroundColor:'rgba(255,255,255,0.20)',
+    flexDirection:'row',
+    alignItems:'center',
+    paddingHorizontal:5,
+    borderWidth:1,
+    borderColor:'rgba(255,255,255,0.55)',
+    backgroundColor:'rgba(255,255,255,0.18)',
+    shadowColor:'#14232B',
+    shadowOffset:{width:0,height:6},
+    shadowOpacity:0.16,
+    shadowRadius:14,
+    elevation:10,
+  },
+  moreButton:{
+    width:52,
+    height:52,
+    borderRadius:26,
+    overflow:'hidden',
+    alignItems:'center',
+    justifyContent:'center',
+    borderWidth:1,
+    borderColor:'rgba(255,255,255,0.55)',
+    backgroundColor:'rgba(255,255,255,0.18)',
+    shadowColor:'#14232B',
+    shadowOffset:{width:0,height:6},
+    shadowOpacity:0.16,
+    shadowRadius:14,
+    elevation:10,
+  },
+  glassFill:{
+    ...StyleSheet.absoluteFillObject,
+    borderRadius:26,
+  },
+  tabItem:{
+    flex:1,
+    height:'100%',
+    alignItems:'center',
+    justifyContent:'center',
+    gap:1,
+  },
+  tabLabel:{
+    fontSize:8,
+    fontWeight:'700',
   },
 });
 

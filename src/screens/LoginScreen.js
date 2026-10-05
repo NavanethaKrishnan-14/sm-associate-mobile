@@ -17,7 +17,7 @@ export default function LoginScreen({navigation}){
       await login(email.trim(),password);
       navigation.replace('Main');
     }catch(e){
-      Alert.alert('Unable to sign in',e?.response?.data?.message||'Check your credentials and try again.');
+      Alert.alert('Unable to sign in',e?.message||'Check your credentials and try again.');
     }finally{setBusy(false);}
   }
 

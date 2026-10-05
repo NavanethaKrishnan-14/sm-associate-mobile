@@ -20,8 +20,8 @@ const Tabs=createBottomTabNavigator();
 function MainTabs(){
   return <Tabs.Navigator screenOptions={({route})=>({
     headerShown:false,
-    tabBarActiveTintColor:colors.goldLight,
-    tabBarInactiveTintColor:'#A9B5C0',
+    tabBarActiveTintColor:colors.teal,
+    tabBarInactiveTintColor:'rgba(255,255,255,0.72)',
     tabBarStyle:{
       position:'absolute',
       left:14,
@@ -32,11 +32,11 @@ function MainTabs(){
       paddingBottom:8,
       paddingHorizontal:6,
       borderTopWidth:1,
-      borderTopColor:'rgba(255,255,255,0.16)',
+      borderTopColor:'rgba(255,255,255,0.32)',
       borderWidth:1,
-      borderColor:'rgba(255,255,255,0.10)',
+      borderColor:'rgba(255,255,255,0.24)',
       borderRadius:24,
-      backgroundColor:'rgba(10,20,32,0.86)',
+      backgroundColor:'rgba(255,255,255,0.10)',
       shadowColor:'#000',
       shadowOffset:{width:0,height:8},
       shadowOpacity:0.24,

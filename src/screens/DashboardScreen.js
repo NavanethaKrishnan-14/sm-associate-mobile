@@ -36,7 +36,7 @@ export default function DashboardScreen({navigation}){
       </View>
       <Text style={styles.sectionTitle}>Quick actions</Text>
       <View style={{flexDirection:'row',flexWrap:'wrap',gap:10}}>
-        {[['Customer','people-outline','Customers'],['Car Buying','car-sport-outline','Cars'],['Car Sold','car-sport-outline','CarSale'],['Loan','cash-outline','Loans'],['Reports','bar-chart-outline','More']].map(([label,icon,screen])=>
+        {[['Customer','people-outline','Customers'],['Car Buying','car-sport-outline','Cars'],['Car Sold','car-sport-outline','CarSale'],['Loan','cash-outline','Loans'],['Documents','folder-open-outline','Documents'],['Reports','bar-chart-outline','More']].map(([label,icon,screen])=>
           <Pressable key={label} onPress={()=>navigation.navigate(screen)} style={styles.action}>
             <View style={styles.actionIcon}><Ionicons name={icon} size={20} color={colors.midnight}/></View>
             <Text style={styles.actionText}>{label}</Text>

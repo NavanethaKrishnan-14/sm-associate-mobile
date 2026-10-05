@@ -3,7 +3,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons';
-import {BlurView} from 'expo-blur';
 import LoginScreen from '../screens/LoginScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import CustomersScreen from '../screens/CustomersScreen';
@@ -37,25 +36,13 @@ function MainTabs(){
       borderWidth:1,
       borderColor:'rgba(255,255,255,0.42)',
       borderRadius:24,
-      backgroundColor:'transparent',
+      backgroundColor:'rgba(255,255,255,0.14)',
       shadowColor:'#000',
       shadowOffset:{width:0,height:8},
       shadowOpacity:0.24,
       shadowRadius:18,
       elevation:14,
     },
-    tabBarBackground:()=>(
-      <BlurView
-        intensity={28}
-        tint="light"
-        style={{
-          flex:1,
-          borderRadius:24,
-          overflow:'hidden',
-          backgroundColor:'rgba(255,255,255,0.10)'
-        }}
-      />
-    ),
     tabBarLabelStyle:{
       fontSize:10,
       fontWeight:'700',

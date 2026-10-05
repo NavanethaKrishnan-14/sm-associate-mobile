@@ -77,9 +77,6 @@ export default function DashboardScreen({navigation}){
               <Text style={styles.summaryLabel}>OPERATIONS</Text>
               <Text style={styles.summaryText}>Everything is in one place</Text>
             </View>
-            <View style={styles.summaryIcon}>
-              <Ionicons name="arrow-up-outline" size={18} color={colors.midnight}/>
-            </View>
           </View>
         </View>
 
@@ -181,13 +178,13 @@ const styles=StyleSheet.create({
   dashboardIntro:{
     marginHorizontal:12,
     marginTop:8,
-    backgroundColor:'rgba(39,168,154,0.10)',
+    backgroundColor:'#26333A',
     borderRadius:26,
     paddingHorizontal:16,
     paddingTop:16,
     paddingBottom:18,
     borderWidth:1,
-    borderColor:'rgba(39,168,154,0.16)'
+    borderColor:'rgba(39,168,154,0.28)'
   },
   headerRow:{
     flexDirection:'row',

@@ -155,7 +155,7 @@ export default function DashboardScreen({navigation}){
 
 function PipelineRow({name,value,first,last}){
   return (
-    <View style={[styles.pipelineRow,!first&&styles.pipelineBorder,last&&styles.pipelineLast]}>
+    <View style={[styles.pipelineRow, first ? null : styles.pipelineBorder]}>
       <View style={styles.pipelineDot}/>
       <Text style={styles.pipelineName}>{name}</Text>
       <View style={styles.pipelineValueBox}>
@@ -366,7 +366,6 @@ const styles=StyleSheet.create({
     borderTopWidth:1,
     borderTopColor:'#EFF0EE'
   },
-  pipelineLast:{},
   pipelineDot:{
     width:9,
     height:9,

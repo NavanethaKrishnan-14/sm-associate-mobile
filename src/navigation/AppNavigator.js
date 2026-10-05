@@ -96,10 +96,6 @@ const styles=StyleSheet.create({
   },
   glassFill:{
     ...StyleSheet.absoluteFillObject,
-    borderRadius:26,
-  },
-  glassFill:{
-    ...StyleSheet.absoluteFillObject,
     borderRadius:28,
   },
   glassTint:{

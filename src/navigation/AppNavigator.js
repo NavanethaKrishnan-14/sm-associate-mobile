@@ -4,7 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons';
 import {BlurView} from 'expo-blur';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, useWindowDimensions} from 'react-native';
 import LoginScreen from '../screens/LoginScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import CustomersScreen from '../screens/CustomersScreen';
@@ -19,16 +19,18 @@ const Stack=createNativeStackNavigator();
 const Tabs=createBottomTabNavigator();
 
 function MainTabs(){
+  const {width:screenWidth}=useWindowDimensions();
+  const tabWidth=screenWidth*0.72;
+  const sideGap=(screenWidth-tabWidth)/2;
   return <Tabs.Navigator screenOptions={({route})=>({
     headerShown:false,
     tabBarActiveTintColor:'#0F766E',
     tabBarInactiveTintColor:'#6B7780',
     tabBarStyle:{
       position:'absolute',
-      left:0,
-      right:0,
-      width:'72%',
-      alignSelf:'center',
+      left:sideGap,
+      right:sideGap,
+      width:tabWidth,
       bottom:16,
       height:52,
       paddingTop:3,

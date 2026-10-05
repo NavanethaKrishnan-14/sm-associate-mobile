@@ -65,7 +65,7 @@ export default function DashboardScreen({navigation}){
           />
         }
       >
-        <View style={styles.header}>
+        <View style={styles.dashboardIntro}>
           <View style={styles.greeting}>
             <Text style={styles.eyebrow}>BUSINESS DASHBOARD</Text>
             <Text style={styles.title}>Good morning.</Text>
@@ -178,13 +178,16 @@ const styles=StyleSheet.create({
     paddingTop:8,
     paddingBottom:8
   },
-  header:{
-    backgroundColor:colors.midnight,
-    paddingHorizontal:20,
-    paddingTop:0,
-    paddingBottom:20,
-    borderBottomLeftRadius:34,
-    borderBottomRightRadius:34
+  dashboardIntro:{
+    marginHorizontal:12,
+    marginTop:8,
+    backgroundColor:'rgba(39,168,154,0.10)',
+    borderRadius:26,
+    paddingHorizontal:16,
+    paddingTop:16,
+    paddingBottom:18,
+    borderWidth:1,
+    borderColor:'rgba(39,168,154,0.16)'
   },
   headerRow:{
     flexDirection:'row',
@@ -201,7 +204,7 @@ const styles=StyleSheet.create({
     borderWidth:1,
     borderColor:'rgba(232,216,173,0.22)'
   },
-  greeting:{marginTop:28},
+  greeting:{marginTop:0},
   eyebrow:{
     color:colors.teal,
     fontSize:9,

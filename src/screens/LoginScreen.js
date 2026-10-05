@@ -24,8 +24,8 @@ export default function LoginScreen({navigation}){
   return <LinearGradient colors={[colors.midnight,colors.navy,colors.ivory]} style={{flex:1}}>
     <KeyboardAvoidingView style={{flex:1,padding:24,justifyContent:'center'}} behavior={Platform.OS==='ios'?'padding':undefined}>
       <View style={{alignItems:'center',marginBottom:38}}>
-        <View style={{backgroundColor:colors.white,borderRadius:24,paddingHorizontal:18,paddingVertical:12,marginBottom:24}}>
-          <Logo width={190}/>
+        <View style={{marginBottom:24,alignItems:'center',justifyContent:'center'}}>
+          <Logo width={225}/>
         </View>
         <Text style={{color:colors.white,fontSize:27,fontWeight:'800',textAlign:'center'}}>Welcome back</Text>
         <Text style={{color:'rgba(255,255,255,.72)',fontSize:14,marginTop:7,textAlign:'center'}}>Manage finance, customers, loans and vehicles in one place.</Text>

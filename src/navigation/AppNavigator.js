@@ -86,7 +86,7 @@ const styles=StyleSheet.create({
     paddingHorizontal:5,
     borderWidth:1,
     borderColor:'rgba(255,255,255,0.38)',
-    backgroundColor:'rgba(255,255,255,0.14)',
+    backgroundColor:'transparent',
     shadowColor:'#14232B',
     shadowOffset:{width:0,height:6},
     shadowOpacity:0.16,
@@ -96,6 +96,15 @@ const styles=StyleSheet.create({
   glassFill:{
     ...StyleSheet.absoluteFillObject,
     borderRadius:26,
+  },
+  glassFill:{
+    ...StyleSheet.absoluteFillObject,
+    borderRadius:28,
+  },
+  glassTint:{
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor:'rgba(255,255,255,0.18)',
+    borderRadius:28,
   },
   tabItem:{
     flex:1,

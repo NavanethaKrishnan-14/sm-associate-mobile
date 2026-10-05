@@ -20,13 +20,46 @@ const Tabs=createBottomTabNavigator();
 function MainTabs(){
   return <Tabs.Navigator screenOptions={({route})=>({
     headerShown:false,
-    tabBarActiveTintColor:colors.gold,
-    tabBarInactiveTintColor:'#81909D',
-    tabBarStyle:{height:72,paddingTop:7,paddingBottom:9,borderTopWidth:0,backgroundColor:colors.midnight},
-    tabBarLabelStyle:{fontSize:11,fontWeight:'700'},
-    tabBarIcon:({color,size})=>{
-      const icons={Dashboard:'grid-outline',Customers:'people-outline',Cars:'car-sport-outline',Loans:'cash-outline',More:'menu-outline'};
-      return <Ionicons name={icons[route.name]} size={size} color={color}/>;
+    tabBarActiveTintColor:colors.goldLight,
+    tabBarInactiveTintColor:'#A9B5C0',
+    tabBarStyle:{
+      position:'absolute',
+      left:14,
+      right:14,
+      bottom:14,
+      height:68,
+      paddingTop:8,
+      paddingBottom:8,
+      paddingHorizontal:6,
+      borderTopWidth:1,
+      borderTopColor:'rgba(255,255,255,0.16)',
+      borderWidth:1,
+      borderColor:'rgba(255,255,255,0.10)',
+      borderRadius:24,
+      backgroundColor:'rgba(10,20,32,0.86)',
+      shadowColor:'#000',
+      shadowOffset:{width:0,height:8},
+      shadowOpacity:0.24,
+      shadowRadius:18,
+      elevation:14,
+    },
+    tabBarLabelStyle:{
+      fontSize:10,
+      fontWeight:'700',
+      marginTop:2,
+    },
+    tabBarIconStyle:{
+      marginTop:0,
+    },
+    tabBarIcon:({color,size,focused})=>{
+      const icons={
+        Dashboard:focused?'grid':'grid-outline',
+        Customers:focused?'people':'people-outline',
+        Cars:focused?'car-sport':'car-sport-outline',
+        Loans:focused?'cash':'cash-outline',
+        More:focused?'menu':'menu-outline'
+      };
+      return <Ionicons name={icons[route.name]} size={focused?21:size} color={color}/>;
     }
   })}>
     <Tabs.Screen name="Dashboard" component={DashboardScreen}/>

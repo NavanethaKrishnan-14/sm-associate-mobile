@@ -177,7 +177,7 @@ const styles=StyleSheet.create({
   },
   dashboardIntro:{
     marginHorizontal:12,
-    marginTop:18,
+    marginTop:36,
     backgroundColor:'#26333A',
     borderRadius:26,
     paddingHorizontal:16,

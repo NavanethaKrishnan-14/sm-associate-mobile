@@ -41,6 +41,18 @@ export default function DashboardScreen({navigation}){
 
   return (
     <View style={styles.page}>
+      <View style={styles.fixedTopBar}>
+        <View style={styles.headerRow}>
+          <Logo width={126}/>
+          <Pressable
+            onPress={()=>navigation.navigate('More')}
+            style={styles.notification}
+          >
+            <Ionicons name="notifications-outline" size={20} color={colors.goldLight}/>
+          </Pressable>
+        </View>
+      </View>
+
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.content}
@@ -54,16 +66,6 @@ export default function DashboardScreen({navigation}){
         }
       >
         <View style={styles.header}>
-          <View style={styles.headerRow}>
-            <Logo width={126}/>
-            <Pressable
-              onPress={()=>navigation.navigate('More')}
-              style={styles.notification}
-            >
-              <Ionicons name="notifications-outline" size={20} color={colors.goldLight}/>
-            </Pressable>
-          </View>
-
           <View style={styles.greeting}>
             <Text style={styles.eyebrow}>BUSINESS DASHBOARD</Text>
             <Text style={styles.title}>Good morning.</Text>
@@ -169,10 +171,17 @@ const styles=StyleSheet.create({
   page:{flex:1,backgroundColor:colors.midnight},
   scroll:{flex:1},
   content:{paddingBottom:20,backgroundColor:colors.ivory},
-  header:{
+  fixedTopBar:{
+    height:60,
     backgroundColor:colors.midnight,
     paddingHorizontal:20,
     paddingTop:8,
+    paddingBottom:8
+  },
+  header:{
+    backgroundColor:colors.midnight,
+    paddingHorizontal:20,
+    paddingTop:0,
     paddingBottom:20,
     borderBottomLeftRadius:34,
     borderBottomRightRadius:34

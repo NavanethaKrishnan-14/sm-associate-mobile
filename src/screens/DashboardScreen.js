@@ -1,5 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {Animated,Pressable,RefreshControl,ScrollView,Text,View,StyleSheet} from 'react-native';
+import {Animated,Pressable,RefreshControl,Text,View,StyleSheet} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import {Ionicons} from '@expo/vector-icons';
 import {api} from '../api/client';
@@ -11,10 +11,10 @@ import Surface from '../components/Surface';
 export default function DashboardScreen({navigation}){
   const [data,setData]=useState(null),[refreshing,setRefreshing]=useState(false);
   const scrollY=useRef(new Animated.Value(0)).current;
-  const headerHeight=scrollY.interpolate({inputRange:[0,120],outputRange:[190,72],extrapolate:'clamp'});
-  const logoWidth=scrollY.interpolate({inputRange:[0,120],outputRange:[142,100],extrapolate:'clamp'});
-  const largeContentOpacity=scrollY.interpolate({inputRange:[0,70,120],outputRange:[1,0.35,0],extrapolate:'clamp'});
-  const compactTitleOpacity=scrollY.interpolate({inputRange:[45,90,120],outputRange:[0,0.7,1],extrapolate:'clamp'});
+  const headerHeight=scrollY.interpolate({inputRange:[0,80,140],outputRange:[190,110,72],extrapolate:'clamp'});
+  const logoWidth=scrollY.interpolate({inputRange:[0,80,140],outputRange:[142,115,100],extrapolate:'clamp'});
+  const largeContentOpacity=scrollY.interpolate({inputRange:[0,45,90],outputRange:[1,0.2,0],extrapolate:'clamp'});
+  const compactTitleOpacity=scrollY.interpolate({inputRange:[35,75,110],outputRange:[0,0.7,1],extrapolate:'clamp'});
   async function load(){
     try{const r=await api.get('/reports/dashboard');setData(r.data?.data||{})}
     catch(e){}
@@ -38,7 +38,8 @@ export default function DashboardScreen({navigation}){
     </Animated.View>
     <Animated.ScrollView
       contentContainerStyle={{padding:18,paddingTop:208}}
-      onScroll={Animated.event([{nativeEvent:{contentOffset:{y:scrollY}}}],{useNativeDriver:false})}
+      onScroll={Animated.event([{nativeEvent:{contentOffset:{y:scrollY}}}],{useNativeDriver:false})
+      scrollEnabled={true}}
       scrollEventThrottle={16}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{setRefreshing(true);load()}} tintColor={colors.gold}/>}>
       <View style={styles.metrics}>

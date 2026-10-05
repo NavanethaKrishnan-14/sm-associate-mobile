@@ -38,32 +38,44 @@ export default function DashboardScreen({navigation}){
 
   return (
     <View style={styles.page}>
-      <View style={styles.topBar}>
-        <View style={styles.topBarLeft}>
-          <View style={styles.logoMark}>
-            <Logo width={108}/>
+      <View style={styles.heroHeader}>
+        <View style={styles.heroTopRow}>
+          <View style={styles.brandArea}>
+            <View style={styles.brandLogo}>
+              <Logo width={118}/>
+            </View>
           </View>
-          <View style={styles.topBarText}>
-            <Text style={styles.topBarEyebrow}>BUSINESS OVERVIEW</Text>
-            <Text style={styles.topBarTitle}>Dashboard</Text>
+
+          <View style={styles.heroActions}>
+            <View style={styles.liveBadge}>
+              <View style={styles.liveDot}/>
+              <Text style={styles.liveText}>LIVE</Text>
+            </View>
+            <Pressable
+              onPress={()=>navigation.navigate('More')}
+              style={styles.bellButton}
+            >
+              <Ionicons name="notifications-outline" size={20} color={colors.white}/>
+            </Pressable>
           </View>
         </View>
 
-        <View style={styles.topBarRight}>
-          <View style={styles.statusPill}>
-            <View style={styles.statusDot}/>
-            <Text style={styles.statusText}>LIVE</Text>
+        <View style={styles.heroGreeting}>
+          <Text style={styles.heroEyebrow}>OPERATIONS OVERVIEW</Text>
+          <Text style={styles.heroTitle}>Good morning.</Text>
+          <Text style={styles.heroSubtitle}>
+            Everything you need to manage your business, in one place.
+          </Text>
+        </View>
+
+        <View style={styles.heroFooter}>
+          <View>
+            <Text style={styles.footerLabel}>TODAY'S OVERVIEW</Text>
+            <Text style={styles.footerValue}>Business at a glance</Text>
           </View>
-          <Pressable
-            onPress={()=>navigation.navigate('More')}
-            style={styles.notificationButton}
-          >
-            <Ionicons
-              name="notifications-outline"
-              size={19}
-              color={colors.goldLight}
-            />
-          </Pressable>
+          <View style={styles.footerArrow}>
+            <Ionicons name="arrow-down" size={17} color={colors.midnight}/>
+          </View>
         </View>
       </View>
 
@@ -243,6 +255,192 @@ topBar:{
     lineHeight:20,
     marginTop:5,
     maxWidth:330
+  },
+  scroll:{
+    flex:1
+  },
+  scrollContent:{
+    padding:18,
+    paddingTop:18
+  },
+  metrics:{
+    flexDirection:'row',
+    flexWrap:'wrap',
+    justifyContent:'space-between',
+    paddingTop:18
+  },
+  sectionTitle:{
+    color:colors.ink,
+    fontSize:18,
+    fontWeight:'900',
+    marginBottom:12
+  },
+  actions:{
+    flexDirection:'row',
+    flexWrap:'wrap',
+    gap:10
+  },
+  action:{
+    backgroundColor:colors.white,
+    borderRadius:18,
+    padding:12,
+    flexDirection:'row',
+    alignItems:'center',
+    gap:10,
+    width:'48%',
+    borderWidth:1,
+    borderColor:'rgba(17,26,35,0.06)'
+  },
+  actionIcon:{
+    width:38,
+    height:38,
+    borderRadius:13,
+    backgroundColor:colors.goldLight,
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  actionText:{
+    flex:1,
+    color:colors.ink,
+    fontSize:13,
+    fontWeight:'800'
+  },
+  pipelineRow:{
+    flexDirection:'row',
+    alignItems:'center',
+    paddingVertical:10,
+    borderBottomWidth:1,
+    borderBottomColor:'#EFF0EE'
+  },
+  pipelineName:{
+    flex:1,
+    color:colors.ink,
+    fontSize:13,
+    fontWeight:'600'
+  },
+  pipelineValue:{
+    fontSize:14,
+    fontWeight:'900',
+    color:colors.midnight
+  }
+});  heroHeader:{
+    backgroundColor:colors.midnight,
+    paddingHorizontal:20,
+    paddingTop:18,
+    paddingBottom:18,
+    borderBottomLeftRadius:34,
+    borderBottomRightRadius:34,
+    overflow:'hidden',
+    elevation:10,
+    shadowColor:'#000',
+    shadowOffset:{width:0,height:6},
+    shadowOpacity:0.18,
+    shadowRadius:12
+  },
+  heroTopRow:{
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-between'
+  },
+  brandArea:{
+    flex:1,
+    justifyContent:'center'
+  },
+  brandLogo:{
+    height:46,
+    justifyContent:'center',
+    alignItems:'flex-start'
+  },
+  heroActions:{
+    flexDirection:'row',
+    alignItems:'center',
+    gap:9
+  },
+  liveBadge:{
+    height:30,
+    paddingHorizontal:10,
+    borderRadius:15,
+    backgroundColor:'rgba(255,255,255,0.07)',
+    borderWidth:1,
+    borderColor:'rgba(232,216,173,0.2)',
+    flexDirection:'row',
+    alignItems:'center',
+    gap:6
+  },
+  liveDot:{
+    width:6,
+    height:6,
+    borderRadius:3,
+    backgroundColor:colors.teal
+  },
+  liveText:{
+    color:colors.goldLight,
+    fontSize:9,
+    fontWeight:'900',
+    letterSpacing:1.2
+  },
+  bellButton:{
+    width:42,
+    height:42,
+    borderRadius:15,
+    backgroundColor:'rgba(255,255,255,0.08)',
+    borderWidth:1,
+    borderColor:'rgba(255,255,255,0.12)',
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  heroGreeting:{
+    marginTop:24,
+    paddingRight:20
+  },
+  heroEyebrow:{
+    color:colors.goldLight,
+    fontSize:9,
+    fontWeight:'900',
+    letterSpacing:2
+  },
+  heroTitle:{
+    color:colors.white,
+    fontSize:32,
+    fontWeight:'900',
+    marginTop:6,
+    letterSpacing:-0.5
+  },
+  heroSubtitle:{
+    color:'rgba(255,255,255,0.65)',
+    fontSize:14,
+    lineHeight:20,
+    marginTop:5,
+    maxWidth:340
+  },
+  heroFooter:{
+    marginTop:22,
+    paddingTop:14,
+    borderTopWidth:1,
+    borderTopColor:'rgba(232,216,173,0.16)',
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-between'
+  },
+  footerLabel:{
+    color:'rgba(255,255,255,0.42)',
+    fontSize:8,
+    fontWeight:'900',
+    letterSpacing:1.5
+  },
+  footerValue:{
+    color:colors.white,
+    fontSize:13,
+    fontWeight:'800',
+    marginTop:3
+  },
+  footerArrow:{
+    width:34,
+    height:34,
+    borderRadius:12,
+    backgroundColor:colors.goldLight,
+    alignItems:'center',
+    justifyContent:'center'
   },
   scroll:{
     flex:1

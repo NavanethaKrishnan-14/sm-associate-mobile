@@ -64,13 +64,7 @@ export default function DashboardScreen({navigation}){
           <View style={styles.topRow}>
             <View style={{transform:[{scale:logoScale}]}}>
               <Logo width={142}/>
-            </View>
-
-            <Text style={[styles.compactTitle,{opacity:compactOpacity}]}>
-              Dashboard
-            </Text>
-
-            <Pressable
+            </View><Pressable
               onPress={()=>navigation.navigate('More')}
               style={styles.notificationButton}
             >

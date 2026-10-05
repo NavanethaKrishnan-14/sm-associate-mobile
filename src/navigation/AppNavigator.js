@@ -11,6 +11,7 @@ import LoansScreen from '../screens/LoansScreen';
 import MoreScreen from '../screens/MoreScreen';
 import AdminToolsScreen from '../screens/AdminToolsScreen';
 import CarSaleScreen from '../screens/CarSaleScreen';
+import DocumentsScreen from '../screens/DocumentsScreen';
 import {colors} from '../theme/colors';
 
 const Stack=createNativeStackNavigator();
@@ -43,6 +44,7 @@ export default function AppNavigator(){
       <Stack.Screen name="Main" component={MainTabs}/>
       <Stack.Screen name="AdminTools" component={AdminToolsScreen}/>
       <Stack.Screen name="CarSale" component={CarSaleScreen}/>
+      <Stack.Screen name="Documents" component={DocumentsScreen}/>
     </Stack.Navigator>
   </NavigationContainer>
 }

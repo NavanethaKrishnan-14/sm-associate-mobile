@@ -103,6 +103,25 @@ export async function login(email, password) {
   }
 }
 
+export async function uploadDocument(path, asset, fields = {}) {
+  if (!asset?.uri) throw new Error('Please select a document first.');
+  const form = new FormData();
+  form.append('file', {
+    uri: asset.uri,
+    name: asset.name || 'document',
+    type: asset.mimeType || 'application/octet-stream'
+  });
+  Object.entries(fields).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) form.append(key, String(value));
+  });
+
+  const response = await api.post(path, form, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 30000
+  });
+  return response.data;
+}
+
 export async function getApiHealth() {
   const { data } = await api.get('/health');
   return data;

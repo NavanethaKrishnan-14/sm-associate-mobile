@@ -43,6 +43,7 @@ export default function CarSaleScreen({navigation}){
  const visibleCustomers=normalizedSearch?filteredCustomers:customers.slice(-5).reverse();
  return <View style={s.page}>
   <View style={s.header}>
+   <Pressable onPress={()=>navigation.goBack()} style={s.backButton}><Ionicons name="arrow-back" size={20} color={colors.ink}/></Pressable>
    <View style={{flex:1}}><Text style={s.eyebrow}>AUTOMOTIVE</Text><Text style={s.title}>Car Sold</Text><Text style={s.subtitle}>Track available inventory and completed vehicle sales.</Text></View>
    <Pressable onPress={openSale} style={s.sellButton}><Ionicons name="car-outline" size={18} color={colors.goldLight}/><Text style={s.sellButtonText}>Sell Car</Text></Pressable>
   </View>
@@ -90,6 +91,7 @@ function Field({label,value,onChangeText,textInputType='numeric'}){return <View 
 const s={
  page:{flex:1,backgroundColor:'#F4F6F3',paddingTop:58},
  header:{paddingHorizontal:18,flexDirection:'row',alignItems:'center',gap:12},
+ backButton:{width:42,height:42,borderRadius:14,backgroundColor:colors.white,borderWidth:1,borderColor:'rgba(39,168,154,.16)',alignItems:'center',justifyContent:'center'},
  eyebrow:{fontSize:9,fontWeight:'900',letterSpacing:1.5,color:colors.teal,marginBottom:2},
  title:{fontSize:30,fontWeight:'900',color:colors.ink},
  subtitle:{color:colors.muted,fontSize:13,marginTop:4},

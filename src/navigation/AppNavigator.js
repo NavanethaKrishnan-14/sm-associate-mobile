@@ -27,8 +27,9 @@ function MainTabs(){
     tabBarInactiveTintColor:'#6B7780',
     tabBarStyle:{
       position:'absolute',
-      left:((screenWidth-tabWidth)/2)+18,
-      width:tabWidth,
+      left:'14%',
+      right:'14%',
+      width:undefined,
       marginLeft:0,
       bottom:16,
       height:52,

@@ -44,7 +44,7 @@ export default function DashboardScreen({navigation}){
       <View style={styles.fixedTopBar}>
         <View style={styles.headerRow}>
           <View style={styles.brandGroup}>
-            <Logo width={126}/>
+            <Logo width={112}/>
             <Text style={styles.brandTitle}>SM Associate Management</Text>
           </View>
           <Pressable
@@ -172,11 +172,11 @@ const styles=StyleSheet.create({
   scroll:{flex:1},
   content:{paddingBottom:20,backgroundColor:colors.ivory},
   fixedTopBar:{
-    height:76,
+    height:68,
     backgroundColor:colors.midnight,
     paddingHorizontal:20,
-    paddingTop:10,
-    paddingBottom:10
+    paddingTop:8,
+    paddingBottom:8
   },
   dashboardIntro:{
     marginHorizontal:12,

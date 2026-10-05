@@ -166,9 +166,9 @@ function PipelineRow({name,value,first,last}){
 }
 
 const styles=StyleSheet.create({
-  page:{flex:1,backgroundColor:colors.ivory},
+  page:{flex:1,backgroundColor:colors.midnight},
   scroll:{flex:1},
-  content:{paddingBottom:20},
+  content:{paddingBottom:20,backgroundColor:colors.ivory},
   header:{
     backgroundColor:colors.midnight,
     paddingHorizontal:20,

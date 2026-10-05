@@ -45,15 +45,16 @@ function MainTabs(){
     },
     tabBarBackground:()=>(
       <BlurView
-        intensity={65}
+        intensity={72}
         tint="light"
+        blurMethod="dimezisBlurViewSdk31Plus"
         style={{
           flex:1,
           borderRadius:24,
           overflow:'hidden',
-          backgroundColor:'rgba(255,255,255,0.58)',
+          backgroundColor:'rgba(255,255,255,0.50)',
           borderWidth:1,
-          borderColor:'rgba(255,255,255,0.55)'
+          borderColor:'rgba(255,255,255,0.60)'
         }}
       />
     ),

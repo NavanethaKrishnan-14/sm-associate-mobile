@@ -8,6 +8,7 @@ import {login} from '../api/client';
 export default function LoginScreen({navigation}){
   const [email,setEmail]=useState('');
   const [password,setPassword]=useState('');
+  const [showPassword,setShowPassword]=useState(false);
   const [busy,setBusy]=useState(false);
 
   async function submit(){
@@ -34,7 +35,24 @@ export default function LoginScreen({navigation}){
         <Text style={styles.label}>Work email</Text>
         <TextInput value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="you@company.com" placeholderTextColor="#98A3AD" style={styles.input}/>
         <Text style={[styles.label,{marginTop:18}]}>Password</Text>
-        <TextInput value={password} onChangeText={setPassword} secureTextEntry placeholder="Enter your password" placeholderTextColor="#98A3AD" style={styles.input}/>
+        <View style={styles.passwordWrap}>
+          <TextInput
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+            placeholder="Enter your password"
+            placeholderTextColor="#98A3AD"
+            style={styles.passwordInput}
+          />
+          <Pressable
+            onPress={()=>setShowPassword(value=>!value)}
+            accessibilityRole="button"
+            accessibilityLabel={showPassword?'Hide password':'Show password'}
+            style={styles.eyeButton}
+          >
+            <Text style={styles.eyeText}>{showPassword?'Hide':'Show'}</Text>
+          </Pressable>
+        </View>
         <Pressable onPress={submit} disabled={busy} style={({pressed})=>[styles.button,{opacity:pressed?.82:1}]}>
           {busy?<ActivityIndicator color={colors.midnight}/>:<Text style={styles.buttonText}>Sign in</Text>}
         </Pressable>
@@ -46,6 +64,10 @@ const styles=StyleSheet.create({
   card:{backgroundColor:'rgba(251,250,246,.98)',borderRadius:28,padding:22},
   label:{fontSize:12,fontWeight:'800',color:colors.ink,letterSpacing:.6},
   input:{backgroundColor:colors.white,borderWidth:1,borderColor:'#E3E6E3',borderRadius:16,paddingHorizontal:15,height:54,marginTop:8,color:colors.ink,fontSize:15},
+  passwordWrap:{position:'relative',marginTop:8},
+  passwordInput:{backgroundColor:colors.white,borderWidth:1,borderColor:'#E3E6E3',borderRadius:16,paddingHorizontal:15,paddingRight:70,height:54,color:colors.ink,fontSize:15},
+  eyeButton:{position:'absolute',right:6,top:6,height:42,minWidth:58,paddingHorizontal:10,borderRadius:12,alignItems:'center',justifyContent:'center'},
+  eyeText:{color:colors.midnight,fontWeight:'800',fontSize:13},
   button:{height:56,borderRadius:17,backgroundColor:colors.gold,alignItems:'center',justifyContent:'center',marginTop:24},
   buttonText:{color:colors.midnight,fontWeight:'900',fontSize:15}
 });

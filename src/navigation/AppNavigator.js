@@ -48,7 +48,7 @@ function CustomTabBar({state,descriptors,navigation}){
   };
 
   return (
-    <View pointerEvents="box-none" style={[styles.bottomBarWrap,{bottom:Math.max(bottom,10)}]}>
+    <View pointerEvents="box-none" style={[styles.bottomBarWrap,{bottom:Math.max(bottom,22)}]}>
       <View style={styles.glassPill}>
         <BlurView tint="light" intensity={72} style={styles.glassFill}/>
         {tabRoutes.map(renderTab)}

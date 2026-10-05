@@ -9,6 +9,7 @@ import CustomersScreen from '../screens/CustomersScreen';
 import CarsScreen from '../screens/CarsScreen';
 import LoansScreen from '../screens/LoansScreen';
 import MoreScreen from '../screens/MoreScreen';
+import AdminToolsScreen from '../screens/AdminToolsScreen';
 import {colors} from '../theme/colors';
 
 const Stack=createNativeStackNavigator();
@@ -39,6 +40,7 @@ export default function AppNavigator(){
     <Stack.Navigator screenOptions={{headerShown:false}}>
       <Stack.Screen name="Login" component={LoginScreen}/>
       <Stack.Screen name="Main" component={MainTabs}/>
+      <Stack.Screen name="AdminTools" component={AdminToolsScreen}/>
     </Stack.Navigator>
   </NavigationContainer>
 }

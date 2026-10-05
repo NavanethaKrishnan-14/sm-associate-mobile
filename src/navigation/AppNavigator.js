@@ -20,35 +20,38 @@ function MainTabs(){
   return <Tabs.Navigator screenOptions={({route})=>({
     headerShown:false,
     tabBarActiveTintColor:'#0F766E',
-    tabBarInactiveTintColor:'#1F3038',
+    tabBarInactiveTintColor:'#6B7780',
     tabBarStyle:{
       position:'absolute',
-      left:28,
-      right:28,
-      bottom:12,
-      height:56,
-      paddingTop:4,
-      paddingBottom:4,
-      paddingHorizontal:4,
-      borderTopWidth:1,
-      borderTopColor:'rgba(255,255,255,0.95)',
+      left:24,
+      right:24,
+      bottom:14,
+      height:60,
+      paddingTop:5,
+      paddingBottom:5,
+      paddingHorizontal:6,
+      borderTopWidth:0,
       borderWidth:1,
-      borderColor:'rgba(255,255,255,0.78)',
-      borderRadius:20,
-      backgroundColor:'rgba(255,255,255,0.88)',
-      shadowColor:'#000',
+      borderColor:'rgba(20,34,42,0.08)',
+      borderRadius:30,
+      backgroundColor:'#FFFFFF',
+      shadowColor:'#14232B',
       shadowOffset:{width:0,height:6},
       shadowOpacity:0.18,
-      shadowRadius:14,
+      shadowRadius:16,
       elevation:12,
     },
     tabBarLabelStyle:{
       fontSize:9,
-      fontWeight:'800',
+      fontWeight:'700',
       marginTop:1,
     },
     tabBarIconStyle:{
       marginTop:0,
+    },
+    tabBarItemStyle:{
+      borderRadius:24,
+      marginHorizontal:2,
     },
     tabBarIcon:({color,size,focused})=>{
       const icons={
@@ -58,7 +61,13 @@ function MainTabs(){
         Loans:focused?'cash':'cash-outline',
         More:focused?'menu':'menu-outline'
       };
-      return <Ionicons name={icons[route.name]} size={focused?21:20} color={color}/>;
+      return (
+        <Ionicons
+          name={icons[route.name]}
+          size={focused?22:20}
+          color={color}
+        />
+      );
     }
   })}>
     <Tabs.Screen name="Dashboard" component={DashboardScreen}/>

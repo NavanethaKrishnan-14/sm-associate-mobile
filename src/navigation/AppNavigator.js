@@ -3,6 +3,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons';
+import {BlurView} from 'expo-blur';
+import {StyleSheet} from 'react-native';
 import LoginScreen from '../screens/LoginScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import CustomersScreen from '../screens/CustomersScreen';
@@ -34,13 +36,20 @@ function MainTabs(){
       borderWidth:1,
       borderColor:'rgba(20,34,42,0.08)',
       borderRadius:30,
-      backgroundColor:'#FFFFFF',
+      backgroundColor:'transparent',
       shadowColor:'#14232B',
       shadowOffset:{width:0,height:6},
       shadowOpacity:0.18,
       shadowRadius:16,
       elevation:12,
     },
+    tabBarBackground:()=> (
+      <BlurView
+        tint="light"
+        intensity={72}
+        style={styles.glassTabBar}
+      />
+    ),
     tabBarLabelStyle:{
       fontSize:9,
       fontWeight:'700',
@@ -77,6 +86,15 @@ function MainTabs(){
     <Tabs.Screen name="More" component={MoreScreen}/>
   </Tabs.Navigator>
 }
+
+const styles=StyleSheet.create({
+  glassTabBar:{
+    ...StyleSheet.absoluteFillObject,
+    borderRadius:30,
+    overflow:'hidden',
+    backgroundColor:'rgba(255,255,255,0.20)',
+  },
+});
 
 export default function AppNavigator(){
   return <NavigationContainer>

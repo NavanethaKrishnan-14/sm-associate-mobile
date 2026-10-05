@@ -26,7 +26,7 @@ function CustomTabBar({state,descriptors,navigation}){
   const renderTab=(route,index)=>{
     const {options}=descriptors[route.key];
     const focused=state.index===index;
-    const color=focused?'#138F84':'#53636D';
+    const color=focused?'#FFFFFF':'#53636D';
     const icons={
       Dashboard:focused?'grid':'grid-outline',
       Customers:focused?'people':'people-outline',
@@ -115,7 +115,7 @@ const styles=StyleSheet.create({
     borderRadius:22,
   },
   activeTabItem:{
-    backgroundColor:'rgba(39,168,154,0.20)',
+    backgroundColor:'rgba(39,168,154,0.30)',
     borderWidth:1,
     borderColor:'rgba(39,168,154,0.42)',
     shadowColor:'#27A89A',

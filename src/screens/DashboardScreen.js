@@ -203,7 +203,7 @@ const styles=StyleSheet.create({
   },
   greeting:{marginTop:28},
   eyebrow:{
-    color:colors.goldLight,
+    color:colors.teal,
     fontSize:9,
     fontWeight:'900',
     letterSpacing:2

@@ -2,6 +2,7 @@ import React,{useEffect,useState} from 'react';
 import {Alert,ActivityIndicator,Modal,Pressable,ScrollView,Text,TextInput,View} from 'react-native';
 import {api} from '../api/client';
 import {colors} from '../theme/colors';
+import {Ionicons} from '@expo/vector-icons';
 
 const emptyExpense={carId:'',category:'Repair',description:'',amount:'',date:''};
 export default function AdminToolsScreen({route,navigation}){

@@ -11,13 +11,13 @@ function getExpoHost(){
 }
 
 const expoHost = getExpoHost();
-const detectedApiUrl = expoHost
-  ? `http://${expoHost}:5000/api/v1`
-  : 'http://localhost:5000/api/v1';
 
-// EXPO_PUBLIC_API_BASE_URL can still be used for a deployed backend.
-// For local Expo Go development, the Expo LAN host is safer because it
-// automatically follows the PC running Metro.
+// Metro is currently running from the development PC at 192.168.1.6.
+// The phone must reach the PC over the LAN, so localhost/127.0.0.1 must
+// never be used as the local Android API address.
+const localLanHost = expoHost || '192.168.1.6';
+const detectedApiUrl = `http://${localLanHost}:5000/api/v1`;
+
 const configuredApiUrl = process.env.EXPO_PUBLIC_API_BASE_URL || '';
 const configuredIsLoopback =
   configuredApiUrl.includes('localhost') ||

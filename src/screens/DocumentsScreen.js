@@ -12,6 +12,7 @@ export default function DocumentsScreen({navigation}){
   const [search,setSearch]=useState('');
   const [loading,setLoading]=useState(true);
   const [refreshing,setRefreshing]=useState(false);
+  const [compactHeader,setCompactHeader]=useState(false);
   const load=useCallback(async()=>{
     try{
       const r=await api.get('/documents');
@@ -33,13 +34,13 @@ export default function DocumentsScreen({navigation}){
   };
 
   return <View style={styles.page}>
-    <View style={styles.topBar}>
-      <Pressable onPress={()=>navigation.goBack()} style={styles.back}><Ionicons name="arrow-back" size={22} color={colors.ink}/></Pressable>
-      <View style={{flex:1,marginLeft:10}}>
-        <Text style={styles.title}>Documents</Text>
-        <Text style={styles.subtitle}>All uploaded documents</Text>
+    <View style={[styles.topBar,compactHeader&&styles.topBarCompact]}>
+      <Pressable onPress={()=>navigation.goBack()} style={[styles.back,compactHeader&&styles.backCompact]}><Ionicons name="arrow-back" size={compactHeader?19:22} color={colors.ink}/></Pressable>
+      <View style={{flex:1,marginLeft:compactHeader?8:10}}>
+        <Text style={[styles.title,compactHeader&&styles.titleCompact]}>Documents</Text>
+        {!compactHeader&&<Text style={styles.subtitle}>All uploaded documents</Text>}
       </View>
-      <View style={styles.count}><Text style={styles.countText}>{documents.length}</Text></View>
+      <View style={[styles.count,compactHeader&&styles.countCompact]}><Text style={styles.countText}>{documents.length}</Text></View>
     </View>
 
     <View style={styles.searchBox}>
@@ -47,7 +48,7 @@ export default function DocumentsScreen({navigation}){
       <TextInput value={search} onChangeText={setSearch} placeholder="Search by document name, source or record" placeholderTextColor={colors.muted} style={styles.search}/>
     </View>
 
-    <ScrollView contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{setRefreshing(true);load()}} tintColor={colors.gold}/>}>
+    <ScrollView onScroll={event=>setCompactHeader(event.nativeEvent.contentOffset.y>35)} scrollEventThrottle={16} contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{setRefreshing(true);load()}} tintColor={colors.gold}/>}>
       {loading?<View style={styles.center}><ActivityIndicator size="large" color={colors.midnight}/></View>:
        filtered.length===0?<View style={styles.empty}><Ionicons name="folder-open-outline" size={44} color={colors.muted}/><Text style={styles.emptyTitle}>{documents.length?'No matching documents':'No uploaded documents'}</Text><Text style={styles.emptyText}>{documents.length?'Try another document name or record.':'Uploaded Car Buying, Car Sold and Loan documents will appear here.'}</Text></View>:
        filtered.map(d=><View key={d.id} style={styles.card}>
@@ -67,10 +68,14 @@ export default function DocumentsScreen({navigation}){
 const styles=StyleSheet.create({
   page:{flex:1,backgroundColor:colors.ivory},
   topBar:{paddingTop:55,paddingHorizontal:18,paddingBottom:15,flexDirection:'row',alignItems:'center',backgroundColor:colors.white,borderBottomWidth:1,borderBottomColor:'#ECEDEB'},
+  topBarCompact:{paddingTop:10,paddingBottom:10,shadowOpacity:0.08,shadowRadius:5,elevation:3},
   back:{width:40,height:40,borderRadius:13,alignItems:'center',justifyContent:'center',backgroundColor:'#F3F4F1'},
+  backCompact:{width:34,height:34,borderRadius:11},
   title:{fontSize:20,fontWeight:'900',color:colors.ink},
+  titleCompact:{fontSize:16},
   subtitle:{fontSize:12,color:colors.muted,marginTop:2},
   count:{minWidth:36,height:32,borderRadius:12,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center',paddingHorizontal:9},
+  countCompact:{minWidth:32,height:28,borderRadius:10},
   countText:{color:colors.white,fontWeight:'900'},
   searchBox:{margin:16,marginBottom:4,minHeight:48,borderRadius:14,borderWidth:1,borderColor:'#E0E2DF',backgroundColor:colors.white,flexDirection:'row',alignItems:'center',paddingHorizontal:14},
   search:{flex:1,paddingHorizontal:9,color:colors.ink,fontSize:13},

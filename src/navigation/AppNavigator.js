@@ -3,7 +3,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons';
-import {BlurView} from 'expo-blur';
 import LoginScreen from '../screens/LoginScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import CustomersScreen from '../screens/CustomersScreen';
@@ -24,44 +23,29 @@ function MainTabs(){
     tabBarInactiveTintColor:'#1F3038',
     tabBarStyle:{
       position:'absolute',
-      left:14,
-      right:14,
-      bottom:14,
-      height:68,
-      paddingTop:8,
-      paddingBottom:8,
-      paddingHorizontal:6,
+      left:28,
+      right:28,
+      bottom:12,
+      height:56,
+      paddingTop:4,
+      paddingBottom:4,
+      paddingHorizontal:4,
       borderTopWidth:1,
       borderTopColor:'rgba(255,255,255,0.95)',
       borderWidth:1,
-      borderColor:'rgba(255,255,255,0.82)',
-      borderRadius:24,
-      backgroundColor:'transparent',
+      borderColor:'rgba(255,255,255,0.78)',
+      borderRadius:20,
+      backgroundColor:'rgba(255,255,255,0.88)',
       shadowColor:'#000',
-      shadowOffset:{width:0,height:8},
-      shadowOpacity:0.20,
-      shadowRadius:18,
-      elevation:14,
+      shadowOffset:{width:0,height:6},
+      shadowOpacity:0.18,
+      shadowRadius:14,
+      elevation:12,
     },
-    tabBarBackground:()=>(
-      <BlurView
-        intensity={72}
-        tint="light"
-        blurMethod="dimezisBlurViewSdk31Plus"
-        style={{
-          flex:1,
-          borderRadius:24,
-          overflow:'hidden',
-          backgroundColor:'rgba(255,255,255,0.50)',
-          borderWidth:1,
-          borderColor:'rgba(255,255,255,0.60)'
-        }}
-      />
-    ),
     tabBarLabelStyle:{
-      fontSize:10,
+      fontSize:9,
       fontWeight:'800',
-      marginTop:2,
+      marginTop:1,
     },
     tabBarIconStyle:{
       marginTop:0,
@@ -74,7 +58,7 @@ function MainTabs(){
         Loans:focused?'cash':'cash-outline',
         More:focused?'menu':'menu-outline'
       };
-      return <Ionicons name={icons[route.name]} size={focused?23:22} color={color}/>;
+      return <Ionicons name={icons[route.name]} size={focused?21:20} color={color}/>;
     }
   })}>
     <Tabs.Screen name="Dashboard" component={DashboardScreen}/>

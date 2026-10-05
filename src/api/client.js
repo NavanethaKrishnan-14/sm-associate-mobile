@@ -18,8 +18,16 @@ const detectedApiUrl = expoHost
 // EXPO_PUBLIC_API_BASE_URL can still be used for a deployed backend.
 // For local Expo Go development, the Expo LAN host is safer because it
 // automatically follows the PC running Metro.
+const configuredApiUrl = process.env.EXPO_PUBLIC_API_BASE_URL || '';
+const configuredIsLoopback =
+  configuredApiUrl.includes('localhost') ||
+  configuredApiUrl.includes('127.0.0.1') ||
+  configuredApiUrl.includes('10.0.2.2');
+
 export const API_BASE_URL =
-  process.env.EXPO_PUBLIC_API_BASE_URL || detectedApiUrl;
+  configuredApiUrl && !(expoHost && configuredIsLoopback)
+    ? configuredApiUrl
+    : detectedApiUrl;
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

@@ -1,5 +1,5 @@
-import React,{useEffect,useRef,useState} from 'react';
-import {Animated,Pressable,RefreshControl,ScrollView,Text,View,StyleSheet} from 'react-native';
+import React,{useEffect,useState} from 'react';
+import {Pressable,RefreshControl,ScrollView,Text,View,StyleSheet} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import {Ionicons} from '@expo/vector-icons';
 import {api} from '../api/client';
@@ -8,36 +8,18 @@ import Logo from '../components/Logo';
 import MetricCard from '../components/MetricCard';
 import Surface from '../components/Surface';
 
+const clamp=(value,min,max)=>Math.min(Math.max(value,min),max);
+const lerp=(from,to,progress)=>from+(to-from)*progress;
+const range=(value,start,end)=>{
+  if(value<=start)return 0;
+  if(value>=end)return 1;
+  return (value-start)/(end-start);
+};
+
 export default function DashboardScreen({navigation}){
   const [data,setData]=useState(null);
   const [refreshing,setRefreshing]=useState(false);
-  const scrollY=useRef(new Animated.Value(0)).current;
-
-  const headerHeight=scrollY.interpolate({
-    inputRange:[0,80,160],
-    outputRange:[190,125,72],
-    extrapolate:'clamp'
-  });
-  const logoScale=scrollY.interpolate({
-    inputRange:[0,80,160],
-    outputRange:[1,0.82,0.62],
-    extrapolate:'clamp'
-  });
-  const headerTop=scrollY.interpolate({
-    inputRange:[0,80,160],
-    outputRange:[58,32,10],
-    extrapolate:'clamp'
-  });
-  const largeOpacity=scrollY.interpolate({
-    inputRange:[0,45,95],
-    outputRange:[1,0.35,0],
-    extrapolate:'clamp'
-  });
-  const compactOpacity=scrollY.interpolate({
-    inputRange:[45,90,125],
-    outputRange:[0,0.55,1],
-    extrapolate:'clamp'
-  });
+  const [scrollY,setScrollY]=useState(0);
 
   async function load(){
     try{
@@ -52,8 +34,16 @@ export default function DashboardScreen({navigation}){
 
   useEffect(()=>{load();},[]);
 
-  const loanPipeline=data?.loanPipeline||{};
+  const y=clamp(scrollY,0,160);
+  const collapse=range(y,0,160);
+  const headerHeight=lerp(190,72,collapse);
+  const logoScale=lerp(1,0.62,collapse);
+  const topPadding=lerp(58,10,collapse);
+  const largeOpacity=1-range(y,35,95);
+  const compactOpacity=range(y,55,120);
+  const largeTranslateY=lerp(0,-18,collapse);
 
+  const loanPipeline=data?.loanPipeline||{};
   const actions=[
     ['Customer','people-outline','Customers'],
     ['Car Buying','car-sport-outline','Cars'],
@@ -65,19 +55,21 @@ export default function DashboardScreen({navigation}){
 
   return (
     <View style={styles.page}>
-      <Animated.View style={[styles.hero,{height:headerHeight}]}>
+      <View style={[styles.hero,{height:headerHeight}]}>
         <LinearGradient
           colors={[colors.midnight,colors.navy]}
           style={StyleSheet.absoluteFillObject}
         />
 
-        <Animated.View style={[styles.headerInner,{paddingTop:headerTop}]}>
+        <View style={[styles.headerInner,{paddingTop:topPadding}]}>
           <View style={styles.topRow}>
-            <Animated.View style={{transform:[{scale:logoScale}]}}><Logo width={142}/></Animated.View>
+            <View style={{transform:[{scale:logoScale}]}}>
+              <Logo width={142}/>
+            </View>
 
-            <Animated.Text style={[styles.compactTitle,{opacity:compactOpacity}]}>
+            <Text style={[styles.compactTitle,{opacity:compactOpacity}]}>
               Dashboard
-            </Animated.Text>
+            </Text>
 
             <Pressable
               onPress={()=>navigation.navigate('More')}
@@ -91,25 +83,33 @@ export default function DashboardScreen({navigation}){
             </Pressable>
           </View>
 
-          <Animated.View style={[styles.largeContent,{opacity:largeOpacity}]}>
+          <View
+            style={[
+              styles.largeContent,
+              {
+                opacity:largeOpacity,
+                transform:[{translateY:largeTranslateY}]
+              }
+            ]}
+          >
             <Text style={styles.kicker}>OPERATIONS OVERVIEW</Text>
             <Text style={styles.title}>Good morning.</Text>
             <Text style={styles.sub}>
               A sharper view of your business, all from your phone.
             </Text>
-          </Animated.View>
-        </Animated.View>
-      </Animated.View>
+          </View>
+        </View>
+      </View>
 
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{nativeEvent:{contentOffset:{y:scrollY}}}],
-          {useNativeDriver:false}
-        )}
+        onScroll={(event)=>{
+          const offset=event.nativeEvent.contentOffset.y;
+          setScrollY(offset<0?0:offset);
+        }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

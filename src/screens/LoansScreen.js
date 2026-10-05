@@ -9,7 +9,7 @@ const blank={customerId:'',loanType:'Home Loan',requiredAmount:'',approvedAmount
 const docs=[['idProof','ID Proof'],['addressProof','Address Proof'],['incomeProof','Income Proof'],['bankStatement','Bank Statement']];
 
 export default function LoansScreen(){
- const[items,setItems]=useState([]),[customers,setCustomers]=useState([]),[busy,setBusy]=useState(true),[modal,setModal]=useState(false),[editing,setEditing]=useState(null),[form,setForm]=useState(blank),[files,setFiles]=useState({}),[saving,setSaving]=useState(false),[customerPicker,setCustomerPicker]=useState(false);
+ const[items,setItems]=useState([]),[customers,setCustomers]=useState([]),[busy,setBusy]=useState(true),[modal,setModal]=useState(false),[editing,setEditing]=useState(null),[form,setForm]=useState(blank),[files,setFiles]=useState({}),[saving,setSaving]=useState(false),[customerPicker,setCustomerPicker]=useState(false),[followLoan,setFollowLoan]=useState(null),[followUps,setFollowUps]=useState([]),[followDate,setFollowDate]=useState(''),[followNote,setFollowNote]=useState('');
  async function load(){setBusy(true);try{const[r,c]=await Promise.all([api.get('/loans'),api.get('/customers')]);setItems(r.data?.data||[]);setCustomers(c.data?.data||[])}catch(e){Alert.alert('Loans',e?.response?.data?.message||'Unable to load loans.')}finally{setBusy(false)}}
  useEffect(()=>{load()},[]);
  function openAdd(){setEditing(null);setForm({...blank});setFiles({});setModal(true)}

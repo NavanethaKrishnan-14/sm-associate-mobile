@@ -66,7 +66,7 @@ export default function DashboardScreen({navigation}){
         <PipelineRow name="Approved" value={loanPipeline.APPROVED}/>
       </Surface>
       <View style={{height:28}}/>
-    </ScrollView>
+    </Animated.ScrollView>
   </View>
 }
 function PipelineRow({name,value}){return <View style={{flexDirection:'row',alignItems:'center',paddingVertical:10,borderBottomWidth:1,borderBottomColor:'#EFF0EE'}}><Text style={{flex:1,color:colors.ink,fontSize:13,fontWeight:'600'}}>{name}</Text><Text style={{fontSize:14,fontWeight:'900',color:colors.midnight}}>{value ?? 0}</Text></View>}

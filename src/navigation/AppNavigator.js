@@ -49,22 +49,26 @@ function CustomTabBar({state,descriptors,navigation}){
 
   return (
     <View pointerEvents="box-none" style={[styles.bottomBarWrap,{bottom:Math.max(bottom,22)}]}>
-      <View style={styles.shadowWrap}>
-        <View style={styles.glassPill}>
-          <BlurView
-            tint="light"
-            intensity={72}
-            experimentalBlurMethod="dimezisBlurView"
-            style={styles.glassFill}
-          />
-          <View pointerEvents="none" style={styles.glassTint}/>
-          {tabRoutes.map(renderTab)}
-        </View>
+      <View style={styles.glassPill}>
+        <BlurView tint="light" intensity={72} style={styles.glassFill}/>
+        {tabRoutes.map(renderTab)}
       </View>
     </View>
   );
 }
 
+function MainTabs(){
+  return <Tabs.Navigator
+    tabBar={(props)=><CustomTabBar {...props}/>} 
+    screenOptions={{headerShown:false}}
+  >
+    <Tabs.Screen name="Dashboard" component={DashboardScreen}/>
+    <Tabs.Screen name="Customers" component={CustomersScreen}/>
+    <Tabs.Screen name="Cars" component={CarsScreen}/>
+    <Tabs.Screen name="Loans" component={LoansScreen}/>
+    <Tabs.Screen name="More" component={MoreScreen}/>
+  </Tabs.Navigator>
+}
 const styles=StyleSheet.create({
   bottomBarWrap:{
     position:'absolute',
@@ -77,38 +81,30 @@ const styles=StyleSheet.create({
     height:54,
     borderRadius:26,
     overflow:'hidden',
-    flexDiconst styles=StyleSheet.create({
-  bottomBarWrap:{
-    position:'absolute',
-    left:0,
-    right:0,
-    alignItems:'center',
-  },
-  shadowWrap:{
-    width:320,
-    height:54,
-    borderRadius:27,
-    shadowColor:'#14232B',
-    shadowOffset:{width:0,height:6},
-    shadowOpacity:0.16,
-    shadowRadius:14,
-  },
-  glassPill:{
-    flex:1,
-    borderRadius:27,
-    overflow:'hidden',
     flexDirection:'row',
     alignItems:'center',
     paddingHorizontal:5,
     borderWidth:1,
     borderColor:'rgba(255,255,255,0.38)',
+    backgroundColor:'transparent',
+    shadowColor:'#14232B',
+    shadowOffset:{width:0,height:6},
+    shadowOpacity:0.16,
+    shadowRadius:14,
+    elevation:10,
   },
   glassFill:{
     ...StyleSheet.absoluteFillObject,
+    borderRadius:26,
+  },
+  glassFill:{
+    ...StyleSheet.absoluteFillObject,
+    borderRadius:28,
   },
   glassTint:{
     ...StyleSheet.absoluteFillObject,
     backgroundColor:'rgba(255,255,255,0.18)',
+    borderRadius:28,
   },
   tabItem:{
     flex:1,
@@ -122,6 +118,12 @@ const styles=StyleSheet.create({
     backgroundColor:'rgba(39,168,154,0.20)',
     borderWidth:1,
     borderColor:'rgba(39,168,154,0.42)',
+    shadowColor:'#27A89A',
+    shadowOffset:{width:0,height:2},
+    shadowOpacity:0.22,
+    shadowRadius:5,
+    elevation:4,
+    transform:[{scale:1.02}],
   },
   tabLabel:{
     fontSize:10,

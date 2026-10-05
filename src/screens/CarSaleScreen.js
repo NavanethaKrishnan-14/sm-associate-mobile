@@ -21,10 +21,17 @@ export default function CarSaleScreen({navigation}){
  useEffect(()=>{load()},[]);
  function openSale(){setCarId('');setBuyerId('');setNewCustomer(false);setCustomerName('');setCustomerMobile('');setCustomerCity('');setPrice('');setExpenses('0');setFiles({});setCustomDocs([]);setCustomName('');setModal(true)}
  async function sell(){
-  if(!carId||(!buyerId&&!newCustomer)||!price)return Alert.alert('Car Sale','Please select a car, enter a new customer, and enter the selling price.');
+  if(!carId||(!buyerId&&!newCustomer)||!price)return Alert.alert('Car Sale','Please select a car, select or create a customer, and enter the selling price.');
+  if(newCustomer&&(!customerName.trim()||!customerMobile.trim()))return Alert.alert('Customer','Customer name and mobile are required.');
   setSaving(true);
   try{
-   let finalBuyerId=buyerId;\n   if(newCustomer){const cr=await api.post('/customers',{name:customerName,mobile:customerMobile,city:customerCity});finalBuyerId=cr.data?.data?._id;}\n   if(!finalBuyerId||!customerName||!customerMobile)return Alert.alert('Customer','Customer name and mobile are required.');\n   const r=await api.post('/cars/'+carId+'/sell',{buyerId:finalBuyerId,sellingPrice:Number(price),sellingExpenses:Number(expenses||0),documents:{idProof:Boolean(files.idProof),agreement:Boolean(files.agreement),customDocuments:customDocs}});
+   let finalBuyerId=buyerId;
+   if(newCustomer){
+    const cr=await api.post('/customers',{name:customerName.trim(),mobile:customerMobile.trim(),city:customerCity.trim()});
+    finalBuyerId=cr.data?.data?._id;
+   }
+   if(!finalBuyerId)return Alert.alert('Customer','Please select a valid customer.');
+   const r=await api.post('/cars/'+carId+'/sell',{buyerId:finalBuyerId,sellingPrice:Number(price),sellingExpenses:Number(expenses||0),documents:{idProof:Boolean(files.idProof),agreement:Boolean(files.agreement),customDocuments:customDocs}});
    for(const key of ['idProof','agreement'])if(files[key])await uploadDocument('/cars/'+carId+'/sale/documents/'+key,files[key]);
    for(const name of customDocs)if(files['custom:'+name])await uploadDocument('/cars/'+carId+'/sale/documents/custom',files['custom:'+name],{documentName:name});
    setModal(false);Alert.alert('Sale Completed','Vehicle sold successfully. Net profit: ₹'+Number(r.data?.data?.profit||0).toLocaleString('en-IN'));load();
@@ -49,23 +56,26 @@ export default function CarSaleScreen({navigation}){
     <ScrollView contentContainerStyle={s.form}>
      <Text style={s.formSection}>1. SELECT CAR</Text>
      {cars.length?cars.map(c=><Pressable key={c._id} onPress={()=>setCarId(c._id)} style={[s.option,carId===c._id&&s.active]}><View style={s.carIcon}><Ionicons name="car-sport-outline" size={20} color={colors.teal}/></View><View style={{flex:1}}><Text style={s.cardTitle}>{c.vehicleId} · {c.make} {c.model}</Text><Text style={s.muted}>{c.registrationNumber} · ₹{Number(c.purchasePrice||0).toLocaleString('en-IN')}</Text></View><Ionicons name={carId===c._id?'checkmark-circle':'ellipse-outline'} size={21} color={carId===c._id?colors.teal:colors.muted}/></Pressable>):<Empty icon="car-outline" title="No cars available" text="Add a car to inventory before selling."/>}
-     <Text style={s.formSection}>2. CUSTOMER / BUYER</Text><Pressable onPress={()=>{setNewCustomer(true);setBuyerId('')}} style={s.newCustomerButton}><Ionicons name="person-add-outline" size={18} color={colors.midnight}/><Text style={s.newCustomerText}>New Customer</Text></Pressable>
-     {!newCustomer&&customers.length?customers.map(c=><Pressable key={c._id} onPress={()=>{if(buyerId!==c._id)setBuyerId(c._id)}} style={[s.option,buyerId===c._id&&s.active]}><View style={s.avatar}><Text style={s.avatarText}>{(c.name||'?').slice(0,1).toUpperCase()}</Text></View><View style={{flex:1}}><Text style={s.cardTitle}>{c.customerId} · {c.name}</Text><Text style={s.muted}>{c.mobile}{c.city?' · '+c.city:''}</Text></View><Ionicons name={buyerId===c._id?'checkmark-circle':'chevron-forward'} size={21} color={buyerId===c._id?colors.teal:colors.muted}/></Pressable>):!newCustomer?<Empty icon="person-outline" title="No customers" text="Create a customer before recording a sale."/>:<View/>}
-     <View style={s.customerForm}><Text style={s.customerFormTitle}>New Customer Details</Text><Field label="Customer Name" value={customerName} onChangeText={setCustomerName} textInputType="default"/><Field label="Mobile Number" value={customerMobile} onChangeText={setCustomerMobile}/><Field label="City" value={customerCity} onChangeText={setCustomerCity} textInputType="default"/></View><Text style={s.formSection}>3. SALE DETAILS</Text>
-     <Field label="Selling Price" value={price} onChangeText={setPrice}/><Field label="Selling Expenses" value={expenses} onChangeText={setExpenses}/>
+     <Text style={s.formSection}>2. CUSTOMER / BUYER</Text>
+     <Pressable onPress={()=>{setNewCustomer(true);setBuyerId('')}} style={s.newCustomerButton}><Ionicons name="person-add-outline" size={18} color={colors.midnight}/><Text style={s.newCustomerText}>New Customer</Text></Pressable>
+     {!newCustomer&&customers.length?customers.map(c=><Pressable key={c._id} onPress={()=>setBuyerId(c._id)} style={[s.option,buyerId===c._id&&s.active]}><View style={s.avatar}><Text style={s.avatarText}>{(c.name||'?').slice(0,1).toUpperCase()}</Text></View><View style={{flex:1}}><Text style={s.cardTitle}>{c.customerId} · {c.name}</Text><Text style={s.muted}>{c.mobile}{c.city?' · '+c.city:''}</Text></View><Ionicons name={buyerId===c._id?'checkmark-circle':'ellipse-outline'} size={21} color={buyerId===c._id?colors.teal:colors.muted}/></Pressable>):!newCustomer?<Empty icon="person-outline" title="No customers" text="Create a customer before recording a sale."/>:<View/>}
+     {newCustomer&&<View style={s.customerForm}><View style={s.customerFormHeader}><Text style={s.customerFormTitle}>New Customer Details</Text><Pressable onPress={()=>{setNewCustomer(false);setCustomerName('');setCustomerMobile('');setCustomerCity('')}}><Text style={s.cancelNew}>Use Existing</Text></Pressable></View><Field label="Customer Name" value={customerName} onChangeText={setCustomerName} textInputType="default"/><Field label="Mobile Number" value={customerMobile} onChangeText={setCustomerMobile} textInputType="numeric"/><Field label="City" value={customerCity} onChangeText={setCustomerCity} textInputType="default"/></View>}
+     <Text style={s.formSection}>3. SAVE DETAILS</Text>
+     {buyerId&&!newCustomer&&<View style={s.selectedCustomer}><Text style={s.selectedLabel}>SELECTED CUSTOMER</Text><Text style={s.selectedName}>{customers.find(c=>c._id===buyerId)?.name||'Customer selected'}</Text><Text style={s.muted}>{customers.find(c=>c._id===buyerId)?.mobile||''}{customers.find(c=>c._id===buyerId)?.city?' · '+customers.find(c=>c._id===buyerId)?.city:''}</Text></View>}
+     <Field label="Selling Price" value={price} onChangeText={setPrice} textInputType="numeric"/><Field label="Selling Expenses" value={expenses} onChangeText={setExpenses} textInputType="numeric"/>
      <View style={s.net}><Text style={s.netLabel}>NET SALE VALUE</Text><Text style={s.netValue}>₹{Math.max(0,Number(price||0)-Number(expenses||0)).toLocaleString('en-IN')}</Text></View>
      <Text style={s.formSection}>4. CUSTOMER DOCUMENTS</Text>
      {[['idProof','ID Proof'],['agreement','Sale Agreement']].map(([key,title])=><View key={key} style={s.doc}><Text style={s.cardTitle}>{title}</Text><DocumentPickerButton file={files[key]} onPick={f=>setFiles(p=>({...p,[key]:f}))}/></View>)}
      <View style={s.customRow}><TextInput value={customName} onChangeText={setCustomName} placeholder="Custom document name" placeholderTextColor="#9AA4AD" style={[s.input,{flex:1}]}/><Pressable onPress={()=>{const n=customName.trim();if(n&&!customDocs.some(x=>x.toLowerCase()===n.toLowerCase())){setCustomDocs(p=>[...p,n]);setCustomName('')}}} style={s.add}><Text style={s.addText}>Add</Text></Pressable></View>
      {customDocs.map(n=><View key={n} style={s.doc}><Text style={s.cardTitle}>{n}</Text><DocumentPickerButton file={files['custom:'+n]} onPick={f=>setFiles(p=>({...p,['custom:'+n]:f}))}/></View>)}
-     <Pressable disabled={saving||!carId||!buyerId||!price} onPress={sell} style={[s.primary,(!carId||!buyerId||!price)&&s.disabled]}><Ionicons name="checkmark-circle-outline" size={20} color={colors.midnight}/><Text style={s.primaryText}>{saving?'Completing...':'Complete Car Sale'}</Text></Pressable>
+     <Pressable disabled={saving||!carId||(!buyerId&&!newCustomer)||!price} onPress={sell} style={[s.primary,(saving||!carId||(!buyerId&&!newCustomer)||!price)&&s.disabled]}><Ionicons name="checkmark-circle-outline" size={20} color={colors.midnight}/><Text style={s.primaryText}>{saving?'Completing...':'Complete Car Sale'}</Text></Pressable>
     </ScrollView>
    </View></View>
   </Modal>
  </View>
 }
 function Empty({icon,title,text}){return <View style={s.empty}><Ionicons name={icon} size={28} color={colors.muted}/><Text style={s.emptyTitle}>{title}</Text><Text style={s.emptyText}>{text}</Text></View>}
-function Field({label,value,onChangeText}){return <View style={{marginBottom:11}}><Text style={s.label}>{label}</Text><TextInput value={value} onChangeText={onChangeText} keyboardType={textInputType==='default'?'default':'numeric'} placeholder={'Enter '+label.toLowerCase()} placeholderTextColor="#9AA4AD" style={s.input}/></View>}
+function Field({label,value,onChangeText,textInputType='numeric'}){return <View style={{marginBottom:11}}><Text style={s.label}>{label}</Text><TextInput value={value} onChangeText={onChangeText} keyboardType={textInputType} placeholder={'Enter '+label.toLowerCase()} placeholderTextColor="#9AA4AD" style={s.input}/></View>}
 const s={
  page:{flex:1,backgroundColor:'#F4F6F3',paddingTop:58},
  header:{paddingHorizontal:18,flexDirection:'row',alignItems:'center',gap:12},
@@ -75,42 +85,40 @@ const s={
  sellButton:{height:44,paddingHorizontal:13,borderRadius:15,backgroundColor:colors.midnight,flexDirection:'row',alignItems:'center',gap:6},
  sellButtonText:{color:colors.goldLight,fontWeight:'900',fontSize:12},
  list:{padding:18,paddingBottom:40},
- newCustomerButton:{height:46,borderRadius:14,backgroundColor:colors.gold,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:7,marginBottom:9},newCustomerText:{fontWeight:'900',color:colors.midnight},customerForm:{backgroundColor:colors.white,borderRadius:18,padding:14,marginBottom:8,borderWidth:1,borderColor:'rgba(39,168,154,.15)'},customerFormTitle:{fontSize:14,fontWeight:'900',color:colors.ink,marginBottom:10},summaryRow:{flexDirection:'row',gap:10,marginBottom:4},
+ newCustomerButton:{height:46,borderRadius:14,backgroundColor:colors.gold,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:7,marginBottom:9},newCustomerText:{fontWeight:'900',color:colors.midnight},
+ customerForm:{backgroundColor:colors.white,borderRadius:18,padding:14,marginBottom:8,borderWidth:1,borderColor:'rgba(39,168,154,.15)'},
+ customerFormHeader:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',marginBottom:10},
+ customerFormTitle:{fontSize:14,fontWeight:'900',color:colors.ink},cancelNew:{fontSize:11,fontWeight:'900',color:colors.teal},
+ selectedCustomer:{backgroundColor:colors.white,borderRadius:16,padding:13,marginBottom:8,borderWidth:1,borderColor:'rgba(39,168,154,.15)'},
+ selectedLabel:{fontSize:9,fontWeight:'900',letterSpacing:1,color:colors.teal},selectedName:{fontSize:15,fontWeight:'900',color:colors.ink,marginTop:3},
+ summaryRow:{flexDirection:'row',gap:10,marginBottom:4},
  summary:{flex:1,backgroundColor:colors.white,borderRadius:20,padding:16,borderWidth:1,borderColor:'rgba(39,168,154,.14)'},
- summaryNumber:{fontSize:25,fontWeight:'900',color:colors.ink},
- summaryLabel:{fontSize:10,fontWeight:'800',color:colors.muted,marginTop:3},
+ summaryNumber:{fontSize:25,fontWeight:'900',color:colors.ink},summaryLabel:{fontSize:10,fontWeight:'800',color:colors.muted,marginTop:3},
  sectionLabel:{fontSize:11,fontWeight:'900',letterSpacing:1,color:colors.ink,marginTop:18,marginBottom:9},
  carCard:{backgroundColor:colors.white,borderRadius:20,padding:15,marginBottom:9,borderWidth:1,borderColor:'rgba(39,168,154,.13)',flexDirection:'row',alignItems:'center'},
  carIcon:{width:44,height:44,borderRadius:14,backgroundColor:colors.goldLight,alignItems:'center',justifyContent:'center',marginRight:11},
  soldIcon:{width:44,height:44,borderRadius:14,backgroundColor:'#EAF6F1',alignItems:'center',justifyContent:'center',marginRight:11},
- cardTitle:{fontSize:14,fontWeight:'900',color:colors.ink},
- muted:{fontSize:11,color:colors.muted,marginTop:4},
+ cardTitle:{fontSize:14,fontWeight:'900',color:colors.ink},muted:{fontSize:11,color:colors.muted,marginTop:4},
  priceText:{fontSize:11,fontWeight:'800',color:colors.teal,marginTop:5},
  soldBadge:{fontSize:9,fontWeight:'900',color:colors.teal,backgroundColor:colors.goldLight,paddingHorizontal:8,paddingVertical:5,borderRadius:9},
  empty:{backgroundColor:colors.white,borderRadius:20,padding:24,alignItems:'center',borderWidth:1,borderColor:'rgba(39,168,154,.12)'},
- emptyTitle:{fontSize:14,fontWeight:'900',color:colors.ink,marginTop:8},
- emptyText:{fontSize:11,color:colors.muted,marginTop:4,textAlign:'center'},
+ emptyTitle:{fontSize:14,fontWeight:'900',color:colors.ink,marginTop:8},emptyText:{fontSize:11,color:colors.muted,marginTop:4,textAlign:'center'},
  overlay:{flex:1,backgroundColor:'rgba(0,0,0,.45)',justifyContent:'flex-end'},
  modal:{backgroundColor:'#F4F6F3',maxHeight:'94%',borderTopLeftRadius:28,borderTopRightRadius:28,padding:18},
  modalHead:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',marginBottom:10},
- modalTitle:{fontSize:22,fontWeight:'900',color:colors.ink},
- modalSub:{fontSize:11,color:colors.muted,marginTop:3},
- form:{paddingBottom:30},
- formSection:{fontSize:12,fontWeight:'900',letterSpacing:.8,color:colors.ink,marginTop:12,marginBottom:8},
+ modalTitle:{fontSize:22,fontWeight:'900',color:colors.ink},modalSub:{fontSize:11,color:colors.muted,marginTop:3},
+ form:{paddingBottom:30},formSection:{fontSize:12,fontWeight:'900',letterSpacing:.8,color:colors.ink,marginTop:12,marginBottom:8},
  option:{backgroundColor:colors.white,borderRadius:17,padding:13,marginBottom:8,borderWidth:1,borderColor:'rgba(39,168,154,.13)',flexDirection:'row',alignItems:'center'},
  active:{borderColor:colors.gold,backgroundColor:'#FFF9E8'},
  avatar:{width:44,height:44,borderRadius:14,backgroundColor:colors.navy,alignItems:'center',justifyContent:'center',marginRight:11},
  avatarText:{color:colors.goldLight,fontSize:17,fontWeight:'900'},
  net:{backgroundColor:colors.midnight,borderRadius:18,padding:15,marginBottom:4,flexDirection:'row',justifyContent:'space-between',alignItems:'center'},
- netLabel:{fontSize:9,fontWeight:'900',color:'rgba(255,255,255,.6)'},
- netValue:{fontSize:19,fontWeight:'900',color:colors.goldLight},
+ netLabel:{fontSize:9,fontWeight:'900',color:'rgba(255,255,255,.6)'},netValue:{fontSize:19,fontWeight:'900',color:colors.goldLight},
  label:{fontSize:11,fontWeight:'900',color:colors.ink,marginBottom:6},
  input:{height:49,borderRadius:16,borderWidth:1,borderColor:'rgba(39,168,154,.20)',backgroundColor:colors.white,paddingHorizontal:13,color:colors.ink},
  doc:{backgroundColor:colors.white,borderRadius:17,padding:12,marginBottom:8,borderWidth:1,borderColor:'rgba(39,168,154,.13)'},
  customRow:{flexDirection:'row',gap:8,marginTop:3,marginBottom:8},
- add:{width:70,height:49,borderRadius:16,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center'},
- addText:{color:colors.goldLight,fontWeight:'900'},
+ add:{width:70,height:49,borderRadius:16,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center'},addText:{color:colors.goldLight,fontWeight:'900'},
  primary:{height:56,borderRadius:18,backgroundColor:colors.gold,alignItems:'center',justifyContent:'center',flexDirection:'row',gap:8,marginTop:10},
- primaryText:{color:colors.midnight,fontWeight:'900',fontSize:15},
- disabled:{opacity:.45}
+ primaryText:{color:colors.midnight,fontWeight:'900',fontSize:15},disabled:{opacity:.45}
 };

@@ -18,9 +18,9 @@ export default function DashboardScreen({navigation}){
     outputRange:[190,125,72],
     extrapolate:'clamp'
   });
-  const logoWidth=scrollY.interpolate({
+  const logoScale=scrollY.interpolate({
     inputRange:[0,80,160],
-    outputRange:[142,112,86],
+    outputRange:[1,0.82,0.62],
     extrapolate:'clamp'
   });
   const headerTop=scrollY.interpolate({
@@ -73,7 +73,7 @@ export default function DashboardScreen({navigation}){
 
         <Animated.View style={[styles.headerInner,{paddingTop:headerTop}]}>
           <View style={styles.topRow}>
-            <Logo width={logoWidth}/>
+            <Animated.View style={{transform:[{scale:logoScale}]}}><Logo width={142}/></Animated.View>
 
             <Animated.Text style={[styles.compactTitle,{opacity:compactOpacity}]}>
               Dashboard

@@ -1,0 +1,90 @@
+import React,{useCallback,useState} from 'react';
+import {ActivityIndicator,Pressable,RefreshControl,ScrollView,StyleSheet,Text,TextInput,View} from 'react-native';
+import {Ionicons} from '@expo/vector-icons';
+import {useFocusEffect} from '@react-navigation/native';
+import {api} from '../api/client';
+import {colors} from '../theme/colors';
+
+const sourceIcon={ "Car Buying":"car-sport-outline", "Car Sold":"checkmark-circle-outline", "Loan":"document-text-outline" };
+
+export default function DocumentsScreen({navigation}){
+  const [documents,setDocuments]=useState([]);
+  const [search,setSearch]=useState('');
+  const [loading,setLoading]=useState(true);
+  const [refreshing,setRefreshing]=useState(false);
+  const load=useCallback(async()=>{
+    try{
+      const r=await api.get('/documents');
+      setDocuments(Array.isArray(r.data?.data)?r.data.data:[]);
+    }catch(e){
+      setDocuments([]);
+    }finally{setLoading(false);setRefreshing(false);}
+  },[]);
+  useFocusEffect(useCallback(()=>{load()},[load]));
+  const q=search.trim().toLowerCase();
+  const filtered=documents.filter(d=>[d.name,d.originalName,d.source,d.recordLabel].some(v=>String(v||'').toLowerCase().includes(q)));
+  const formatDate=value=>value?new Date(value).toLocaleDateString():'—';
+  const formatSize=value=>{
+    const n=Number(value||0);
+    if(!n)return '';
+    if(n<1024)return n+' B';
+    if(n<1024*1024)return (n/1024).toFixed(1)+' KB';
+    return (n/1024/1024).toFixed(1)+' MB';
+  };
+
+  return <View style={styles.page}>
+    <View style={styles.topBar}>
+      <Pressable onPress={()=>navigation.goBack()} style={styles.back}><Ionicons name="arrow-back" size={22} color={colors.ink}/></Pressable>
+      <View style={{flex:1,marginLeft:10}}>
+        <Text style={styles.title}>Documents</Text>
+        <Text style={styles.subtitle}>All uploaded documents</Text>
+      </View>
+      <View style={styles.count}><Text style={styles.countText}>{documents.length}</Text></View>
+    </View>
+
+    <View style={styles.searchBox}>
+      <Ionicons name="search-outline" size={19} color={colors.muted}/>
+      <TextInput value={search} onChangeText={setSearch} placeholder="Search by document name, source or record" placeholderTextColor={colors.muted} style={styles.search}/>
+    </View>
+
+    <ScrollView contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{setRefreshing(true);load()}} tintColor={colors.gold}/>}>
+      {loading?<View style={styles.center}><ActivityIndicator size="large" color={colors.midnight}/></View>:
+       filtered.length===0?<View style={styles.empty}><Ionicons name="folder-open-outline" size={44} color={colors.muted}/><Text style={styles.emptyTitle}>{documents.length?'No matching documents':'No uploaded documents'}</Text><Text style={styles.emptyText}>{documents.length?'Try another document name or record.':'Uploaded Car Buying, Car Sold and Loan documents will appear here.'}</Text></View>:
+       filtered.map(d=><View key={d.id} style={styles.card}>
+         <View style={styles.icon}><Ionicons name={sourceIcon[d.source]||'document-outline'} size={21} color={colors.midnight}/></View>
+         <View style={{flex:1}}>
+           <Text style={styles.name}>{d.name}</Text>
+           <Text style={styles.file}>{d.originalName}{d.size?' • '+formatSize(d.size):''}</Text>
+           <View style={styles.metaRow}><Text style={styles.source}>{d.source}</Text><Text style={styles.date}>{formatDate(d.uploadedAt)}</Text></View>
+           <Text style={styles.record} numberOfLines={2}>{d.recordLabel}</Text>
+         </View>
+       </View>)
+      }
+    </ScrollView>
+  </View>
+}
+
+const styles=StyleSheet.create({
+  page:{flex:1,backgroundColor:colors.ivory},
+  topBar:{paddingTop:55,paddingHorizontal:18,paddingBottom:15,flexDirection:'row',alignItems:'center',backgroundColor:colors.white,borderBottomWidth:1,borderBottomColor:'#ECEDEB'},
+  back:{width:40,height:40,borderRadius:13,alignItems:'center',justifyContent:'center',backgroundColor:'#F3F4F1'},
+  title:{fontSize:20,fontWeight:'900',color:colors.ink},
+  subtitle:{fontSize:12,color:colors.muted,marginTop:2},
+  count:{minWidth:36,height:32,borderRadius:12,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center',paddingHorizontal:9},
+  countText:{color:colors.white,fontWeight:'900'},
+  searchBox:{margin:16,marginBottom:4,minHeight:48,borderRadius:14,borderWidth:1,borderColor:'#E0E2DF',backgroundColor:colors.white,flexDirection:'row',alignItems:'center',paddingHorizontal:14},
+  search:{flex:1,paddingHorizontal:9,color:colors.ink,fontSize:13},
+  content:{padding:16,paddingTop:10,paddingBottom:30},
+  card:{backgroundColor:colors.white,borderRadius:18,padding:14,marginBottom:10,flexDirection:'row',borderWidth:1,borderColor:'rgba(17,26,35,.06)'},
+  icon:{width:44,height:44,borderRadius:14,backgroundColor:colors.goldLight,alignItems:'center',justifyContent:'center',marginRight:12},
+  name:{fontSize:15,fontWeight:'900',color:colors.ink},
+  file:{fontSize:11,color:colors.muted,marginTop:3},
+  metaRow:{flexDirection:'row',alignItems:'center',marginTop:8,gap:8},
+  source:{fontSize:10,fontWeight:'900',color:colors.midnight,backgroundColor:'#EEF1EF',paddingHorizontal:8,paddingVertical:4,borderRadius:8},
+  date:{fontSize:11,color:colors.muted},
+  record:{fontSize:11,color:colors.ink,marginTop:7,fontWeight:'600'},
+  center:{paddingTop:80,alignItems:'center'},
+  empty:{alignItems:'center',paddingTop:75,paddingHorizontal:30},
+  emptyTitle:{fontSize:18,fontWeight:'900',color:colors.ink,marginTop:12},
+  emptyText:{fontSize:13,color:colors.muted,textAlign:'center',marginTop:6,lineHeight:19}
+});

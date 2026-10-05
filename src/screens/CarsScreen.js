@@ -29,7 +29,7 @@ export default function CarsScreen(){
    if(id){
     for(const [key] of fixedDocs){if(files[key])await uploadDocument('/cars/'+id+'/documents/'+key,files[key])}
     for(const name of customDocs){const f=files['custom:'+name];if(f)await uploadDocument('/cars/'+id+'/documents/custom',f,{documentName:name})}
-    if(editing&&customDocs.length)await api.patch('/cars/'+id+'/documents',{customDocuments:customDocs,...Object.fromEntries(fixedDocs.map(([key])=>[key,Boolean(editing.documents?.[key]||files[key])]))});
+    if(editing)await api.patch('/cars/'+id+'/documents',{customDocuments:customDocs,...Object.fromEntries(fixedDocs.map(([key])=>[key,Boolean(editing.documents?.[key]||files[key])]))});
    }
    setModal(false);await load();
   }catch(e){Alert.alert('Vehicle',e?.response?.data?.message||'Unable to save vehicle.')}finally{setSaving(false)}

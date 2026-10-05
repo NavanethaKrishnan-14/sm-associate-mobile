@@ -40,7 +40,6 @@ export default function DashboardScreen({navigation}){
   const logoScale=lerp(1,0.62,collapse);
   const topPadding=lerp(58,10,collapse);
   const largeOpacity=1-range(y,35,95);
-  const compactOpacity=range(y,55,120);
   const largeTranslateY=lerp(0,-18,collapse);
 
   const loanPipeline=data?.loanPipeline||{};
@@ -195,15 +194,6 @@ const styles=StyleSheet.create({
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'space-between'
-  },
-  compactTitle:{
-    position:'absolute',
-    left:0,
-    right:0,
-    textAlign:'center',
-    color:colors.white,
-    fontSize:18,
-    fontWeight:'900'
   },
   notificationButton:{
     width:42,

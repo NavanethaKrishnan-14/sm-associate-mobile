@@ -116,22 +116,70 @@ export async function login(email, password) {
 
 export async function uploadDocument(path, asset, fields = {}) {
   if (!asset?.uri) throw new Error('Please select a document first.');
+
   const form = new FormData();
+  const fileName = String(asset.name || 'document');
+  const lowerName = fileName.toLowerCase();
+  const mimeType = asset.mimeType ||
+    (lowerName.endsWith('.pdf') ? 'application/pdf' :
+     lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') ? 'image/jpeg' :
+     lowerName.endsWith('.png') ? 'image/png' :
+     lowerName.endsWith('.webp') ? 'image/webp' :
+     lowerName.endsWith('.doc') ? 'application/msword' :
+     lowerName.endsWith('.docx') ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' :
+     'application/octet-stream');
+
   form.append('file', {
     uri: asset.uri,
-    name: asset.name || 'document',
-    type: asset.mimeType || 'application/octet-stream'
+    name: fileName,
+    type: mimeType
   });
+
   Object.entries(fields).forEach(([key, value]) => {
     if (value !== undefined && value !== null) form.append(key, String(value));
   });
 
-  // Let Axios/React Native generate the multipart boundary automatically.
-  // Manually forcing Content-Type can omit the boundary on some Android builds.
-  const response = await api.post(path, form, {
-    timeout: 60000
-  });
-  return response.data;
+  const token = await readAccessToken();
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 60000);
+
+  try {
+    // Use fetch for multipart uploads. Do NOT set Content-Type here:
+    // React Native must generate the multipart boundary itself.
+    const response = await fetch(API_BASE_URL + path, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        ...(token ? {
+          Authorization: 'Bearer ' + token,
+          'x-access-token': token
+        } : {})
+      },
+      body: form,
+      signal: controller.signal
+    });
+
+    const text = await response.text();
+    let data = {};
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      data = { message: text || 'The server returned an invalid response.' };
+    }
+
+    if (!response.ok) {
+      throw new Error(data?.message || 'Document upload failed with HTTP ' + response.status + '.');
+    }
+
+    return data;
+  } catch (error) {
+    if (error?.name === 'AbortError') {
+      throw new Error('Document upload timed out. Please try again.');
+    }
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 export async function getApiHealth() {

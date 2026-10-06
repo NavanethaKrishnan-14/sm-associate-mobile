@@ -43,7 +43,7 @@ export default function CarSaleScreen({navigation}){
  const normalizedSearch=customerSearch.trim().toLowerCase();
  const filteredCustomers=customers.filter(c=>(String(c.customerId||'')+' '+String(c.name||'')+' '+String(c.mobile||'')+' '+String(c.city||'')).toLowerCase().includes(normalizedSearch));
  const visibleCustomers=normalizedSearch?filteredCustomers:customers.slice(-5).reverse();
- return <View style={[s.page,{paddingTop:top}]}>
+ return <View style={[s.page,{paddingTop:Math.max(14,top+14)}]}>
   <View style={s.header}>
    <Pressable onPress={()=>navigation.goBack()} style={s.backButton}><Ionicons name="arrow-back" size={20} color={colors.ink}/></Pressable>
    <View style={{flex:1}}><Text style={s.eyebrow}>AUTOMOTIVE</Text><Text style={s.title}>Car Sold</Text><Text style={s.subtitle}>Track available inventory and completed vehicle sales.</Text></View>

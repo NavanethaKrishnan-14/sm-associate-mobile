@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react';
-import {Pressable,RefreshControl,ScrollView,Text,View,StyleSheet} from 'react-native';
+import {Pressable,RefreshControl,ScrollView,Text,View,StyleSheet,useWindowDimensions} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {BlurView} from 'expo-blur';
 import {api} from '../api/client';
@@ -9,6 +9,9 @@ import Logo from '../components/Logo';
 export default function DashboardScreen({navigation}){
   const [data,setData]=useState(null);
   const [refreshing,setRefreshing]=useState(false);
+  const {width}=useWindowDimensions();
+  const isCompact=width<380;
+  const horizontalPadding=Math.max(14,Math.min(20,width*0.045));
 
   async function load(){
     try{
@@ -73,7 +76,7 @@ export default function DashboardScreen({navigation}){
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[styles.content,{paddingHorizontal:0}]}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -83,7 +86,7 @@ export default function DashboardScreen({navigation}){
           />
         }
       >
-        <View style={styles.editorialGreeting}>
+        <View style={[styles.editorialGreeting,{marginHorizontal:horizontalPadding,minHeight:isCompact?205:218}]}>
           <View style={styles.editorialAccent}/>
           <View style={styles.editorialTop}>
             <View>
@@ -97,7 +100,7 @@ export default function DashboardScreen({navigation}){
           </View>
 
           <View style={styles.editorialContent}>
-            <Text style={styles.editorialTitle}>Welcome back.</Text>
+            <Text style={[styles.editorialTitle,{fontSize:isCompact?28:32,lineHeight:isCompact?34:38}]}>Welcome back.</Text>
             <Text style={styles.editorialDescription}>
               Keep track of your customers, loans and vehicle operations from one dashboard.
             </Text>
@@ -121,7 +124,7 @@ export default function DashboardScreen({navigation}){
           </View>
         </View>
 
-        <View style={styles.metricsGrid}>
+        <View style={[styles.metricsGrid,{marginHorizontal:horizontalPadding}]}>
           {metrics.map(([label,value,icon,accent])=>(
             <View key={label} style={styles.metric}>
               <View style={[styles.metricIcon,{backgroundColor:accent}]}>
@@ -143,7 +146,7 @@ export default function DashboardScreen({navigation}){
           </View>
         </View>
 
-        <View style={styles.actionsGrid}>
+        <View style={[styles.actionsGrid,{marginHorizontal:horizontalPadding}]}>
           {actions.map(([label,icon,screen])=>(
             <Pressable
               key={label}
@@ -586,7 +589,6 @@ const styles=StyleSheet.create({
     justifyContent:'center'
   },
   metricsGrid:{
-    marginHorizontal:18,
     flexDirection:'row',
     flexWrap:'wrap',
     justifyContent:'space-between'

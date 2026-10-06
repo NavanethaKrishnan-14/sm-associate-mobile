@@ -1,15 +1,16 @@
 import React,{useEffect,useState} from 'react';
 import {Pressable,RefreshControl,ScrollView,Text,View,StyleSheet,useWindowDimensions} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import {BlurView} from 'expo-blur';
 import {api} from '../api/client';
 import {colors} from '../theme/colors';
 import Logo from '../components/Logo';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function DashboardScreen({navigation}){
   const [data,setData]=useState(null);
   const [refreshing,setRefreshing]=useState(false);
   const {width}=useWindowDimensions();
+  const {top:topInset}=useSafeAreaInsets();
   const isCompact=width<380;
   const horizontalPadding=Math.max(14,Math.min(20,width*0.045));
 
@@ -208,7 +209,7 @@ const styles=StyleSheet.create({
   commandBar:{
     backgroundColor:colors.midnight,
     paddingHorizontal:16,
-    paddingTop:12,
+    paddingTop:Math.max(12,topInset),
     paddingBottom:11,
     borderBottomWidth:1,
     borderBottomColor:'rgba(255,255,255,0.08)'

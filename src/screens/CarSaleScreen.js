@@ -1,4 +1,5 @@
 import React,{useEffect,useState} from 'react';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Alert,ActivityIndicator,Modal,Pressable,ScrollView,Text,TextInput,View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {api,uploadDocument} from '../api/client';
@@ -6,6 +7,7 @@ import {colors} from '../theme/colors';
 import DocumentPickerButton from '../components/DocumentPickerButton';
 
 export default function CarSaleScreen({navigation}){
+ const {top}=useSafeAreaInsets();
  const[cars,setCars]=useState([]),[soldCars,setSoldCars]=useState([]),[customers,setCustomers]=useState([]),[customerSearch,setCustomerSearch]=useState(''),[showCustomerSearch,setShowCustomerSearch]=useState(false),[busy,setBusy]=useState(true),[modal,setModal]=useState(false),[carId,setCarId]=useState(''),[buyerId,setBuyerId]=useState(''),[newCustomer,setNewCustomer]=useState(false),[customerName,setCustomerName]=useState(''),[customerMobile,setCustomerMobile]=useState(''),[customerCity,setCustomerCity]=useState(''),[price,setPrice]=useState(''),[expenses,setExpenses]=useState('0'),[files,setFiles]=useState({}),[customName,setCustomName]=useState(''),[customDocs,setCustomDocs]=useState([]),[saving,setSaving]=useState(false);
  async function load(){
   setBusy(true);
@@ -41,7 +43,7 @@ export default function CarSaleScreen({navigation}){
  const normalizedSearch=customerSearch.trim().toLowerCase();
  const filteredCustomers=customers.filter(c=>(String(c.customerId||'')+' '+String(c.name||'')+' '+String(c.mobile||'')+' '+String(c.city||'')).toLowerCase().includes(normalizedSearch));
  const visibleCustomers=normalizedSearch?filteredCustomers:customers.slice(-5).reverse();
- return <View style={s.page}>
+ return <View style={[s.page,{paddingTop:top}]}>
   <View style={s.header}>
    <Pressable onPress={()=>navigation.goBack()} style={s.backButton}><Ionicons name="arrow-back" size={20} color={colors.ink}/></Pressable>
    <View style={{flex:1}}><Text style={s.eyebrow}>AUTOMOTIVE</Text><Text style={s.title}>Car Sold</Text><Text style={s.subtitle}>Track available inventory and completed vehicle sales.</Text></View>
@@ -89,7 +91,7 @@ export default function CarSaleScreen({navigation}){
 function Empty({icon,title,text}){return <View style={s.empty}><Ionicons name={icon} size={28} color={colors.muted}/><Text style={s.emptyTitle}>{title}</Text><Text style={s.emptyText}>{text}</Text></View>}
 function Field({label,value,onChangeText,textInputType='numeric'}){return <View style={{marginBottom:11}}><Text style={s.label}>{label}</Text><TextInput value={value} onChangeText={onChangeText} keyboardType={textInputType} placeholder={'Enter '+label.toLowerCase()} placeholderTextColor="#9AA4AD" style={s.input}/></View>}
 const s={
- page:{flex:1,backgroundColor:'#F4F6F3',paddingTop:58},
+ page:{flex:1,backgroundColor:'#F4F6F3',paddingTop:0},
  header:{paddingHorizontal:18,flexDirection:'row',alignItems:'center',gap:12},
  backButton:{width:42,height:42,borderRadius:14,backgroundColor:colors.white,borderWidth:1,borderColor:'rgba(39,168,154,.16)',alignItems:'center',justifyContent:'center'},
  eyebrow:{fontSize:9,fontWeight:'900',letterSpacing:1.5,color:colors.teal,marginBottom:2},

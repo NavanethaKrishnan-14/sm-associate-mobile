@@ -19,73 +19,61 @@ export default function MoreScreen({navigation}){
  const {top,bottom}=useSafeAreaInsets();
  const go=section=>section==='CarSale'?navigation.navigate('CarSale'):['CarProfit','LoanRevenue','OperationalReports'].includes(section)?navigation.navigate(section):navigation.navigate('AdminTools',{section});
  return <View style={s.page}>
-   <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[s.content,{paddingTop:top+18,paddingBottom:bottom+100}]}>
-     <View style={s.header}>
-       <View style={s.headerLine}>
+   <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[s.content,{paddingBottom:bottom+100}]}>
+     <View style={[s.topBar,{paddingTop:top+12}]}>
+       <View style={s.topBarGlow}/>
+       <View style={s.topRow}>
          <View style={s.brand}>
            <View style={s.logoPanel}><View style={s.logoGlow}/><Logo width={72}/></View>
-           <View><Text style={s.brandName}>SM ASSOCIATE</Text><Text style={s.brandSub}>BUSINESS MANAGEMENT</Text></View>
+           <View style={s.brandCopy}><Text style={s.brandName}>SM ASSOCIATE</Text><Text style={s.brandSub}>BUSINESS MANAGEMENT</Text></View>
          </View>
-         <View style={s.headerButton}><Ionicons name="ellipsis-horizontal" size={18} color={colors.ink}/></View>
+         <View style={s.headerButton}><Ionicons name="ellipsis-horizontal" size={18} color={colors.white}/></View>
        </View>
        <View style={s.headerRule}/>
-       <View style={s.headerMeta}><Text style={s.metaLabel}>EXECUTIVE WORKSPACE</Text><View style={s.online}><View style={s.onlineDot}/><Text style={s.onlineText}>ONLINE</Text></View></View>
+       <View style={s.headerMeta}><View style={s.metaLeft}><Ionicons name="grid-outline" size={13} color={colors.teal}/><Text style={s.metaLabel}>EXECUTIVE WORKSPACE</Text></View><View style={s.online}><View style={s.onlineDot}/><Text style={s.onlineText}>ONLINE</Text></View></View>
      </View>
 
-     <View style={s.intro}>
-       <Text style={s.introOverline}>BUSINESS HUB</Text>
-       <Text style={s.introTitle}>Everything in one place.</Text>
-       <Text style={s.introSub}>A focused workspace for your finance, automotive and business operations.</Text>
-     </View>
+     <View style={s.body}>
+       <View style={s.intro}><Text style={s.introOverline}>BUSINESS HUB</Text><Text style={s.introTitle}>Everything in one place.</Text><Text style={s.introSub}>A focused workspace for your finance, automotive and business operations.</Text></View>
 
-     <View style={s.feature}>
-       <View style={s.featureGlow}/>
-       <View style={s.featureTop}>
-         <View style={s.featureIcon}><Ionicons name="speedometer-outline" size={23} color={colors.teal}/></View>
-         <View style={s.featureTag}><Text style={s.featureTagText}>CONTROL CENTER</Text></View>
+       <View style={s.feature}>
+         <View style={s.featureGlow}/>
+         <View style={s.featureTop}><View style={s.featureIcon}><Ionicons name="speedometer-outline" size={23} color={colors.teal}/></View><View style={s.featureTag}><Text style={s.featureTagText}>CONTROL CENTER</Text></View></View>
+         <View style={s.featureBody}><View style={{flex:1}}><Text style={s.featureKicker}>OPERATIONS</Text><Text style={s.featureTitle}>Business Command</Text><Text style={s.featureDesc}>Move from customers to revenue with a single workflow.</Text></View><View style={s.featureStat}><Text style={s.featureStatValue}>06</Text><Text style={s.featureStatLabel}>TOOLS</Text></View></View>
+         <View style={s.featureFooter}><View style={s.featureFooterLine}/><Text style={s.featureFooterText}>FINANCE  /  MOBILITY  /  REPORTING</Text></View>
        </View>
-       <View style={s.featureBody}>
-         <View style={{flex:1}}><Text style={s.featureKicker}>OPERATIONS</Text><Text style={s.featureTitle}>Business Command</Text><Text style={s.featureDesc}>Move from customers to revenue with a single workflow.</Text></View>
-         <View style={s.featureStat}><Text style={s.featureStatValue}>06</Text><Text style={s.featureStatLabel}>TOOLS</Text></View>
-       </View>
-       <View style={s.featureFooter}><View style={s.featureFooterLine}/><Text style={s.featureFooterText}>FINANCE  /  MOBILITY  /  REPORTING</Text></View>
+
+       <View style={s.sectionHead}><View><Text style={s.sectionOverline}>YOUR WORKSPACE</Text><Text style={s.sectionTitle}>Management tools</Text></View><Text style={s.sectionCount}>06 MODULES</Text></View>
+       <View style={s.list}>{items.map(([label,icon,section,group,desc],i)=><Pressable key={label} onPress={()=>go(section)} style={({pressed})=>[s.module,pressed&&s.modulePressed]}><View style={s.moduleIndex}><Text style={s.moduleIndexText}>{String(i+1).padStart(2,'0')}</Text></View><View style={s.moduleIcon}><Ionicons name={icon} size={21} color={colors.teal}/></View><View style={s.moduleCopy}><Text style={s.moduleGroup}>{group}</Text><Text style={s.moduleTitle}>{label}</Text><Text style={s.moduleDesc}>{desc}</Text></View><View style={s.moduleArrow}><Ionicons name="arrow-up-outline" size={15} color={colors.ink}/></View></Pressable>)}</View>
+
+       <View style={s.security}><View style={s.securityMark}><Ionicons name="shield-checkmark-outline" size={19} color={colors.teal}/></View><View style={{flex:1}}><Text style={s.securityTitle}>Secure management space</Text><Text style={s.securitySub}>Administrative access protected</Text></View><View style={s.securityPill}><View style={s.securityDot}/><Text style={s.securityText}>SECURE</Text></View></View>
+       <Pressable onPress={async()=>{await logout();navigation.replace('Login')}} style={({pressed})=>[s.signOut,pressed&&{opacity:.78}]}><Ionicons name="log-out-outline" size={18} color={colors.danger}/><Text style={s.signText}>Sign out</Text><Ionicons name="arrow-forward" size={15} color={colors.danger}/></Pressable>
      </View>
-
-     <View style={s.sectionHead}><View><Text style={s.sectionOverline}>YOUR WORKSPACE</Text><Text style={s.sectionTitle}>Management tools</Text></View><Text style={s.sectionCount}>06 MODULES</Text></View>
-
-     <View style={s.list}>
-       {items.map(([label,icon,section,group,desc],i)=><Pressable key={label} onPress={()=>go(section)} style={({pressed})=>[s.module,pressed&&s.modulePressed]}>
-         <View style={s.moduleIndex}><Text style={s.moduleIndexText}>{String(i+1).padStart(2,'0')}</Text></View>
-         <View style={s.moduleIcon}><Ionicons name={icon} size={21} color={colors.teal}/></View>
-         <View style={s.moduleCopy}><Text style={s.moduleGroup}>{group}</Text><Text style={s.moduleTitle}>{label}</Text><Text style={s.moduleDesc}>{desc}</Text></View>
-         <View style={s.moduleArrow}><Ionicons name="arrow-up-outline" size={15} color={colors.ink}/></View>
-       </Pressable>)}
-     </View>
-
-     <View style={s.security}><View style={s.securityMark}><Ionicons name="shield-checkmark-outline" size={19} color={colors.teal}/></View><View style={{flex:1}}><Text style={s.securityTitle}>Secure management space</Text><Text style={s.securitySub}>Administrative access protected</Text></View><View style={s.securityPill}><View style={s.securityDot}/><Text style={s.securityText}>SECURE</Text></View></View>
-
-     <Pressable onPress={async()=>{await logout();navigation.replace('Login')}} style={({pressed})=>[s.signOut,pressed&&{opacity:.78}]}><Ionicons name="log-out-outline" size={18} color={colors.danger}/><Text style={s.signText}>Sign out</Text><Ionicons name="arrow-forward" size={15} color={colors.danger}/></Pressable>
    </ScrollView>
  </View>
 }
 
 const s={
  page:{flex:1,backgroundColor:'#F5F6F4'},
- content:{paddingHorizontal:18,paddingBottom:110},
- header:{paddingHorizontal:2},
- headerLine:{minHeight:78,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},
- brand:{flexDirection:'row',alignItems:'center',gap:11,flex:1},
- logoPanel:{width:82,height:72,borderRadius:20,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center',overflow:'hidden',borderWidth:1,borderColor:'rgba(39,168,154,.25)',shadowColor:'#172027',shadowOffset:{width:0,height:7},shadowOpacity:.16,shadowRadius:13,elevation:5},
+ content:{paddingBottom:110},
+ topBar:{backgroundColor:colors.midnight,paddingHorizontal:18,paddingBottom:11,overflow:'hidden',borderBottomLeftRadius:26,borderBottomRightRadius:26,shadowColor:'#172027',shadowOffset:{width:0,height:9},shadowOpacity:.18,shadowRadius:16,elevation:7},
+ topBarGlow:{position:'absolute',width:260,height:260,borderRadius:130,right:-120,top:-175,backgroundColor:'rgba(39,168,154,.14)',borderWidth:1,borderColor:'rgba(39,168,154,.12)'},
+ topRow:{minHeight:78,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},
+ brand:{flex:1,flexDirection:'row',alignItems:'center',gap:11},
+ logoPanel:{width:82,height:72,borderRadius:20,backgroundColor:'#202D34',alignItems:'center',justifyContent:'center',overflow:'hidden',borderWidth:1,borderColor:'rgba(39,168,154,.28)'},
  logoGlow:{position:'absolute',width:72,height:72,borderRadius:36,right:-30,bottom:-35,backgroundColor:'rgba(39,168,154,.18)'},
- brandName:{fontSize:13,fontWeight:'900',letterSpacing:1.6,color:colors.ink},
- brandSub:{fontSize:7.5,fontWeight:'800',letterSpacing:1.15,color:colors.muted,marginTop:3},
- headerButton:{width:40,height:40,borderRadius:20,backgroundColor:colors.white,borderWidth:1,borderColor:'#E3E7E4',alignItems:'center',justifyContent:'center'},
- headerRule:{height:1,backgroundColor:'#DDE3DF'},
- headerMeta:{height:32,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},
- metaLabel:{fontSize:7.5,fontWeight:'900',letterSpacing:1.35,color:colors.muted},
+ brandCopy:{flexShrink:1},
+ brandName:{fontSize:13,fontWeight:'900',letterSpacing:1.6,color:colors.white},
+ brandSub:{fontSize:7.5,fontWeight:'800',letterSpacing:1.15,color:'rgba(255,255,255,.48)',marginTop:3},
+ headerButton:{width:40,height:40,borderRadius:20,backgroundColor:'rgba(255,255,255,.08)',borderWidth:1,borderColor:'rgba(255,255,255,.13)',alignItems:'center',justifyContent:'center'},
+ headerRule:{height:1,backgroundColor:'rgba(255,255,255,.12)'},
+ headerMeta:{height:31,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},
+ metaLeft:{flexDirection:'row',alignItems:'center',gap:6},
+ metaLabel:{fontSize:7.5,fontWeight:'900',letterSpacing:1.35,color:'rgba(255,255,255,.48)'},
  online:{flexDirection:'row',alignItems:'center',gap:5},
  onlineDot:{width:6,height:6,borderRadius:3,backgroundColor:colors.success},
  onlineText:{fontSize:7,fontWeight:'900',letterSpacing:1,color:colors.success},
+ body:{paddingHorizontal:18},
  intro:{paddingTop:24,paddingBottom:18},
  introOverline:{fontSize:8,fontWeight:'900',letterSpacing:2.1,color:colors.teal},
  introTitle:{fontSize:30,lineHeight:34,fontWeight:'900',letterSpacing:-.8,color:colors.ink,marginTop:6},

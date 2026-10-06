@@ -18,6 +18,26 @@ if (!configuredApiUrl) {
 
 export const API_BASE_URL = configuredApiUrl;
 
+async function readAccessToken() {
+  const keys = ['sm_access_token', 'accessToken', 'token'];
+  for (const key of keys) {
+    const value = await AsyncStorage.getItem(key);
+    if (value && value.trim()) return value.trim();
+  }
+  return null;
+}
+
+async function storeAccessToken(token) {
+  const cleanToken = String(token || '').trim();
+  if (!cleanToken) throw new Error('The server did not return a valid access token.');
+  await AsyncStorage.multiSet([
+    ['sm_access_token', cleanToken],
+    ['accessToken', cleanToken],
+    ['token', cleanToken]
+  ]);
+  return cleanToken;
+}
+
 export const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 15000,
@@ -28,7 +48,7 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use(async config => {
-  const token = await AsyncStorage.getItem('sm_access_token');
+  const token = await readAccessToken();
 
   if (token) {
     config.headers = config.headers || {};
@@ -58,7 +78,15 @@ export async function login(email, password) {
       );
     }
 
-    await AsyncStorage.setItem('sm_access_token', token);
+    await storeAccessToken(token);
+
+    // Do not enter the application until the backend confirms that
+    // the exact token we just stored is accepted by protected APIs.
+    const meResponse = await api.get('/auth/me');
+    if (!meResponse.data?.success) {
+      throw new Error('Authentication succeeded, but the session could not be verified.');
+    }
+
     return data;
   } catch (error) {
     const status = error?.response?.status;
@@ -111,5 +139,10 @@ export async function getApiHealth() {
 }
 
 export async function logout() {
-  await AsyncStorage.removeItem('sm_access_token');
+  await AsyncStorage.multiRemove(['sm_access_token', 'accessToken', 'token']);
+}
+
+export async function getCurrentUser() {
+  const { data } = await api.get('/auth/me');
+  return data?.data ?? null;
 }

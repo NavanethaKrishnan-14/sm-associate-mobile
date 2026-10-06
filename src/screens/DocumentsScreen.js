@@ -36,7 +36,7 @@ export default function DocumentsScreen({navigation}){
   };
 
   return <View style={styles.page}>
-    <View style={[styles.topBar,compactHeader&&styles.topBarCompact,{paddingTop:top+18}]}>
+    <View style={[styles.topBar,compactHeader&&styles.topBarCompact,{paddingTop:top+26}]}>
       <Pressable onPress={()=>navigation.goBack()} style={[styles.back,compactHeader&&styles.backCompact]}><Ionicons name="arrow-back" size={compactHeader?19:22} color={colors.ink}/></Pressable>
       <View style={{flex:1,marginLeft:compactHeader?8:10}}>
         <Text style={[styles.title,compactHeader&&styles.titleCompact]}>Documents</Text>

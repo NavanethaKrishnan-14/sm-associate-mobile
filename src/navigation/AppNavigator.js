@@ -22,13 +22,13 @@ const Tabs=createBottomTabNavigator();
 
 function CustomTabBar({state,descriptors,navigation}){
   const {bottom}=useSafeAreaInsets();
-  const {width}=useWindowDimensions();
+
   const tabRoutes=state.routes;
 
   const renderTab=(route,index)=>{
     const {options}=descriptors[route.key];
     const focused=state.index===index;
-    const color=focused?'#FFFFFF':'#53636D';
+    const color=focused?'#17313A':'#26343A';
     const icons={
       Dashboard:focused?'grid':'grid-outline',
       Customers:focused?'people':'people-outline',
@@ -41,25 +41,39 @@ function CustomTabBar({state,descriptors,navigation}){
       const event=navigation.emit({type:'tabPress',target:route.key,canPreventDefault:true});
       if(!focused&&!event.defaultPrevented) navigation.navigate(route.name);
     };
-    return (
-      <Pressable key={route.key} accessibilityRole="button" onPress={onPress} style={[styles.tabItem,focused&&styles.activeTabItem]}>
+
+    const tabContent=(
+      <>
         <Ionicons name={icons[route.name]} size={22} color={color}/>
         <Text style={[styles.tabLabel,{color}]}>{label}</Text>
+      </>
+    );
+
+    return (
+      <Pressable
+        key={route.key}
+        accessibilityRole="button"
+        onPress={onPress}
+        style={[styles.tabItem,focused&&styles.activeTabItem]}
+      >
+        {focused ? (
+          <BlurView tint="light" intensity={70} style={styles.activeGlass}>
+            <View pointerEvents="none" style={styles.activeGlassHighlight}/>
+            {tabContent}
+          </BlurView>
+        ) : tabContent}
       </Pressable>
     );
   };
 
   return (
-    <View pointerEvents="box-none" style={[styles.bottomBarWrap,{bottom:Math.max(bottom,22),paddingHorizontal:12}]}>
-      <View style={styles.glassPill}>
-        <BlurView tint="light" intensity={42} style={styles.glassFill}/>
-        <View pointerEvents="none" style={styles.glassOverlay}/>
+    <View pointerEvents="box-none" style={[styles.bottomBarWrap,{bottom:Math.max(bottom,18)}]}>
+      <View style={styles.iosTabBar}>
         {tabRoutes.map(renderTab)}
       </View>
     </View>
   );
 }
-
 function MainTabs(){
   return <Tabs.Navigator
     tabBar={(props)=><CustomTabBar {...props}/>} 
@@ -78,70 +92,52 @@ const styles=StyleSheet.create({
     left:0,
     right:0,
     alignItems:'center',
+    paddingHorizontal:12,
   },
-  glassPill:{
+  iosTabBar:{
     width:'100%',
-    maxWidth:320,
-    height:54,
-    borderRadius:26,
-    overflow:'hidden',
+    maxWidth:390,
+    height:72,
+    borderRadius:36,
     flexDirection:'row',
     alignItems:'center',
-    paddingHorizontal:5,
-    borderWidth:1,
-    borderColor:'rgba(255,255,255,0.16)',
-    backgroundColor:'rgba(255,255,255,0.06)',
-    shadowColor:'#14232B',
-    shadowOffset:{width:0,height:6},
-    shadowOpacity:0.16,
-    shadowRadius:14,
+    paddingHorizontal:7,
+    paddingVertical:7,
+    backgroundColor:'#FFFFFF',
+    shadowColor:'#15242B',
+    shadowOffset:{width:0,height:7},
+    shadowOpacity:0.14,
+    shadowRadius:18,
     elevation:10,
-  },
-  glassFill:{
-    ...StyleSheet.absoluteFillObject,
-    borderRadius:28,
-  },
-  glassOverlay:{
-    ...StyleSheet.absoluteFillObject,
-    borderRadius:28,
-    backgroundColor:'rgba(255,255,255,0.08)',
   },
   tabItem:{
     flex:1,
     height:'100%',
     alignItems:'center',
     justifyContent:'center',
-    gap:1,
-    borderRadius:22,
+    borderRadius:30,
+    overflow:'hidden',
   },
   activeTabItem:{
-    backgroundColor:'rgba(39,168,154,0.22)',
+    backgroundColor:'rgba(225,230,235,0.72)',
+  },
+  activeGlass:{
+    ...StyleSheet.absoluteFillObject,
+    alignItems:'center',
+    justifyContent:'center',
+    borderRadius:30,
+    overflow:'hidden',
+  },
+  activeGlassHighlight:{
+    ...StyleSheet.absoluteFillObject,
+    borderRadius:30,
+    backgroundColor:'rgba(255,255,255,0.24)',
     borderWidth:1,
-    borderColor:'rgba(39,168,154,0.30)',
-    shadowColor:'#27A89A',
-    shadowOffset:{width:0,height:2},
-    shadowOpacity:0.18,
-    shadowRadius:5,
-    elevation:4,
-    transform:[{scale:1.02}],
+    borderColor:'rgba(255,255,255,0.70)',
   },
   tabLabel:{
+    marginTop:2,
     fontSize:10,
-    fontWeight:'900',
+    fontWeight:'800',
   },
-});
-
-export default function AppNavigator(){
-  return <NavigationContainer>
-    <Stack.Navigator screenOptions={{headerShown:false}}>
-      <Stack.Screen name="Login" component={LoginScreen}/>
-      <Stack.Screen name="Main" component={MainTabs}/>
-      <Stack.Screen name="AdminTools" component={AdminToolsScreen}/>
-      <Stack.Screen name="CarSale" component={CarSaleScreen}/>
-      <Stack.Screen name="Documents" component={DocumentsScreen}/>
-      <Stack.Screen name="CarProfit" component={CarProfitScreen}/>
-      <Stack.Screen name="LoanRevenue" component={LoanRevenueScreen}/>
-      <Stack.Screen name="OperationalReports" component={OperationalReportsScreen}/>
-    </Stack.Navigator>
-  </NavigationContainer>
-}
+});}

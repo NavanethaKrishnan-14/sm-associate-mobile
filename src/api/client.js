@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const PRODUCTION_API_URL = 'https://sm-associate-backend.vercel.app/api/v1';
+const PRODUCTION_API_URL = 'https://sm-associate-backend.onrender.com/api/v1';
 
 function normalizeApiUrl(value) {
   return String(value || '')

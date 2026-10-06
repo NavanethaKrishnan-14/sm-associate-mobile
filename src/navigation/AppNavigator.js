@@ -4,7 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons';
 import {BlurView} from 'expo-blur';
-import {StyleSheet, Pressable, Text, View} from 'react-native';
+import {StyleSheet, Pressable, Text, View, useWindowDimensions} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import LoginScreen from '../screens/LoginScreen';
 import DashboardScreen from '../screens/DashboardScreen';
@@ -22,6 +22,7 @@ const Tabs=createBottomTabNavigator();
 
 function CustomTabBar({state,descriptors,navigation}){
   const {bottom}=useSafeAreaInsets();
+  const {width}=useWindowDimensions();
   const tabRoutes=state.routes;
 
   const renderTab=(route,index)=>{
@@ -49,7 +50,7 @@ function CustomTabBar({state,descriptors,navigation}){
   };
 
   return (
-    <View pointerEvents="box-none" style={[styles.bottomBarWrap,{bottom:Math.max(bottom,22)}]}>
+    <View pointerEvents="box-none" style={[styles.bottomBarWrap,{bottom:Math.max(bottom,22),paddingHorizontal:12}]}>
       <View style={styles.glassPill}>
         <BlurView tint="light" intensity={42} style={styles.glassFill}/>
         <View pointerEvents="none" style={styles.glassOverlay}/>
@@ -79,7 +80,8 @@ const styles=StyleSheet.create({
     alignItems:'center',
   },
   glassPill:{
-    width:320,
+    width:'100%',
+    maxWidth:320,
     height:54,
     borderRadius:26,
     overflow:'hidden',

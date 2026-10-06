@@ -86,30 +86,31 @@ export default function DashboardScreen({navigation}){
         <View style={styles.editorialGreeting}>
           <View style={styles.editorialAccent}/>
           <View style={styles.editorialTop}>
-            <Text style={styles.editorialKicker}>SM ASSOCIATE  /  01</Text>
+            <View>
+              <Text style={styles.editorialKicker}>GOOD MORNING</Text>
+              <Text style={styles.editorialDate}>Your business at a glance</Text>
+            </View>
             <View style={styles.editorialStatus}>
               <View style={styles.editorialStatusDot}/>
-              <Text style={styles.editorialStatusText}>ACTIVE</Text>
+              <Text style={styles.editorialStatusText}>ONLINE</Text>
             </View>
           </View>
 
-          <View style={styles.editorialMain}>
-            <View style={styles.editorialCopy}>
-              <Text style={styles.editorialGreetingText}>Good morning.</Text>
-              <Text style={styles.editorialHeadline}>Stay ahead.</Text>
-              <Text style={styles.editorialDescription}>
-                Your key business activity, organised for a clearer day.
-              </Text>
-            </View>
-
-            <View style={styles.editorialNumber}>
-              <Text style={styles.editorialNumberText}>01</Text>
-            </View>
+          <View style={styles.editorialContent}>
+            <Text style={styles.editorialTitle}>Welcome back.</Text>
+            <Text style={styles.editorialDescription}>
+              Keep track of your customers, loans and vehicle operations from one dashboard.
+            </Text>
           </View>
 
           <View style={styles.editorialBottom}>
-            <Text style={styles.editorialBottomText}>BUSINESS CONTROL CENTER</Text>
-            <Ionicons name="arrow-forward" size={16} color={colors.midnight}/>
+            <View>
+              <Text style={styles.editorialBottomLabel}>TODAY'S FOCUS</Text>
+              <Text style={styles.editorialBottomText}>Manage your daily operations</Text>
+            </View>
+            <View style={styles.editorialAction}>
+              <Ionicons name="arrow-forward" size={17} color={colors.white}/>
+            </View>
           </View>
         </View>
 
@@ -304,7 +305,7 @@ const styles=StyleSheet.create({
   editorialGreeting:{
     marginHorizontal:16,
     marginTop:20,
-    minHeight:238,
+    minHeight:218,
     padding:20,
     backgroundColor:'#F8F7F2',
     borderRadius:26,
@@ -327,15 +328,21 @@ const styles=StyleSheet.create({
     marginLeft:4
   },
   editorialKicker:{
-    color:colors.muted,
-    fontSize:8,
+    color:colors.teal,
+    fontSize:9,
     fontWeight:'900',
     letterSpacing:1.8
   },
+  editorialDate:{
+    color:colors.muted,
+    fontSize:10,
+    fontWeight:'600',
+    marginTop:3
+  },
   editorialStatus:{
-    height:25,
+    height:27,
     paddingHorizontal:9,
-    borderRadius:8,
+    borderRadius:9,
     flexDirection:'row',
     alignItems:'center',
     backgroundColor:'rgba(39,168,154,0.08)',
@@ -353,68 +360,56 @@ const styles=StyleSheet.create({
     color:colors.teal,
     fontSize:7,
     fontWeight:'900',
-    letterSpacing:1.2
+    letterSpacing:1.1
   },
-  editorialMain:{
+  editorialContent:{
     flex:1,
-    flexDirection:'row',
-    alignItems:'center',
-    marginLeft:4
+    justifyContent:'center',
+    marginLeft:4,
+    paddingRight:8
   },
-  editorialCopy:{
-    flex:1,
-    paddingRight:12
-  },
-  editorialGreetingText:{
-    color:colors.muted,
-    fontSize:13,
-    fontWeight:'700',
-    letterSpacing:0.2
-  },
-  editorialHeadline:{
+  editorialTitle:{
     color:colors.ink,
-    fontSize:38,
-    lineHeight:42,
+    fontSize:32,
+    lineHeight:38,
     fontWeight:'900',
-    letterSpacing:-1.4,
-    marginTop:1
+    letterSpacing:-0.8
   },
   editorialDescription:{
     color:'#68747B',
     fontSize:12,
     lineHeight:18,
-    marginTop:9,
-    maxWidth:255
-  },
-  editorialNumber:{
-    width:70,
-    height:92,
-    borderRadius:20,
-    backgroundColor:colors.midnight,
-    alignItems:'center',
-    justifyContent:'center',
-    transform:[{rotate:'6deg'}]
-  },
-  editorialNumberText:{
-    color:colors.goldLight,
-    fontSize:25,
-    fontWeight:'900',
-    letterSpacing:-1
+    marginTop:7,
+    maxWidth:315
   },
   editorialBottom:{
     marginLeft:4,
-    paddingTop:12,
+    paddingTop:13,
     borderTopWidth:1,
     borderTopColor:'rgba(24,32,39,0.09)',
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'space-between'
   },
-  editorialBottomText:{
+  editorialBottomLabel:{
     color:colors.muted,
     fontSize:7,
     fontWeight:'900',
-    letterSpacing:1.6
+    letterSpacing:1.5
+  },
+  editorialBottomText:{
+    color:colors.ink,
+    fontSize:10,
+    fontWeight:'800',
+    marginTop:3
+  },
+  editorialAction:{
+    width:35,
+    height:35,
+    borderRadius:11,
+    backgroundColor:colors.midnight,
+    alignItems:'center',
+    justifyContent:'center'
   },
   dashboardIntro:{display:'none'},
   headerRow:{

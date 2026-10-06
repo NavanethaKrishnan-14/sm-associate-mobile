@@ -227,10 +227,6 @@ const styles = {
   logo: {
     width: 64,
     height: 64,
-    borderRadius: 19,
-    backgroundColor: '#243139',
-    borderWidth: 1,
-    borderColor: '#3A4A52',
     alignItems: 'center',
     justifyContent: 'center',
   },

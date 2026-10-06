@@ -2,15 +2,6 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 
-function getExpoHost() {
-  const hostUri =
-    Constants.expoConfig?.hostUri ||
-    Constants.manifest2?.extra?.expoClient?.hostUri ||
-    '';
-
-  return hostUri.split(':')[0] || '';
-}
-
 function normalizeApiUrl(value) {
   return String(value || '')
     .trim()

@@ -3,8 +3,13 @@
     "name": "SM Associate",
     "slug": "sm-associate",
     "version": "1.2.1",
-    "orientation": "portrait",
+    "orientation": "default",
+    "platforms": ["android", "ios"],
     "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "requireFullScreen": false
+    },
     "android": {
       "package": "com.smassociate.management",
       "usesCleartextTraffic": true

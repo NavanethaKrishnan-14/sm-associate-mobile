@@ -1,15 +1,20 @@
 import React,{useState} from 'react';
-import {Alert,KeyboardAvoidingView,Platform,Pressable,Text,TextInput,View,ActivityIndicator,StyleSheet} from 'react-native';
+import {Alert,KeyboardAvoidingView,Platform,Pressable,Text,TextInput,View,ActivityIndicator,StyleSheet,useWindowDimensions} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import {colors} from '../theme/colors';
 import Logo from '../components/Logo';
 import {login} from '../api/client';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function LoginScreen({navigation}){
   const [email,setEmail]=useState('');
   const [password,setPassword]=useState('');
   const [showPassword,setShowPassword]=useState(false);
   const [busy,setBusy]=useState(false);
+  const {width}=useWindowDimensions();
+  const {top,bottom}=useSafeAreaInsets();
+  const horizontalPadding=Math.max(18,Math.min(28,width*0.065));
+  const logoWidth=Math.min(380,Math.max(180,width-72));
 
   async function submit(){
     if(!email||!password) return Alert.alert('Sign in','Enter your email and password.');
@@ -23,10 +28,10 @@ export default function LoginScreen({navigation}){
   }
 
   return <LinearGradient colors={[colors.midnight,colors.navy,colors.ivory]} style={{flex:1}}>
-    <KeyboardAvoidingView style={{flex:1,padding:24,justifyContent:'center'}} behavior={Platform.OS==='ios'?'padding':undefined}>
+    <KeyboardAvoidingView style={{flex:1,paddingHorizontal:horizontalPadding,paddingTop:top+12,paddingBottom:bottom+12,justifyContent:'center'}} behavior={Platform.OS==='ios'?'padding':undefined}>
       <View style={{alignItems:'center',marginBottom:38}}>
         <View style={{marginBottom:24,alignItems:'center',justifyContent:'center'}}>
-          <Logo width={380}/>
+          <Logo width={logoWidth}/>
         </View>
         <Text style={{color:colors.white,fontSize:27,fontWeight:'800',textAlign:'center'}}>Welcome back</Text>
         <Text style={{color:'rgba(255,255,255,.72)',fontSize:14,marginTop:7,textAlign:'center'}}>Manage finance, customers, loans and vehicles in one place.</Text>

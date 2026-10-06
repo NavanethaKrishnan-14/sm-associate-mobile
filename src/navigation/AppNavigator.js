@@ -44,7 +44,7 @@ function CustomTabBar({state,descriptors,navigation}){
 
     const tabContent=(
       <>
-        <Ionicons name={icons[route.name]} size={22} color={color}/>
+        <Ionicons name={icons[route.name]} size={20} color={color}/>
         <Text allowFontScaling={false} maxFontSizeMultiplier={1} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.82} style={[styles.tabLabel,{color}]}>{label}</Text>
       </>
     );
@@ -206,9 +206,9 @@ const styles=StyleSheet.create({
   },
   tabLabel:{
     marginTop:2,
-    fontSize:10,
+    fontSize:9,
     fontWeight:'800',
-    lineHeight:12,
+    lineHeight:11,
     textAlign:'center',
     includeFontPadding:false,
     flexShrink:1,

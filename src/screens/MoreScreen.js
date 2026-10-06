@@ -209,7 +209,7 @@ export default function MoreScreen({navigation}) {
 const styles = {
   page: {
     flex: 1,
-    backgroundColor: colors.midnight,
+    backgroundColor: '#F2F3F1',
   },
   content: {
     paddingBottom: 110,

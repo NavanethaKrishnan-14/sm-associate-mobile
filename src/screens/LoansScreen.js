@@ -24,9 +24,18 @@ export default function LoansScreen({navigation}){
    let id=editing?editing._id:null;
    const payload={...form,requiredAmount:Number(form.requiredAmount),approvedAmount:form.approvedAmount?Number(form.approvedAmount):undefined,commission:Number(form.commission||0)};
    if(editing)await api.patch('/loans/'+id,payload);else{const r=await api.post('/loans',payload);id=r.data?.data?._id}
-   if(id)for(const [key] of docs)if(files[key])await uploadDocument('/loans/'+id+'/documents/'+key,files[key]);
+   if(!id)throw new Error('Loan was saved, but the server did not return the loan ID.');
+   for(const [key] of docs){
+    if(!files[key])continue;
+    try{
+     await uploadDocument('/loans/'+id+'/documents/'+key,files[key]);
+    }catch(uploadError){
+     const message=uploadError?.message||uploadError?.response?.data?.message||'Document upload failed.';
+     throw new Error((editing?'Loan updated':'Loan created')+' successfully, but '+key+' upload failed: '+message);
+    }
+   }
    setModal(false);await load();
-  }catch(e){Alert.alert('Loan',e?.response?.data?.message||'Unable to save loan.')}finally{setSaving(false)}
+  }catch(e){Alert.alert('Loan',e?.message||e?.response?.data?.message||'Unable to save loan.')}finally{setSaving(false)}
  }
  async function openFollowUps(l){try{const r=await api.get('/loans/'+l._id+'/follow-ups');setFollowLoan(l);setFollowUps(r.data?.data||[])}catch(e){Alert.alert('Follow-ups',e?.response?.data?.message||'Unable to load follow-ups.')}}
  async function addFollowUp(){if(!followLoan||!followNote||!followDate)return Alert.alert('Follow-up','Date and note are required.');try{await api.post('/loans/'+followLoan._id+'/follow-ups',{followUpDate:followDate,note:followNote});setFollowNote('');setFollowDate('');openFollowUps(followLoan)}catch(e){Alert.alert('Follow-up',e?.response?.data?.message||'Unable to add follow-up.')}}

@@ -51,7 +51,8 @@ function CustomTabBar({state,descriptors,navigation}){
   return (
     <View pointerEvents="box-none" style={[styles.bottomBarWrap,{bottom:Math.max(bottom,22)}]}>
       <View style={styles.glassPill}>
-        <BlurView tint="light" intensity={72} style={styles.glassFill}/>
+        <BlurView tint="light" intensity={42} style={styles.glassFill}/>
+        <View pointerEvents="none" style={styles.glassOverlay}/>
         {tabRoutes.map(renderTab)}
       </View>
     </View>
@@ -86,8 +87,8 @@ const styles=StyleSheet.create({
     alignItems:'center',
     paddingHorizontal:5,
     borderWidth:1,
-    borderColor:'rgba(255,255,255,0.38)',
-    backgroundColor:'transparent',
+    borderColor:'rgba(255,255,255,0.16)',
+    backgroundColor:'rgba(255,255,255,0.06)',
     shadowColor:'#14232B',
     shadowOffset:{width:0,height:6},
     shadowOpacity:0.16,
@@ -98,10 +99,10 @@ const styles=StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     borderRadius:28,
   },
-  glassTint:{
+  glassOverlay:{
     ...StyleSheet.absoluteFillObject,
-    backgroundColor:'rgba(255,255,255,0.18)',
     borderRadius:28,
+    backgroundColor:'rgba(255,255,255,0.08)',
   },
   tabItem:{
     flex:1,
@@ -112,12 +113,12 @@ const styles=StyleSheet.create({
     borderRadius:22,
   },
   activeTabItem:{
-    backgroundColor:'rgba(39,168,154,0.30)',
+    backgroundColor:'rgba(39,168,154,0.22)',
     borderWidth:1,
-    borderColor:'rgba(39,168,154,0.42)',
+    borderColor:'rgba(39,168,154,0.30)',
     shadowColor:'#27A89A',
     shadowOffset:{width:0,height:2},
-    shadowOpacity:0.22,
+    shadowOpacity:0.18,
     shadowRadius:5,
     elevation:4,
     transform:[{scale:1.02}],

@@ -97,7 +97,7 @@ const s={
  group:{marginBottom:27},
  groupHead:{flexDirection:'row',alignItems:'flex-end',justifyContent:'space-between'},
  groupLabel:{fontSize:7,fontWeight:'900',letterSpacing:1.8,color:colors.teal},
- groupTitle:{fontSize:19,fontWeight:'900,color:colors.ink,marginTop:3},
+ groupTitle:{fontSize:19,fontWeight:'900',color:colors.ink,marginTop:3},
  groupNumber:{fontSize:24,fontWeight:'900',color:'#D7DCDA'},
  groupLine:{height:1,backgroundColor:'#D8DDDA',marginTop:9,marginBottom:7},
  actions:{gap:1},

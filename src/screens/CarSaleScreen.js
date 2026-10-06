@@ -34,9 +34,25 @@ export default function CarSaleScreen({navigation}){
    }
    if(!finalBuyerId)return Alert.alert('Customer','Please select a valid customer.');
    const r=await api.post('/cars/'+carId+'/sell',{buyerId:finalBuyerId,sellingPrice:Number(price),sellingExpenses:Number(expenses||0),documents:{idProof:Boolean(files.idProof),agreement:Boolean(files.agreement),customDocuments:customDocs}});
-   for(const key of ['idProof','agreement'])if(files[key])await uploadDocument('/cars/'+carId+'/sale/documents/'+key,files[key]);
-   for(const name of customDocs)if(files['custom:'+name])await uploadDocument('/cars/'+carId+'/sale/documents/custom',files['custom:'+name],{documentName:name});
-   setModal(false);Alert.alert('Sale Completed','Vehicle sold successfully. Net profit: ₹'+Number(r.data?.data?.profit||0).toLocaleString('en-IN'));load();
+   const uploadErrors=[];
+   for(const key of ['idProof','agreement']){
+    if(files[key]){
+     try{await uploadDocument('/cars/'+carId+'/sale/documents/'+key,files[key]);}
+     catch(error){uploadErrors.push((key==='idProof'?'ID Proof':'Sale Agreement')+': '+(error?.message||'Upload failed'));}
+    }
+   }
+   for(const name of customDocs){
+    if(files['custom:'+name]){
+     try{await uploadDocument('/cars/'+carId+'/sale/documents/custom',files['custom:'+name],{documentName:name});}
+     catch(error){uploadErrors.push(name+': '+(error?.message||'Upload failed'));}
+    }
+   }
+   setModal(false);
+   const profit=Number(r.data?.data?.profit||0).toLocaleString('en-IN');
+   Alert.alert('Sale Saved',uploadErrors.length
+    ? 'Vehicle sale was saved successfully. Some documents could not be uploaded:\n\n'+uploadErrors.join('\n')
+    : 'Vehicle sold successfully. Net profit: ₹'+profit);
+   load();
   }catch(e){Alert.alert('Car Sale',e?.response?.data?.message||'Unable to complete sale.')}
   finally{setSaving(false)}
  }

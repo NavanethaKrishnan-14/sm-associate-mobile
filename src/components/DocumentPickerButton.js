@@ -6,7 +6,7 @@ import {colors} from '../theme/colors';
 
 export async function pickDocument(){
   const result=await DocumentPicker.getDocumentAsync({
-    type:'*/*',
+    type:['application/pdf','image/jpeg','image/png','image/webp','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
     copyToCacheDirectory:true,
     multiple:false
   });

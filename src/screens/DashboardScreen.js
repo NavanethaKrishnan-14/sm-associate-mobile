@@ -46,7 +46,7 @@ export default function DashboardScreen({navigation}){
       <View style={[styles.commandBar,{paddingTop:Math.max(10,topInset)}]}>
         <View style={styles.commandTop}>
           <View style={styles.brandCluster}>
-            <View style={styles.logoFrame}><Logo width={68}/></View>
+            <View style={styles.logoFrame}><Logo width={72}/></View>
             <View style={styles.brandCopy}>
               <Text style={styles.brandKicker}>SM ASSOCIATE</Text>
               <Text style={styles.brandTitle}>BUSINESS MANAGEMENT</Text>
@@ -96,8 +96,8 @@ function PipelineRow({name,value,first}){return <View style={[styles.pipelineRow
 const styles=StyleSheet.create({
   page:{flex:1,backgroundColor:colors.midnight},scroll:{flex:1},content:{paddingBottom:20,backgroundColor:colors.ivory},
   commandBar:{backgroundColor:colors.midnight,paddingHorizontal:18,paddingBottom:12,borderBottomWidth:1,borderBottomColor:'rgba(255,255,255,0.08)'},
-  commandTop:{minHeight:72,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},brandCluster:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0},
-  logoFrame:{width:72,height:72,alignItems:'center',justifyContent:'center'},brandCopy:{marginLeft:8,minWidth:0},brandKicker:{color:colors.teal,fontSize:8,fontWeight:'900',letterSpacing:1.8},brandTitle:{color:colors.white,fontSize:15,fontWeight:'900',letterSpacing:0.5,marginTop:3},
+  commandTop:{minHeight:76,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},brandCluster:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0},
+  logoFrame:{width:76,height:76,alignItems:'center',justifyContent:'center'},brandCopy:{marginLeft:8,minWidth:0},brandKicker:{color:colors.teal,fontSize:8,fontWeight:'900',letterSpacing:1.8},brandTitle:{color:colors.white,fontSize:15,fontWeight:'900',letterSpacing:0.5,marginTop:3},
   commandActions:{flexDirection:'row',alignItems:'center',gap:7},livePill:{height:32,paddingHorizontal:9,borderRadius:10,flexDirection:'row',alignItems:'center',backgroundColor:'rgba(39,168,154,0.10)',borderWidth:1,borderColor:'rgba(39,168,154,0.22)'},liveDot:{width:6,height:6,borderRadius:3,backgroundColor:colors.teal,marginRight:5},liveText:{color:colors.teal,fontSize:8,fontWeight:'900',letterSpacing:1},
   iconButton:{width:42,height:42,borderRadius:13,backgroundColor:'rgba(255,255,255,0.08)',borderWidth:1,borderColor:'rgba(255,255,255,0.11)',alignItems:'center',justifyContent:'center',position:'relative'},notificationDot:{position:'absolute',top:8,right:8,width:7,height:7,borderRadius:4,backgroundColor:colors.teal,borderWidth:1,borderColor:colors.midnight},commandDivider:{height:1,backgroundColor:'rgba(255,255,255,0.08)',marginTop:9},
   commandMeta:{minHeight:28,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},metaLeft:{flexDirection:'row',alignItems:'center'},metaText:{color:'rgba(255,255,255,0.72)',fontSize:8,fontWeight:'900',letterSpacing:1.2,marginLeft:6},metaRight:{flexDirection:'row',alignItems:'center'},metaHint:{color:'rgba(255,255,255,0.40)',fontSize:7,fontWeight:'900',letterSpacing:1},metaIndicator:{width:6,height:6,borderRadius:3,backgroundColor:colors.teal,marginLeft:6},pressed:{opacity:0.72,transform:[{scale:0.96}]},

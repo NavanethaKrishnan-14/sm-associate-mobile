@@ -28,7 +28,7 @@ function CustomTabBar({state,descriptors,navigation}){
   const renderTab=(route,index)=>{
     const {options}=descriptors[route.key];
     const focused=state.index===index;
-    const color=focused?'#34D399':'#26343A';
+    const color=focused?'#7BE3A5':'#26343A';
     const icons={
       Dashboard:focused?'grid':'grid-outline',
       Customers:focused?'people':'people-outline',
@@ -165,13 +165,13 @@ const styles=StyleSheet.create({
   glassSurface:{
     ...StyleSheet.absoluteFillObject,
     borderRadius:28,
-    backgroundColor:'rgba(52,211,153,0.10)',
+    backgroundColor:'rgba(123,227,165,0.07)',
   },
   glassEdge:{
     ...StyleSheet.absoluteFillObject,
     borderRadius:28,
     borderWidth:1.25,
-    borderColor:'rgba(190,255,224,0.88)',
+    borderColor:'rgba(220,255,232,0.78)',
     shadowColor:'#FFFFFF',
     shadowOffset:{width:0,height:0},
     shadowOpacity:0.34,
@@ -186,7 +186,7 @@ const styles=StyleSheet.create({
     bottom:1,
     borderRadius:27,
     borderWidth:1,
-    borderColor:'rgba(190,255,224,0.34)',
+    borderColor:'rgba(220,255,232,0.26)',
   },
   glassShine:{
     position:'absolute',
@@ -195,7 +195,7 @@ const styles=StyleSheet.create({
     right:'14%',
     height:7,
     borderRadius:8,
-    backgroundColor:'rgba(220,255,238,0.18)',
+    backgroundColor:'rgba(235,255,242,0.16)',
   },
   activeContent:{
     flex:1,

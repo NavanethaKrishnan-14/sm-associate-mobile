@@ -142,7 +142,7 @@ export default function MoreScreen({navigation}) {
 
                       <View style={styles.actionArrow}>
                         <Ionicons
-                          name="arrow-up-right"
+                          name="arrow-up-outline"
                           size={16}
                           color={colors.ink}
                         />

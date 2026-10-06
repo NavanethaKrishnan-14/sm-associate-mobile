@@ -9,7 +9,7 @@ const emptyExpense={carId:'',category:'Repair',description:'',amount:'',date:''}
 export default function AdminToolsScreen({route,navigation}){
  const {top}=useSafeAreaInsets();
  const section=route?.params?.section||'Users';
- return <View style={[s.adminPage,{paddingTop:Math.max(14,top+14)}]}>
+ return <View style={[s.adminPage,{paddingTop:Math.max(22,top+22)}]}>
  <View style={s.topBar}><Pressable onPress={()=>navigation.goBack()} style={s.back}><Ionicons name="arrow-back" size={22} color={colors.ink}/></Pressable><View style={{flex:1,marginLeft:10}}><Text style={s.topTitle}>{section}</Text><Text style={s.topSubtitle}>Admin management</Text></View></View>
  <View style={s.adminContent}>{section==='Users'?<Users/>:section==='Expenses'?<Expenses/>:<Reports section={section}/>}</View>
  </View>;

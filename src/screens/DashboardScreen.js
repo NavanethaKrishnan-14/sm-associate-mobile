@@ -49,36 +49,40 @@ export default function DashboardScreen({navigation}){
 
   return (
     <View style={styles.page}>
-      <View style={[styles.commandBar,{paddingTop:Math.max(12,topInset)}]}>
-
-        <View style={styles.commandTop}>
-          <View style={styles.commandBrand}>
-            <View style={styles.commandLogo}>
-              <Logo width={64}/>
+      <View style={[styles.topBar,{paddingTop:Math.max(12,topInset)}]}>
+        <View style={styles.topBarRow}>
+          <View style={styles.profileCluster}>
+            <View style={styles.profileOrb}>
+              <Logo width={50}/>
             </View>
-            <View style={styles.commandIdentity}>
-              <Text style={styles.commandOverline}>SM ASSOCIATE</Text>
-              <Text style={styles.commandTitle}>Business Desk</Text>
+            <View style={styles.profileText}>
+              <Text style={styles.profileGreeting}>WELCOME BACK</Text>
+              <Text style={styles.profileName}>SM Associate</Text>
             </View>
           </View>
 
-          <View style={styles.commandRight}>
-            <View style={styles.liveState}>
-              <View style={styles.liveDot}/>
-              <Text style={styles.liveText}>LIVE</Text>
+          <Pressable
+            onPress={()=>navigation.navigate('More')}
+            style={({pressed})=>[styles.notificationButton,pressed&&styles.pressed]}
+            accessibilityRole="button"
+            accessibilityLabel="Open notifications"
+          >
+            <Ionicons name="notifications-outline" size={21} color={colors.ink}/>
+            <View style={styles.notificationBadge}>
+              <Text style={styles.notificationBadgeText}>1</Text>
             </View>
-            <Pressable
-              onPress={()=>navigation.navigate('More')}
-              style={({pressed})=>[styles.commandBell,pressed&&styles.pressed]}
-            >
-              <Ionicons name="notifications-outline" size={20} color={colors.white}/>
-              <View style={styles.commandNotificationDot}/>
-            </Pressable>
-          </View>
+          </Pressable>
         </View>
 
+        <View style={styles.topBarDivider}/>
+        <View style={styles.topBarMeta}>
+          <View style={styles.workspaceLabel}>
+            <View style={styles.workspaceDot}/>
+            <Text style={styles.workspaceText}>BUSINESS OVERVIEW</Text>
+          </View>
+          <Text style={styles.workspaceHint}>Live data</Text>
+        </View>
       </View>
-
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={[styles.content,{paddingHorizontal:0}]}
@@ -223,105 +227,115 @@ const styles=StyleSheet.create({
   page:{flex:1,backgroundColor:colors.midnight},
   scroll:{flex:1},
   content:{paddingBottom:20,backgroundColor:colors.ivory},
-  commandBar:{
-    backgroundColor:colors.midnight,
-    paddingHorizontal:16,
-    paddingBottom:11,
+  topBar:{
+    backgroundColor:colors.ivory,
+    paddingHorizontal:18,
+    paddingBottom:13,
     borderBottomWidth:1,
-    borderBottomColor:'rgba(255,255,255,0.08)'
+    borderBottomColor:'rgba(24,32,39,0.08)'
   },
-  commandTop:{
-    minHeight:52,
+  topBarRow:{
+    minHeight:54,
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'space-between'
   },
-  commandBrand:{
+  profileCluster:{
     flex:1,
     flexDirection:'row',
-    alignItems:'center'
-  },
-  commandLogo:{
-    width:62,
-    height:44,
-    borderRadius:12,
-    backgroundColor:'#202B31',
-    borderWidth:1,
-    borderColor:'rgba(232,216,173,0.22)',
     alignItems:'center',
-    justifyContent:'center'
+    minWidth:0
   },
-  commandIdentity:{
-    marginLeft:11
-  },
-  commandOverline:{
-    color:'rgba(232,216,173,0.62)',
-    fontSize:7,
-    fontWeight:'900',
-    letterSpacing:2.4
-  },
-  commandTitle:{
-    color:colors.white,
-    fontSize:18,
-    fontWeight:'900',
-    marginTop:3,
-    letterSpacing:-0.2
-  },
-  commandRight:{
-    flexDirection:'row',
+  profileOrb:{
+    width:48,
+    height:48,
+    borderRadius:17,
+    backgroundColor:colors.midnight,
     alignItems:'center',
-    gap:8
-  },
-  liveState:{
-    height:30,
-    paddingHorizontal:9,
-    borderRadius:10,
-    flexDirection:'row',
-    alignItems:'center',
-    backgroundColor:'rgba(39,168,154,0.10)',
+    justifyContent:'center',
     borderWidth:1,
     borderColor:'rgba(39,168,154,0.24)'
   },
-  liveDot:{
-    width:6,
-    height:6,
-    borderRadius:3,
-    backgroundColor:colors.teal,
-    marginRight:5
+  profileText:{
+    marginLeft:11,
+    minWidth:0
   },
-  liveText:{
-    color:colors.teal,
-    fontSize:8,
+  profileGreeting:{
+    color:colors.muted,
+    fontSize:7,
     fontWeight:'900',
-    letterSpacing:1.1
+    letterSpacing:1.5
   },
-  commandBell:{
-    width:40,
-    height:40,
-    borderRadius:12,
-    backgroundColor:'rgba(255,255,255,0.055)',
+  profileName:{
+    color:colors.ink,
+    fontSize:18,
+    fontWeight:'900',
+    marginTop:3
+  },
+  notificationButton:{
+    width:43,
+    height:43,
+    borderRadius:15,
+    backgroundColor:colors.white,
     borderWidth:1,
-    borderColor:'rgba(255,255,255,0.10)',
+    borderColor:'rgba(24,32,39,0.09)',
     alignItems:'center',
     justifyContent:'center',
     position:'relative'
   },
-  commandNotificationDot:{
+  notificationBadge:{
     position:'absolute',
-    top:7,
-    right:7,
+    top:5,
+    right:5,
+    minWidth:15,
+    height:15,
+    paddingHorizontal:3,
+    borderRadius:8,
+    backgroundColor:colors.teal,
+    borderWidth:2,
+    borderColor:colors.white,
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  notificationBadgeText:{
+    color:colors.white,
+    fontSize:7,
+    fontWeight:'900'
+  },
+  topBarDivider:{
+    height:1,
+    backgroundColor:'rgba(24,32,39,0.07)',
+    marginTop:10
+  },
+  topBarMeta:{
+    minHeight:28,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-between',
+    marginTop:5
+  },
+  workspaceLabel:{
+    flexDirection:'row',
+    alignItems:'center'
+  },
+  workspaceDot:{
     width:6,
     height:6,
     borderRadius:3,
     backgroundColor:colors.teal,
-    borderWidth:1,
-    borderColor:colors.midnight
+    marginRight:7
   },
-  commandRule:{display:'none'},
-  commandRuleAccent:{display:'none'},
-  commandDate:{display:'none'},
-  commandRuleLine:{display:'none'},
-  commandRuleEnd:{display:'none'},
+  workspaceText:{
+    color:colors.ink,
+    fontSize:8,
+    fontWeight:'900',
+    letterSpacing:1.3
+  },
+  workspaceHint:{
+    color:colors.muted,
+    fontSize:9,
+    fontWeight:'700'
+  },
   editorialGreeting:{
     marginHorizontal:16,
     marginTop:20,

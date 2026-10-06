@@ -70,18 +70,9 @@ export default function DashboardScreen({navigation}){
 
         <View style={styles.commandRule}>
           <View style={styles.commandRuleAccent}/>
-          <Text style={styles.commandDate}>OWNER ACCESS</Text>
+          <Text style={styles.commandDate}>BUSINESS OVERVIEW</Text>
           <View style={styles.commandRuleLine}/>
-          <Pressable
-            onPress={()=>navigation.navigate('More')}
-            style={({pressed})=>[styles.commandProfile,pressed&&styles.pressed]}
-          >
-            <View style={styles.commandAvatar}>
-              <Text style={styles.commandAvatarText}>A</Text>
-            </View>
-            <Text style={styles.commandProfileText}>Admin</Text>
-            <Ionicons name="chevron-down" size={12} color="rgba(255,255,255,0.55)"/>
-          </Pressable>
+          <View style={styles.commandRuleEnd}/>
         </View>
       </View>
 
@@ -320,31 +311,15 @@ const styles=StyleSheet.create({
     backgroundColor:'rgba(255,255,255,0.08)',
     marginHorizontal:10
   },
-  commandProfile:{
-    height:25,
-    paddingLeft:3,
-    paddingRight:2,
-    flexDirection:'row',
-    alignItems:'center',
-    gap:6
-  },
-  commandAvatar:{
-    width:22,
-    height:22,
-    borderRadius:7,
-    backgroundColor:colors.goldLight,
-    alignItems:'center',
-    justifyContent:'center'
-  },
-  commandAvatarText:{
-    color:colors.midnight,
-    fontSize:9,
-    fontWeight:'900'
-  },
-  commandProfileText:{
-    color:'rgba(255,255,255,0.72)',
-    fontSize:9,
-    fontWeight:'800'
+  commandProfile:{display:'none'},
+  commandAvatar:{display:'none'},
+  commandAvatarText:{display:'none'},
+  commandProfileText:{display:'none'},
+  commandRuleEnd:{
+    width:8,
+    height:8,
+    borderRadius:4,
+    backgroundColor:'rgba(39,168,154,0.65)'
   },
   dashboardIntro:{
     marginHorizontal:12,

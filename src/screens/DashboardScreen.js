@@ -1,7 +1,6 @@
 import React,{useEffect,useState} from 'react';
 import {Pressable,RefreshControl,ScrollView,Text,View,StyleSheet} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import {BlurView} from 'expo-blur';
 import {api} from '../api/client';
 import {colors} from '../theme/colors';
 import Logo from '../components/Logo';
@@ -42,43 +41,47 @@ export default function DashboardScreen({navigation}){
 
   return (
     <View style={styles.page}>
-      <View style={styles.fixedTopBar}>
-        <View style={styles.headerAccent}/>
-        <View style={styles.headerRow}>
-          <View style={styles.brandGroup}>
-            <View style={styles.logoFrame}>
-              <Logo width={86}/>
+      <View style={styles.commandBar}>
+        <View style={styles.commandTop}>
+          <View style={styles.commandBrand}>
+            <View style={styles.commandLogo}>
+              <Logo width={64}/>
             </View>
-            <View style={styles.brandCopy}>
-              <Text style={styles.brandKicker}>SM ASSOCIATE</Text>
-              <View style={styles.brandLine}>
-                <Text style={styles.brandTitle}>Management</Text>
-                <View style={styles.brandMark}/>
-              </View>
+            <View style={styles.commandIdentity}>
+              <Text style={styles.commandOverline}>SM ASSOCIATE</Text>
+              <Text style={styles.commandTitle}>Business Desk</Text>
             </View>
           </View>
-          <View style={styles.headerActions}>
+
+          <View style={styles.commandRight}>
+            <View style={styles.liveState}>
+              <View style={styles.liveDot}/>
+              <Text style={styles.liveText}>LIVE</Text>
+            </View>
             <Pressable
               onPress={()=>navigation.navigate('More')}
-              style={({pressed})=>[styles.iconButton,pressed&&styles.pressed]}
+              style={({pressed})=>[styles.commandBell,pressed&&styles.pressed]}
             >
-              <Ionicons name="notifications-outline" size={21} color={colors.white}/>
-              <View style={styles.notificationDot}/>
-            </Pressable>
-            <Pressable
-              onPress={()=>navigation.navigate('More')}
-              style={({pressed})=>[styles.profileButton,pressed&&styles.pressed]}
-            >
-              <View style={styles.profileAvatar}>
-                <Ionicons name="person" size={16} color={colors.midnight}/>
-              </View>
-              <View style={styles.profileText}>
-                <Text style={styles.profileName}>Admin</Text>
-                <Text style={styles.profileRole}>OWNER</Text>
-              </View>
-              <Ionicons name="chevron-down" size={13} color="rgba(255,255,255,0.55)"/>
+              <Ionicons name="notifications-outline" size={20} color={colors.white}/>
+              <View style={styles.commandNotificationDot}/>
             </Pressable>
           </View>
+        </View>
+
+        <View style={styles.commandRule}>
+          <View style={styles.commandRuleAccent}/>
+          <Text style={styles.commandDate}>OWNER ACCESS</Text>
+          <View style={styles.commandRuleLine}/>
+          <Pressable
+            onPress={()=>navigation.navigate('More')}
+            style={({pressed})=>[styles.commandProfile,pressed&&styles.pressed]}
+          >
+            <View style={styles.commandAvatar}>
+              <Text style={styles.commandAvatarText}>A</Text>
+            </View>
+            <Text style={styles.commandProfileText}>Admin</Text>
+            <Ionicons name="chevron-down" size={12} color="rgba(255,255,255,0.55)"/>
+          </Pressable>
         </View>
       </View>
 
@@ -197,83 +200,83 @@ const styles=StyleSheet.create({
   page:{flex:1,backgroundColor:colors.midnight},
   scroll:{flex:1},
   content:{paddingBottom:20,backgroundColor:colors.ivory},
-  fixedTopBar:{
-    height:82,
+  commandBar:{
     backgroundColor:colors.midnight,
-    paddingHorizontal:15,
-    paddingTop:10,
-    paddingBottom:9,
+    paddingHorizontal:16,
+    paddingTop:12,
+    paddingBottom:11,
     borderBottomWidth:1,
-    borderBottomColor:'rgba(232,216,173,0.12)',
-    overflow:'hidden'
+    borderBottomColor:'rgba(255,255,255,0.08)'
   },
-  headerAccent:{
-    position:'absolute',
-    left:15,
-    right:15,
-    bottom:-1,
-    height:2,
-    borderRadius:2,
-    backgroundColor:colors.teal
-  },
-  headerRow:{
-    flex:1,
+  commandTop:{
+    minHeight:52,
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'space-between'
   },
-  brandGroup:{
+  commandBrand:{
     flex:1,
     flexDirection:'row',
     alignItems:'center'
   },
-  logoFrame:{
-    width:74,
-    height:54,
-    borderRadius:16,
-    backgroundColor:'rgba(255,255,255,0.045)',
+  commandLogo:{
+    width:62,
+    height:44,
+    borderRadius:12,
+    backgroundColor:'#202B31',
     borderWidth:1,
-    borderColor:'rgba(232,216,173,0.16)',
+    borderColor:'rgba(232,216,173,0.22)',
     alignItems:'center',
     justifyContent:'center'
   },
-  brandCopy:{
-    marginLeft:10,
-    justifyContent:'center'
+  commandIdentity:{
+    marginLeft:11
   },
-  brandKicker:{
-    color:'rgba(232,216,173,0.72)',
-    fontSize:8,
+  commandOverline:{
+    color:'rgba(232,216,173,0.62)',
+    fontSize:7,
     fontWeight:'900',
-    letterSpacing:2.1
+    letterSpacing:2.4
   },
-  brandLine:{
-    flexDirection:'row',
-    alignItems:'center',
-    marginTop:3
-  },
-  brandTitle:{
+  commandTitle:{
     color:colors.white,
-    fontSize:16,
+    fontSize:18,
     fontWeight:'900',
-    letterSpacing:0.15
+    marginTop:3,
+    letterSpacing:-0.2
   },
-  brandMark:{
-    width:5,
-    height:5,
-    borderRadius:3,
-    backgroundColor:colors.teal,
-    marginLeft:7
-  },
-  headerActions:{
+  commandRight:{
     flexDirection:'row',
     alignItems:'center',
     gap:8
   },
-  iconButton:{
-    width:42,
-    height:42,
-    borderRadius:14,
+  liveState:{
+    height:30,
+    paddingHorizontal:9,
+    borderRadius:10,
+    flexDirection:'row',
+    alignItems:'center',
+    backgroundColor:'rgba(39,168,154,0.10)',
+    borderWidth:1,
+    borderColor:'rgba(39,168,154,0.24)'
+  },
+  liveDot:{
+    width:6,
+    height:6,
+    borderRadius:3,
+    backgroundColor:colors.teal,
+    marginRight:5
+  },
+  liveText:{
+    color:colors.teal,
+    fontSize:8,
+    fontWeight:'900',
+    letterSpacing:1.1
+  },
+  commandBell:{
+    width:40,
+    height:40,
+    borderRadius:12,
     backgroundColor:'rgba(255,255,255,0.055)',
     borderWidth:1,
     borderColor:'rgba(255,255,255,0.10)',
@@ -281,10 +284,10 @@ const styles=StyleSheet.create({
     justifyContent:'center',
     position:'relative'
   },
-  notificationDot:{
+  commandNotificationDot:{
     position:'absolute',
-    top:8,
-    right:8,
+    top:7,
+    right:7,
     width:6,
     height:6,
     borderRadius:3,
@@ -292,44 +295,56 @@ const styles=StyleSheet.create({
     borderWidth:1,
     borderColor:colors.midnight
   },
-  profileButton:{
-    height:46,
-    paddingLeft:4,
-    paddingRight:8,
-    borderRadius:15,
+  commandRule:{
+    marginTop:10,
+    minHeight:25,
+    flexDirection:'row',
+    alignItems:'center'
+  },
+  commandRuleAccent:{
+    width:22,
+    height:2,
+    borderRadius:2,
+    backgroundColor:colors.teal,
+    marginRight:8
+  },
+  commandDate:{
+    color:'rgba(255,255,255,0.38)',
+    fontSize:7,
+    fontWeight:'900',
+    letterSpacing:1.5
+  },
+  commandRuleLine:{
+    flex:1,
+    height:1,
+    backgroundColor:'rgba(255,255,255,0.08)',
+    marginHorizontal:10
+  },
+  commandProfile:{
+    height:25,
+    paddingLeft:3,
+    paddingRight:2,
     flexDirection:'row',
     alignItems:'center',
-    backgroundColor:'rgba(255,255,255,0.055)',
-    borderWidth:1,
-    borderColor:'rgba(232,216,173,0.14)'
+    gap:6
   },
-  profileAvatar:{
-    width:36,
-    height:36,
-    borderRadius:12,
+  commandAvatar:{
+    width:22,
+    height:22,
+    borderRadius:7,
     backgroundColor:colors.goldLight,
     alignItems:'center',
     justifyContent:'center'
   },
-  profileText:{
-    marginLeft:7,
-    marginRight:8
-  },
-  profileName:{
-    color:colors.white,
-    fontSize:10,
+  commandAvatarText:{
+    color:colors.midnight,
+    fontSize:9,
     fontWeight:'900'
   },
-  profileRole:{
-    color:'rgba(255,255,255,0.42)',
-    fontSize:7,
-    fontWeight:'900',
-    letterSpacing:1.2,
-    marginTop:2
-  },
-  pressed:{
-    opacity:0.72,
-    transform:[{scale:0.97}]
+  commandProfileText:{
+    color:'rgba(255,255,255,0.72)',
+    fontSize:9,
+    fontWeight:'800'
   },
   dashboardIntro:{
     marginHorizontal:12,

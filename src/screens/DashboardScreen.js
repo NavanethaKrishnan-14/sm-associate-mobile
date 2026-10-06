@@ -82,17 +82,27 @@ export default function DashboardScreen({navigation}){
           />
         }
       >
-        <View style={styles.dashboardIntro}>
-          <View style={styles.greeting}>
-            <Text style={styles.eyebrow}>BUSINESS DASHBOARD</Text>
-            <Text style={styles.title}>Good morning.</Text>
-            <Text style={styles.subtitle}>Your business at a glance.</Text>
+        <View style={styles.premiumGreeting}>
+          <View style={styles.premiumGlow}/>
+          <View style={styles.greetingTop}>
+            <View style={styles.greetingBadge}>
+              <View style={styles.greetingBadgeDot}/>
+              <Text style={styles.greetingBadgeText}>TODAY</Text>
+            </View>
+            <Ionicons name="sparkles-outline" size={19} color={colors.goldLight}/>
           </View>
 
-          <View style={styles.summaryStrip}>
+          <Text style={styles.premiumEyebrow}>GOOD MORNING</Text>
+          <Text style={styles.premiumTitle}>Run your business.</Text>
+          <Text style={styles.premiumSubtitle}>A clear view of customers, loans and vehicles — all in one place.</Text>
+
+          <View style={styles.premiumFooter}>
             <View>
-              <Text style={styles.summaryLabel}>OPERATIONS</Text>
-              <Text style={styles.summaryText}>Everything is in one place</Text>
+              <Text style={styles.premiumFooterLabel}>SM ASSOCIATE</Text>
+              <Text style={styles.premiumFooterText}>Management dashboard</Text>
+            </View>
+            <View style={styles.premiumArrow}>
+              <Ionicons name="arrow-up-right" size={17} color={colors.midnight}/>
             </View>
           </View>
         </View>
@@ -285,17 +295,109 @@ const styles=StyleSheet.create({
   commandDate:{display:'none'},
   commandRuleLine:{display:'none'},
   commandRuleEnd:{display:'none'},
-  dashboardIntro:{
-    marginHorizontal:12,
-    marginTop:36,
-    backgroundColor:'#26333A',
-    borderRadius:26,
-    paddingHorizontal:16,
-    paddingTop:16,
-    paddingBottom:18,
+  premiumGreeting:{
+    marginHorizontal:16,
+    marginTop:18,
+    minHeight:222,
+    borderRadius:28,
+    padding:20,
+    backgroundColor:'#202B31',
     borderWidth:1,
-    borderColor:'rgba(39,168,154,0.28)'
+    borderColor:'rgba(232,216,173,0.18)',
+    overflow:'hidden'
   },
+  premiumGlow:{
+    position:'absolute',
+    width:180,
+    height:180,
+    borderRadius:90,
+    right:-75,
+    top:-80,
+    backgroundColor:'rgba(39,168,154,0.13)'
+  },
+  greetingTop:{
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-between'
+  },
+  greetingBadge:{
+    height:26,
+    paddingHorizontal:9,
+    borderRadius:9,
+    flexDirection:'row',
+    alignItems:'center',
+    backgroundColor:'rgba(232,216,173,0.08)',
+    borderWidth:1,
+    borderColor:'rgba(232,216,173,0.16)'
+  },
+  greetingBadgeDot:{
+    width:5,
+    height:5,
+    borderRadius:3,
+    backgroundColor:colors.teal,
+    marginRight:6
+  },
+  greetingBadgeText:{
+    color:'rgba(255,255,255,0.68)',
+    fontSize:7,
+    fontWeight:'900',
+    letterSpacing:1.5
+  },
+  premiumEyebrow:{
+    color:colors.teal,
+    fontSize:10,
+    fontWeight:'900',
+    letterSpacing:2.2,
+    marginTop:25
+  },
+  premiumTitle:{
+    color:colors.white,
+    fontSize:30,
+    lineHeight:35,
+    fontWeight:'900',
+    letterSpacing:-0.7,
+    marginTop:5
+  },
+  premiumSubtitle:{
+    color:'rgba(255,255,255,0.58)',
+    fontSize:12,
+    lineHeight:18,
+    marginTop:7,
+    maxWidth:315
+  },
+  premiumFooter:{
+    position:'absolute',
+    left:20,
+    right:20,
+    bottom:17,
+    paddingTop:12,
+    borderTopWidth:1,
+    borderTopColor:'rgba(255,255,255,0.09)',
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-between'
+  },
+  premiumFooterLabel:{
+    color:'rgba(232,216,173,0.58)',
+    fontSize:7,
+    fontWeight:'900',
+    letterSpacing:1.8
+  },
+  premiumFooterText:{
+    color:'rgba(255,255,255,0.72)',
+    fontSize:10,
+    fontWeight:'700',
+    marginTop:3
+  },
+  premiumArrow:{
+    width:34,
+    height:34,
+    borderRadius:11,
+    backgroundColor:colors.goldLight,
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  dashboardIntro:{display:'none'},
   headerRow:{
     flexDirection:'row',
     alignItems:'center',

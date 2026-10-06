@@ -54,7 +54,9 @@ api.interceptors.request.use(async config => {
   const token = await AsyncStorage.getItem('sm_access_token');
 
   if (token) {
+    config.headers = config.headers || {};
     config.headers.Authorization = 'Bearer ' + token;
+    config.headers['x-access-token'] = token;
   }
 
   return config;
@@ -71,7 +73,7 @@ export async function login(email, password) {
     });
 
     const data = response.data;
-    const token = data?.data?.token || data?.token;
+    const token = data?.data?.token || data?.data?.accessToken || data?.token || data?.accessToken;
 
     if (!token) {
       throw new Error(

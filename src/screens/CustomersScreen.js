@@ -30,7 +30,7 @@ export default function CustomersScreen({navigation}){
     {text:'Delete',style:'destructive',onPress:async()=>{try{await api.delete('/customers/'+item._id);load()}catch(e){Alert.alert('Delete',e?.response?.data?.message||'Unable to delete customer.')}}}
    ]);
  }
- return <View style={[s.page,{paddingTop:Math.max(14,top+14)}]}>
+ return <View style={[s.page,{paddingTop:Math.max(22,top+22)}]}>
    <View style={s.header}><Pressable onPress={()=>navigation.goBack()} style={s.backButton}><Ionicons name="arrow-back" size={20} color={colors.ink}/></Pressable><View style={{flex:1}}><Text style={s.title}>Customers</Text><Text style={s.subtitle}>Same customer management as web.</Text></View><Pressable onPress={openAdd} style={s.add}><Ionicons name="add" size={22} color={colors.goldLight}/></Pressable></View>
    <View style={s.search}><Ionicons name="search" size={18} color={colors.muted}/><TextInput value={q} onChangeText={setQ} placeholder="Search name or mobile" placeholderTextColor="#9AA4AD" style={s.searchInput}/></View>
    {busy?<ActivityIndicator style={{marginTop:40}} color={colors.gold}/>:<ScrollView contentContainerStyle={s.list}>{filtered.map(c=><View key={c._id} style={s.card}>

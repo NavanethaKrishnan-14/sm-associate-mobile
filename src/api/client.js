@@ -2,8 +2,6 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 
-const PRODUCTION_API_URL = 'https://sm-associate-backend.vercel.app/api/v1';
-
 function getExpoHost() {
   const hostUri =
     Constants.expoConfig?.hostUri ||
@@ -21,28 +19,15 @@ function normalizeApiUrl(value) {
     .replace(/\/$/, '');
 }
 
-const expoHost = getExpoHost();
-const configuredApiUrl = normalizeApiUrl(
-  process.env.EXPO_PUBLIC_API_BASE_URL
-);
+const configuredApiUrl = normalizeApiUrl(process.env.EXPO_PUBLIC_API_BASE_URL);
 
-const configuredIsLoopback =
-  configuredApiUrl.includes('localhost') ||
-  configuredApiUrl.includes('127.0.0.1') ||
-  configuredApiUrl.includes('10.0.2.2');
+if (!configuredApiUrl) {
+  throw new Error(
+    'EXPO_PUBLIC_API_BASE_URL is required. Add it to the mobile .env file.'
+  );
+}
 
-const localLanHost = expoHost || '192.168.1.10';
-const detectedApiUrl = `http://${localLanHost}:5000/api/v1`;
-
-// Development (Expo/Metro) uses the PC running the backend.
-// Production/standalone APK uses the deployed Vercel backend.
-// EXPO_PUBLIC_API_BASE_URL can explicitly override either environment.
-export const API_BASE_URL =
-  configuredApiUrl
-    ? configuredApiUrl
-    : __DEV__
-      ? detectedApiUrl
-      : PRODUCTION_API_URL;
+export const API_BASE_URL = configuredApiUrl;
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

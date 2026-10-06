@@ -6,7 +6,7 @@ import {colors} from '../theme/colors';
 
 export async function pickDocument(){
   const result=await DocumentPicker.getDocumentAsync({
-    type:['application/pdf','image/jpeg','image/png','image/webp','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+    type:['application/pdf','image/jpeg','image/png','image/webp','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/octet-stream'],
     copyToCacheDirectory:true,
     multiple:false
   });
@@ -41,7 +41,7 @@ export default function DocumentPickerButton({label='Upload Document',file,onPic
       <Text style={styles.hint} numberOfLines={2}>
         {file?'Document selected • Tap again to deselect':'Click here or drag & drop your document'}
       </Text>
-      <Text style={styles.supported}>PDF, JPG, PNG or other supported files</Text>
+      <Text style={styles.supported}>PDF, JPG, PNG, WEBP, DOC or DOCX • Max 10 MB</Text>
     </View>
     <View style={[styles.action,file&&styles.removeAction]}>
       <Ionicons name={file?'close-circle-outline':'add-circle-outline'} size={18} color={file?colors.white:colors.midnight}/>

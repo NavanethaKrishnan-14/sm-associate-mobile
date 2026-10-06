@@ -1,4 +1,5 @@
 import React from 'react';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Pressable,ScrollView,Text,View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {colors} from '../theme/colors';
@@ -15,9 +16,10 @@ const items=[
 ];
 
 export default function MoreScreen({navigation}){
+ const {top,bottom}=useSafeAreaInsets();
  const go=section=>section==='CarSale'?navigation.navigate('CarSale'):['CarProfit','LoanRevenue','OperationalReports'].includes(section)?navigation.navigate(section):navigation.navigate('AdminTools',{section});
  return <View style={s.page}>
-   <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.content}>
+   <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[s.content,{paddingTop:top+18,paddingBottom:bottom+90}]}>
      <View style={s.hero}>
        <View style={s.heroGlow}/>
        <Logo width={148}/>
@@ -41,7 +43,7 @@ export default function MoreScreen({navigation}){
 }
 const s={
  page:{flex:1,backgroundColor:'#F4F6F3'},
- content:{paddingTop:58,paddingHorizontal:18,paddingBottom:110},
+ content:{paddingTop:0,paddingHorizontal:18,paddingBottom:110},
  hero:{height:188,borderRadius:30,backgroundColor:colors.midnight,padding:20,overflow:'hidden',borderWidth:1,borderColor:'rgba(39,168,154,.28)'},
  heroGlow:{position:'absolute',width:190,height:190,borderRadius:95,right:-75,bottom:-95,backgroundColor:'rgba(39,168,154,.20)'},
  heroRow:{flex:1,marginTop:18,flexDirection:'row',alignItems:'flex-end',justifyContent:'space-between'},

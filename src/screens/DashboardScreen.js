@@ -83,29 +83,33 @@ export default function DashboardScreen({navigation}){
           />
         }
       >
-        <View style={styles.premiumGreeting}>
-          <BlurView intensity={32} tint="dark" style={styles.premiumGlass}/>
-          <View style={styles.premiumGlow}/>
-          <View style={styles.greetingTop}>
-            <View style={styles.greetingBadge}>
-              <View style={styles.greetingBadgeDot}/>
-              <Text style={styles.greetingBadgeText}>TODAY</Text>
+        <View style={styles.editorialGreeting}>
+          <View style={styles.editorialAccent}/>
+          <View style={styles.editorialTop}>
+            <Text style={styles.editorialKicker}>SM ASSOCIATE  /  01</Text>
+            <View style={styles.editorialStatus}>
+              <View style={styles.editorialStatusDot}/>
+              <Text style={styles.editorialStatusText}>ACTIVE</Text>
             </View>
-            <Ionicons name="sparkles-outline" size={19} color={colors.goldLight}/>
           </View>
 
-          <Text style={styles.premiumEyebrow}>GOOD MORNING</Text>
-          <Text style={styles.premiumTitle}>Run your business.</Text>
-          <Text style={styles.premiumSubtitle}>A clear view of customers, loans and vehicles — all in one place.</Text>
+          <View style={styles.editorialMain}>
+            <View style={styles.editorialCopy}>
+              <Text style={styles.editorialGreetingText}>Good morning.</Text>
+              <Text style={styles.editorialHeadline}>Stay ahead.</Text>
+              <Text style={styles.editorialDescription}>
+                Your key business activity, organised for a clearer day.
+              </Text>
+            </View>
 
-          <View style={styles.premiumFooter}>
-            <View>
-              <Text style={styles.premiumFooterLabel}>SM ASSOCIATE</Text>
-              <Text style={styles.premiumFooterText}>Management dashboard</Text>
+            <View style={styles.editorialNumber}>
+              <Text style={styles.editorialNumberText}>01</Text>
             </View>
-            <View style={styles.premiumArrow}>
-              <Ionicons name="arrow-up-right" size={17} color={colors.midnight}/>
-            </View>
+          </View>
+
+          <View style={styles.editorialBottom}>
+            <Text style={styles.editorialBottomText}>BUSINESS CONTROL CENTER</Text>
+            <Ionicons name="arrow-forward" size={16} color={colors.midnight}/>
           </View>
         </View>
 
@@ -297,112 +301,120 @@ const styles=StyleSheet.create({
   commandDate:{display:'none'},
   commandRuleLine:{display:'none'},
   commandRuleEnd:{display:'none'},
-  premiumGreeting:{
+  editorialGreeting:{
     marginHorizontal:16,
-    marginTop:18,
-    minHeight:222,
-    borderRadius:28,
+    marginTop:20,
+    minHeight:238,
     padding:20,
-    backgroundColor:'rgba(32,43,49,0.72)',
+    backgroundColor:'#F8F7F2',
+    borderRadius:26,
     borderWidth:1,
-    borderColor:'rgba(232,216,173,0.20)',
+    borderColor:'rgba(24,32,39,0.08)',
     overflow:'hidden'
   },
-  premiumGlass:{
-    ...StyleSheet.absoluteFillObject,
-    borderRadius:28,
-    backgroundColor:'rgba(255,255,255,0.025)'
-  },
-  premiumGlow:{
+  editorialAccent:{
     position:'absolute',
-    width:180,
-    height:180,
-    borderRadius:90,
-    right:-75,
-    top:-80,
-    backgroundColor:'rgba(39,168,154,0.11)'
-  },
-  greetingTop:{
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'space-between'
-  },
-  greetingBadge:{
-    height:26,
-    paddingHorizontal:9,
-    borderRadius:9,
-    flexDirection:'row',
-    alignItems:'center',
-    backgroundColor:'rgba(232,216,173,0.08)',
-    borderWidth:1,
-    borderColor:'rgba(232,216,173,0.16)'
-  },
-  greetingBadgeDot:{
+    left:0,
+    top:0,
+    bottom:0,
     width:5,
-    height:5,
-    borderRadius:3,
-    backgroundColor:colors.teal,
-    marginRight:6
+    backgroundColor:colors.teal
   },
-  greetingBadgeText:{
-    color:'rgba(255,255,255,0.68)',
-    fontSize:7,
-    fontWeight:'900',
-    letterSpacing:1.5
-  },
-  premiumEyebrow:{
-    color:'#62D1C3',
-    fontSize:10,
-    fontWeight:'900',
-    letterSpacing:2.2,
-    marginTop:25
-  },
-  premiumTitle:{
-    color:'#F7F5EE',
-    fontSize:30,
-    lineHeight:35,
-    fontWeight:'900',
-    letterSpacing:-0.7,
-    marginTop:5
-  },
-  premiumSubtitle:{
-    color:'rgba(247,245,238,0.66)',
-    fontSize:12,
-    lineHeight:18,
-    marginTop:7,
-    maxWidth:315
-  },
-  premiumFooter:{
-    position:'absolute',
-    left:20,
-    right:20,
-    bottom:17,
-    paddingTop:12,
-    borderTopWidth:1,
-    borderTopColor:'rgba(232,216,173,0.14)',
+  editorialTop:{
     flexDirection:'row',
     alignItems:'center',
-    justifyContent:'space-between'
+    justifyContent:'space-between',
+    marginLeft:4
   },
-  premiumFooterLabel:{
-    color:'rgba(232,216,173,0.70)',
-    fontSize:7,
+  editorialKicker:{
+    color:colors.muted,
+    fontSize:8,
     fontWeight:'900',
     letterSpacing:1.8
   },
-  premiumFooterText:{
-    color:'rgba(247,245,238,0.78)',
-    fontSize:10,
-    fontWeight:'700',
-    marginTop:3
-  },
-  premiumArrow:{
-    width:34,
-    height:34,
-    borderRadius:11,
-    backgroundColor:colors.goldLight,
+  editorialStatus:{
+    height:25,
+    paddingHorizontal:9,
+    borderRadius:8,
+    flexDirection:'row',
     alignItems:'center',
-    justifyContent:'center'
+    backgroundColor:'rgba(39,168,154,0.08)',
+    borderWidth:1,
+    borderColor:'rgba(39,168,154,0.16)'
+  },
+  editorialStatusDot:{
+    width:6,
+    height:6,
+    borderRadius:3,
+    backgroundColor:colors.teal,
+    marginRight:5
+  },
+  editorialStatusText:{
+    color:colors.teal,
+    fontSize:7,
+    fontWeight:'900',
+    letterSpacing:1.2
+  },
+  editorialMain:{
+    flex:1,
+    flexDirection:'row',
+    alignItems:'center',
+    marginLeft:4
+  },
+  editorialCopy:{
+    flex:1,
+    paddingRight:12
+  },
+  editorialGreetingText:{
+    color:colors.muted,
+    fontSize:13,
+    fontWeight:'700',
+    letterSpacing:0.2
+  },
+  editorialHeadline:{
+    color:colors.ink,
+    fontSize:38,
+    lineHeight:42,
+    fontWeight:'900',
+    letterSpacing:-1.4,
+    marginTop:1
+  },
+  editorialDescription:{
+    color:'#68747B',
+    fontSize:12,
+    lineHeight:18,
+    marginTop:9,
+    maxWidth:255
+  },
+  editorialNumber:{
+    width:70,
+    height:92,
+    borderRadius:20,
+    backgroundColor:colors.midnight,
+    alignItems:'center',
+    justifyContent:'center',
+    transform:[{rotate:'6deg'}]
+  },
+  editorialNumberText:{
+    color:colors.goldLight,
+    fontSize:25,
+    fontWeight:'900',
+    letterSpacing:-1
+  },
+  editorialBottom:{
+    marginLeft:4,
+    paddingTop:12,
+    borderTopWidth:1,
+    borderTopColor:'rgba(24,32,39,0.09)',
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-between'
+  },
+  editorialBottomText:{
+    color:colors.muted,
+    fontSize:7,
+    fontWeight:'900',
+    letterSpacing:1.6
   },
   dashboardIntro:{display:'none'},
   headerRow:{

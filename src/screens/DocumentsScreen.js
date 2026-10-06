@@ -36,7 +36,7 @@ export default function DocumentsScreen({navigation}){
   };
 
   return <View style={styles.page}>
-    <View style={[styles.topBar,compactHeader&&styles.topBarCompact]}>
+    <View style={[styles.topBar,compactHeader&&styles.topBarCompact,{paddingTop:top+10}]}>
       <Pressable onPress={()=>navigation.goBack()} style={[styles.back,compactHeader&&styles.backCompact]}><Ionicons name="arrow-back" size={compactHeader?19:22} color={colors.ink}/></Pressable>
       <View style={{flex:1,marginLeft:compactHeader?8:10}}>
         <Text style={[styles.title,compactHeader&&styles.titleCompact]}>Documents</Text>
@@ -69,7 +69,7 @@ export default function DocumentsScreen({navigation}){
 
 const styles=StyleSheet.create({
   page:{flex:1,backgroundColor:'#F4F6F3'},
-  topBar:{paddingTop:55,paddingHorizontal:18,paddingBottom:15,flexDirection:'row',alignItems:'center',backgroundColor:'#182027',borderBottomWidth:0,borderBottomColor:'#ECEDEB'},
+  topBar:{paddingTop:0,paddingHorizontal:18,paddingBottom:15,flexDirection:'row',alignItems:'center',backgroundColor:'#182027',borderBottomWidth:0,borderBottomColor:'#ECEDEB'},
   topBarCompact:{paddingTop:10,paddingBottom:10,shadowOpacity:0.08,shadowRadius:5,elevation:3},
   back:{width:40,height:40,borderRadius:13,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(255,255,255,.10)'},
   backCompact:{width:34,height:34,borderRadius:11},

@@ -54,14 +54,22 @@ function CustomTabBar({state,descriptors,navigation}){
         key={route.key}
         accessibilityRole="button"
         onPress={onPress}
-        style={[styles.tabItem,focused&&styles.activeTabItem]}
+        style={styles.tabItem}
       >
         {focused ? (
-          <BlurView tint="light" intensity={95} style={styles.activeGlass}>
-            <View pointerEvents="none" style={styles.activeGlassHighlight}/>
-            {tabContent}
+          <BlurView
+            tint="light"
+            intensity={90}
+            experimentalBlurMethod="dimezisBlurView"
+            style={styles.activeGlass}
+          >
+            <View pointerEvents="none" style={styles.glassTint}/>
+            <View pointerEvents="none" style={styles.glassEdge}/>
+            <View style={styles.activeContent}>{tabContent}</View>
           </BlurView>
-        ) : tabContent}
+        ) : (
+          tabContent
+        )}
       </Pressable>
     );
   };
@@ -97,12 +105,12 @@ const styles=StyleSheet.create({
   iosTabBar:{
     width:'100%',
     maxWidth:390,
-    height:76,
-    borderRadius:38,
+    height:72,
+    borderRadius:36,
     flexDirection:'row',
     alignItems:'center',
-    paddingHorizontal:7,
-    paddingVertical:7,
+    paddingHorizontal:6,
+    paddingVertical:6,
     backgroundColor:'#FFFFFF',
     shadowColor:'#15242B',
     shadowOffset:{width:0,height:7},
@@ -123,31 +131,41 @@ const styles=StyleSheet.create({
   },
   activeGlass:{
     position:'absolute',
-    top:1,
-    bottom:1,
-    left:1,
-    right:1,
-    alignItems:'center',
-    justifyContent:'center',
+    top:0,
+    bottom:0,
+    left:0,
+    right:0,
     borderRadius:30,
     overflow:'visible',
+    backgroundColor:'rgba(235,235,242,0.72)',
+    borderWidth:1,
+    borderColor:'rgba(255,255,255,0.95)',
+    shadowColor:'#A8ADB5',
+    shadowOffset:{width:0,height:2},
+    shadowOpacity:0.16,
+    shadowRadius:8,
+    elevation:4,
   },
-  activeGlassHighlight:{
+  glassTint:{
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor:'rgba(255,255,255,0.22)',
+  },
+  glassEdge:{
     ...StyleSheet.absoluteFillObject,
     borderRadius:30,
-    backgroundColor:'rgba(255,255,255,0.18)',
     borderWidth:1,
-    borderColor:'rgba(255,255,255,0.82)',
-    shadowColor:'#FFFFFF',
-    shadowOffset:{width:0,height:1},
-    shadowOpacity:0.30,
-    shadowRadius:10,
-    elevation:6,
-    opacity:1,
+    borderColor:'rgba(255,255,255,0.72)',
+    backgroundColor:'rgba(255,255,255,0.06)',
+  },
+  activeContent:{
+    flex:1,
+    alignItems:'center',
+    justifyContent:'center',
+    paddingHorizontal:3,
   },
   tabLabel:{
     marginTop:2,
-    fontSize:9.5,
+    fontSize:10,
     fontWeight:'800',
     lineHeight:12,
     textAlign:'center',

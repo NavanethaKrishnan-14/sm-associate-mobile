@@ -59,6 +59,24 @@ export default function CarsScreen({navigation}){
    {customDocs.map(name=><View key={name} style={s.doc}><View style={{flexDirection:'row',justifyContent:'space-between'}}><Text style={s.docTitle}>{name}</Text><Pressable onPress={()=>setCustomDocs(p=>p.filter(x=>x!==name))}><Text style={s.deleteText}>Remove</Text></Pressable></View><DocumentPickerButton file={files['custom:'+name]} onPick={f=>setFiles(p=>({...p,['custom:'+name]:f}))}/></View>)}
    <Pressable disabled={saving} onPress={save} style={s.primary}><Text style={s.primaryText}>{saving?'Saving...':editing?'Update Vehicle':'Record Purchase'}</Text></Pressable>
   </ScrollView></View></View></Modal>
+  <Modal visible={!!notice} transparent animationType="fade" onRequestClose={()=>setNotice(null)}>
+   <View style={s.noticeOverlay}>
+    <View style={s.noticeCard}>
+     <View style={s.noticeGlow}/>
+     <View style={s.noticeIconWrap}>
+      <Ionicons name={notice?.type==='success'?'checkmark-circle':'alert-circle'} size={30} color={notice?.type==='success' ? colors.teal : colors.gold}/>
+     </View>
+     <Text style={s.noticeEyebrow}>SM ASSOCIATE</Text>
+     <Text style={s.noticeTitle}>{notice?.title||'Vehicle'}</Text>
+     <Text style={s.noticeMessage}>{notice?.message||''}</Text>
+     <View style={s.noticeDivider}/>
+     <Pressable onPress={()=>setNotice(null)} style={s.noticeButton}>
+      <Text style={s.noticeButtonText}>OK, GOT IT</Text>
+      <Ionicons name="arrow-forward" size={17} color={colors.midnight}/>
+     </Pressable>
+    </View>
+   </View>
+  </Modal>
  </View>
 }
 function Field({label,value,onChangeText,keyboardType}){return <View style={{marginBottom:11}}><Text style={s.label}>{label}</Text><TextInput value={String(value??'')} onChangeText={onChangeText} keyboardType={keyboardType} placeholder={'Enter '+label.toLowerCase()} placeholderTextColor="#9AA4AD" style={s.input}/></View>}

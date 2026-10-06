@@ -68,12 +68,6 @@ export default function DashboardScreen({navigation}){
           </View>
         </View>
 
-        <View style={styles.commandRule}>
-          <View style={styles.commandRuleAccent}/>
-          <Text style={styles.commandDate}>BUSINESS OVERVIEW</Text>
-          <View style={styles.commandRuleLine}/>
-          <View style={styles.commandRuleEnd}/>
-        </View>
       </View>
 
       <ScrollView
@@ -286,41 +280,11 @@ const styles=StyleSheet.create({
     borderWidth:1,
     borderColor:colors.midnight
   },
-  commandRule:{
-    marginTop:10,
-    minHeight:25,
-    flexDirection:'row',
-    alignItems:'center'
-  },
-  commandRuleAccent:{
-    width:22,
-    height:2,
-    borderRadius:2,
-    backgroundColor:colors.teal,
-    marginRight:8
-  },
-  commandDate:{
-    color:'rgba(255,255,255,0.38)',
-    fontSize:7,
-    fontWeight:'900',
-    letterSpacing:1.5
-  },
-  commandRuleLine:{
-    flex:1,
-    height:1,
-    backgroundColor:'rgba(255,255,255,0.08)',
-    marginHorizontal:10
-  },
-  commandProfile:{display:'none'},
-  commandAvatar:{display:'none'},
-  commandAvatarText:{display:'none'},
-  commandProfileText:{display:'none'},
-  commandRuleEnd:{
-    width:8,
-    height:8,
-    borderRadius:4,
-    backgroundColor:'rgba(39,168,154,0.65)'
-  },
+  commandRule:{display:'none'},
+  commandRuleAccent:{display:'none'},
+  commandDate:{display:'none'},
+  commandRuleLine:{display:'none'},
+  commandRuleEnd:{display:'none'},
   dashboardIntro:{
     marginHorizontal:12,
     marginTop:36,

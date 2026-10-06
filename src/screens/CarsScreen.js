@@ -28,13 +28,21 @@ export default function CarsScreen({navigation}){
     const r=await api.post('/cars',{seller:{name:form.sellerName,mobile:form.sellerMobile},registrationNumber:form.registrationNumber,make:form.make,model:form.model,year:Number(form.year||0),ownerNumber:Number(form.ownerNumber||1),km:Number(form.km||0),fuel:form.fuel,purchasePrice:Number(form.purchasePrice||0),notes:form.notes});
     id=r.data?.data?._id;
    }
-   if(id){
-    for(const [key] of fixedDocs){if(files[key])await uploadDocument('/cars/'+id+'/documents/'+key,files[key])}
-    for(const name of customDocs){const f=files['custom:'+name];if(f)await uploadDocument('/cars/'+id+'/documents/custom',f,{documentName:name})}
-    if(editing)await api.patch('/cars/'+id+'/documents',{customDocuments:customDocs,...Object.fromEntries(fixedDocs.map(([key])=>[key,Boolean(editing.documents?.[key]||files[key])]))});
+   if(!id)throw new Error('Vehicle was saved, but the server did not return the vehicle ID.');
+   for(const [key] of fixedDocs){
+    if(!files[key])continue;
+    try{await uploadDocument('/cars/'+id+'/documents/'+key,files[key])}
+    catch(error){throw new Error((editing?'Vehicle updated':'Vehicle created')+' successfully, but '+key+' upload failed: '+(error?.message||'Upload failed'))}
    }
+   for(const name of customDocs){
+    const f=files['custom:'+name];
+    if(!f)continue;
+    try{await uploadDocument('/cars/'+id+'/documents/custom',f,{documentName:name})}
+    catch(error){throw new Error((editing?'Vehicle updated':'Vehicle created')+' successfully, but '+name+' upload failed: '+(error?.message||'Upload failed'))}
+   }
+   if(editing)await api.patch('/cars/'+id+'/documents',{customDocuments:customDocs,...Object.fromEntries(fixedDocs.map(([key])=>[key,Boolean(editing.documents?.[key]||files[key])]))});
    setModal(false);await load();
-  }catch(e){Alert.alert('Vehicle',e?.response?.data?.message||'Unable to save vehicle.')}finally{setSaving(false)}
+  }catch(e){Alert.alert('Vehicle',e?.message||e?.response?.data?.message||'Unable to save vehicle.')}finally{setSaving(false)}
  }
  function remove(c){Alert.alert('Delete vehicle','Delete '+c.vehicleId+'? This cannot be undone.',[{text:'Cancel',style:'cancel'},{text:'Delete',style:'destructive',onPress:async()=>{try{await api.delete('/cars/'+c._id);load()}catch(e){Alert.alert('Delete',e?.response?.data?.message||'Unable to delete vehicle.')}}}])}
  function addCustom(){const n=customName.trim();if(!n)return;if(customDocs.some(x=>x.toLowerCase()===n.toLowerCase()))return Alert.alert('Document','This document already exists.');setCustomDocs(p=>[...p,n]);setCustomName('')}

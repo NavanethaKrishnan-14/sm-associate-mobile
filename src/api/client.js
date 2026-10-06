@@ -126,9 +126,10 @@ export async function uploadDocument(path, asset, fields = {}) {
     if (value !== undefined && value !== null) form.append(key, String(value));
   });
 
+  // Let Axios/React Native generate the multipart boundary automatically.
+  // Manually forcing Content-Type can omit the boundary on some Android builds.
   const response = await api.post(path, form, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-    timeout: 30000
+    timeout: 60000
   });
   return response.data;
 }

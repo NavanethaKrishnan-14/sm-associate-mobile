@@ -19,7 +19,7 @@ export default function MoreScreen({navigation}){
  const {top,bottom}=useSafeAreaInsets();
  const go=section=>section==='CarSale'?navigation.navigate('CarSale'):['CarProfit','LoanRevenue','OperationalReports'].includes(section)?navigation.navigate(section):navigation.navigate('AdminTools',{section});
  return <View style={s.page}>
-   <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[s.content,{paddingBottom:bottom+100}]}>
+   <ScrollView bounces={false} alwaysBounceVertical={false} overScrollMode="never" showsVerticalScrollIndicator={false} contentContainerStyle={[s.content,{paddingBottom:bottom+100}]}>
      <View style={[s.topBar,{paddingTop:top+16}]}>
        <View style={s.topRow}>
          <View style={s.brand}>

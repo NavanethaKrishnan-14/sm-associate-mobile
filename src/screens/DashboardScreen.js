@@ -133,7 +133,7 @@ const styles=StyleSheet.create({
   commandBar:{backgroundColor:colors.midnight,paddingHorizontal:18,paddingBottom:12,borderBottomWidth:1,borderBottomColor:'rgba(255,255,255,0.08)'},
   commandTop:{minHeight:54,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},
   brandCluster:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0},
-  logoFrame:{width:48,height:44,borderRadius:14,backgroundColor:'rgba(255,255,255,0.07)',borderWidth:1,borderColor:'rgba(255,255,255,0.12)',alignItems:'center',justifyContent:'center'},
+  logoFrame:{width:48,height:44,borderRadius:14,alignItems:'center',justifyContent:'center'},
   brandCopy:{marginLeft:10,minWidth:0},
   brandKicker:{color:colors.teal,fontSize:8,fontWeight:'900',letterSpacing:1.8},
   brandTitle:{color:colors.white,fontSize:15,fontWeight:'900',letterSpacing:0.5,marginTop:3},

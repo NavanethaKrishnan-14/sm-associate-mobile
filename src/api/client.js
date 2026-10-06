@@ -95,7 +95,6 @@ export async function login(email, password) {
 export async function uploadDocument(path, asset, fields = {}) {
   if (!asset?.uri) throw new Error('Please select a document first.');
 
-  const form = new FormData();
   const fileName = String(asset.name || 'document');
   const lowerName = fileName.toLowerCase();
   const mimeType = asset.mimeType ||
@@ -105,14 +104,48 @@ export async function uploadDocument(path, asset, fields = {}) {
      lowerName.endsWith('.webp') ? 'image/webp' :
      lowerName.endsWith('.doc') ? 'application/msword' :
      lowerName.endsWith('.docx') ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' :
+     lowerName.endsWith('.xls') ? 'application/vnd.ms-excel' :
+     lowerName.endsWith('.xlsx') ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' :
+     lowerName.endsWith('.ppt') ? 'application/vnd.ms-powerpoint' :
+     lowerName.endsWith('.pptx') ? 'application/vnd.openxmlformats-officedocument.presentationml.presentation' :
+     lowerName.endsWith('.txt') ? 'text/plain' :
+     lowerName.endsWith('.csv') ? 'text/csv' :
      'application/octet-stream');
 
-  form.append('file', {uri: asset.uri, name: fileName, type: mimeType});
+  const token = await readAccessToken();
+  if (!token) {
+    throw new Error('Your login session has expired. Please sign in again.');
+  }
+
+  /*
+   * React Native 0.86 / Expo 57 can reject the old
+   * { uri, name, type } FormData part with:
+   * "Unsupported FormDataPart implementation".
+   *
+   * Convert the local DocumentPicker URI to a real Blob first.
+   * Blob is a supported native FormData part and works for images,
+   * PDFs and Office documents.
+   */
+  let blob;
+  try {
+    const fileResponse = await fetch(asset.uri);
+    if (!fileResponse.ok) {
+      throw new Error('Unable to read the selected document from device storage.');
+    }
+    blob = await fileResponse.blob();
+  } catch (error) {
+    throw new Error(error?.message || 'Unable to prepare the selected document for upload.');
+  }
+
+  const form = new FormData();
+  form.append('file', blob, fileName);
+
   Object.entries(fields).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) form.append(key, String(value));
+    if (value !== undefined && value !== null) {
+      form.append(key, String(value));
+    }
   });
 
-  const token = await readAccessToken();
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 60000);
 
@@ -121,21 +154,36 @@ export async function uploadDocument(path, asset, fields = {}) {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        ...(token ? {Authorization: 'Bearer ' + token, 'x-access-token': token} : {})
+        Authorization: 'Bearer ' + token,
+        'x-access-token': token
+        // Do NOT set Content-Type manually.
+        // fetch adds the multipart boundary automatically.
       },
       body: form,
       signal: controller.signal
     });
 
-    const text = await response.text();
+    const responseText = await response.text();
     let data = {};
-    try { data = text ? JSON.parse(text) : {}; }
-    catch { data = {message: text || 'The server returned an invalid response.'}; }
+    try {
+      data = responseText ? JSON.parse(responseText) : {};
+    } catch {
+      data = {message: responseText || 'The server returned an invalid response.'};
+    }
 
-    if (!response.ok) throw new Error(data?.message || 'Document upload failed with HTTP ' + response.status + '.');
+    if (!response.ok) {
+      throw new Error(data?.message || 'Document upload failed with HTTP ' + response.status + '.');
+    }
+
+    if (data?.success !== true) {
+      throw new Error(data?.message || 'Document upload was not confirmed by the server.');
+    }
+
     return data;
   } catch (error) {
-    if (error?.name === 'AbortError') throw new Error('Document upload timed out. Please try again.');
+    if (error?.name === 'AbortError') {
+      throw new Error('Document upload timed out. Please try again.');
+    }
     throw error;
   } finally {
     clearTimeout(timer);

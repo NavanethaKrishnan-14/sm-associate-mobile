@@ -61,7 +61,7 @@ export default function MoreScreen({navigation}) {
         <View style={[styles.header, {paddingTop: top + 14}]}>
           <View style={styles.headerTop}>
             <View style={styles.logo}>
-              <Logo width={72} />
+              <Logo width={84} />
             </View>
 
             <View style={styles.headerCenter}>
@@ -225,8 +225,8 @@ const styles = {
     alignItems: 'center',
   },
   logo: {
-    width: 76,
-    height: 76,
+    width: 88,
+    height: 88,
     alignItems: 'center',
     justifyContent: 'center',
   },

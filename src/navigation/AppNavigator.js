@@ -4,7 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons';
 import {BlurView} from 'expo-blur';
-import {StyleSheet, Pressable, Text, View} from 'react-native';
+import {StyleSheet, Pressable, Text, View, Platform} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import LoginScreen from '../screens/LoginScreen';
 import DashboardScreen from '../screens/DashboardScreen';
@@ -57,16 +57,23 @@ function CustomTabBar({state,descriptors,navigation}){
         style={styles.tabItem}
       >
         {focused ? (
-          <BlurView
-            tint="light"
-            intensity={90}
-            blurMethod="dimezisBlurView"
-            style={styles.activeGlass}
-          >
-            <View pointerEvents="none" style={styles.glassTint}/>
-            <View pointerEvents="none" style={styles.glassEdge}/>
-            <View style={styles.activeContent}>{tabContent}</View>
-          </BlurView>
+          Platform.OS === 'ios' ? (
+            <BlurView
+              tint="light"
+              intensity={80}
+              style={styles.activeGlass}
+            >
+              <View pointerEvents="none" style={styles.glassTint}/>
+              <View pointerEvents="none" style={styles.glassEdge}/>
+              <View style={styles.activeContent}>{tabContent}</View>
+            </BlurView>
+          ) : (
+            <View style={styles.activeGlass}>
+              <View pointerEvents="none" style={styles.glassTint}/>
+              <View pointerEvents="none" style={styles.glassEdge}/>
+              <View style={styles.activeContent}>{tabContent}</View>
+            </View>
+          )
         ) : (
           tabContent
         )}

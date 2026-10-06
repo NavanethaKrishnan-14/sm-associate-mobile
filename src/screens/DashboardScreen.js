@@ -1,6 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {Pressable,RefreshControl,ScrollView,Text,View,StyleSheet} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import {BlurView} from 'expo-blur';
 import {api} from '../api/client';
 import {colors} from '../theme/colors';
 import Logo from '../components/Logo';
@@ -83,6 +84,7 @@ export default function DashboardScreen({navigation}){
         }
       >
         <View style={styles.premiumGreeting}>
+          <BlurView intensity={32} tint="dark" style={styles.premiumGlass}/>
           <View style={styles.premiumGlow}/>
           <View style={styles.greetingTop}>
             <View style={styles.greetingBadge}>
@@ -301,10 +303,15 @@ const styles=StyleSheet.create({
     minHeight:222,
     borderRadius:28,
     padding:20,
-    backgroundColor:'#202B31',
+    backgroundColor:'rgba(32,43,49,0.72)',
     borderWidth:1,
-    borderColor:'rgba(232,216,173,0.18)',
+    borderColor:'rgba(232,216,173,0.20)',
     overflow:'hidden'
+  },
+  premiumGlass:{
+    ...StyleSheet.absoluteFillObject,
+    borderRadius:28,
+    backgroundColor:'rgba(255,255,255,0.025)'
   },
   premiumGlow:{
     position:'absolute',
@@ -313,7 +320,7 @@ const styles=StyleSheet.create({
     borderRadius:90,
     right:-75,
     top:-80,
-    backgroundColor:'rgba(39,168,154,0.13)'
+    backgroundColor:'rgba(39,168,154,0.11)'
   },
   greetingTop:{
     flexDirection:'row',
@@ -344,14 +351,14 @@ const styles=StyleSheet.create({
     letterSpacing:1.5
   },
   premiumEyebrow:{
-    color:colors.teal,
+    color:'#62D1C3',
     fontSize:10,
     fontWeight:'900',
     letterSpacing:2.2,
     marginTop:25
   },
   premiumTitle:{
-    color:colors.white,
+    color:'#F7F5EE',
     fontSize:30,
     lineHeight:35,
     fontWeight:'900',
@@ -359,7 +366,7 @@ const styles=StyleSheet.create({
     marginTop:5
   },
   premiumSubtitle:{
-    color:'rgba(255,255,255,0.58)',
+    color:'rgba(247,245,238,0.66)',
     fontSize:12,
     lineHeight:18,
     marginTop:7,
@@ -372,19 +379,19 @@ const styles=StyleSheet.create({
     bottom:17,
     paddingTop:12,
     borderTopWidth:1,
-    borderTopColor:'rgba(255,255,255,0.09)',
+    borderTopColor:'rgba(232,216,173,0.14)',
     flexDirection:'row',
     alignItems:'center',
     justifyContent:'space-between'
   },
   premiumFooterLabel:{
-    color:'rgba(232,216,173,0.58)',
+    color:'rgba(232,216,173,0.70)',
     fontSize:7,
     fontWeight:'900',
     letterSpacing:1.8
   },
   premiumFooterText:{
-    color:'rgba(255,255,255,0.72)',
+    color:'rgba(247,245,238,0.78)',
     fontSize:10,
     fontWeight:'700',
     marginTop:3

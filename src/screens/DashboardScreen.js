@@ -43,27 +43,40 @@ export default function DashboardScreen({navigation}){
   return (
     <View style={styles.page}>
       <View style={styles.fixedTopBar}>
-        <BlurView tint="dark" intensity={38} style={styles.headerBlur}/>
-        <View pointerEvents="none" style={styles.headerGlow}/>
+        <View style={styles.headerAccent}/>
         <View style={styles.headerRow}>
           <View style={styles.brandGroup}>
-            <View style={styles.logoCard}><Logo width={92}/></View>
+            <View style={styles.logoFrame}>
+              <Logo width={86}/>
+            </View>
             <View style={styles.brandCopy}>
               <Text style={styles.brandKicker}>SM ASSOCIATE</Text>
-              <Text style={styles.brandTitle}>Management</Text>
+              <View style={styles.brandLine}>
+                <Text style={styles.brandTitle}>Management</Text>
+                <View style={styles.brandMark}/>
+              </View>
             </View>
           </View>
           <View style={styles.headerActions}>
-            <View style={styles.statusPill}>
-              <View style={styles.statusDot}/>
-              <Text style={styles.statusText}>LIVE</Text>
-            </View>
             <Pressable
               onPress={()=>navigation.navigate('More')}
-              style={({pressed})=>[styles.notification,pressed&&styles.pressed]}
+              style={({pressed})=>[styles.iconButton,pressed&&styles.pressed]}
             >
-              <Ionicons name="notifications-outline" size={20} color={colors.goldLight}/>
+              <Ionicons name="notifications-outline" size={21} color={colors.white}/>
               <View style={styles.notificationDot}/>
+            </Pressable>
+            <Pressable
+              onPress={()=>navigation.navigate('More')}
+              style={({pressed})=>[styles.profileButton,pressed&&styles.pressed]}
+            >
+              <View style={styles.profileAvatar}>
+                <Ionicons name="person" size={16} color={colors.midnight}/>
+              </View>
+              <View style={styles.profileText}>
+                <Text style={styles.profileName}>Admin</Text>
+                <Text style={styles.profileRole}>OWNER</Text>
+              </View>
+              <Ionicons name="chevron-down" size={13} color="rgba(255,255,255,0.55)"/>
             </Pressable>
           </View>
         </View>
@@ -185,26 +198,138 @@ const styles=StyleSheet.create({
   scroll:{flex:1},
   content:{paddingBottom:20,backgroundColor:colors.ivory},
   fixedTopBar:{
-    height:78,
-    backgroundColor:'rgba(24,32,39,0.96)',
-    paddingHorizontal:16,
-    paddingTop:8,
-    paddingBottom:8,
-    overflow:'hidden',
+    height:82,
+    backgroundColor:colors.midnight,
+    paddingHorizontal:15,
+    paddingTop:10,
+    paddingBottom:9,
     borderBottomWidth:1,
-    borderBottomColor:'rgba(39,168,154,0.20)'
+    borderBottomColor:'rgba(232,216,173,0.12)',
+    overflow:'hidden'
   },
-  headerBlur:{
-    ...StyleSheet.absoluteFillObject,
-  },
-  headerGlow:{
+  headerAccent:{
     position:'absolute',
-    right:-45,
-    top:-55,
-    width:150,
-    height:150,
-    borderRadius:75,
-    backgroundColor:'rgba(39,168,154,0.10)'
+    left:15,
+    right:15,
+    bottom:-1,
+    height:2,
+    borderRadius:2,
+    backgroundColor:colors.teal
+  },
+  headerRow:{
+    flex:1,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-between'
+  },
+  brandGroup:{
+    flex:1,
+    flexDirection:'row',
+    alignItems:'center'
+  },
+  logoFrame:{
+    width:74,
+    height:54,
+    borderRadius:16,
+    backgroundColor:'rgba(255,255,255,0.045)',
+    borderWidth:1,
+    borderColor:'rgba(232,216,173,0.16)',
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  brandCopy:{
+    marginLeft:10,
+    justifyContent:'center'
+  },
+  brandKicker:{
+    color:'rgba(232,216,173,0.72)',
+    fontSize:8,
+    fontWeight:'900',
+    letterSpacing:2.1
+  },
+  brandLine:{
+    flexDirection:'row',
+    alignItems:'center',
+    marginTop:3
+  },
+  brandTitle:{
+    color:colors.white,
+    fontSize:16,
+    fontWeight:'900',
+    letterSpacing:0.15
+  },
+  brandMark:{
+    width:5,
+    height:5,
+    borderRadius:3,
+    backgroundColor:colors.teal,
+    marginLeft:7
+  },
+  headerActions:{
+    flexDirection:'row',
+    alignItems:'center',
+    gap:8
+  },
+  iconButton:{
+    width:42,
+    height:42,
+    borderRadius:14,
+    backgroundColor:'rgba(255,255,255,0.055)',
+    borderWidth:1,
+    borderColor:'rgba(255,255,255,0.10)',
+    alignItems:'center',
+    justifyContent:'center',
+    position:'relative'
+  },
+  notificationDot:{
+    position:'absolute',
+    top:8,
+    right:8,
+    width:6,
+    height:6,
+    borderRadius:3,
+    backgroundColor:colors.teal,
+    borderWidth:1,
+    borderColor:colors.midnight
+  },
+  profileButton:{
+    height:46,
+    paddingLeft:4,
+    paddingRight:8,
+    borderRadius:15,
+    flexDirection:'row',
+    alignItems:'center',
+    backgroundColor:'rgba(255,255,255,0.055)',
+    borderWidth:1,
+    borderColor:'rgba(232,216,173,0.14)'
+  },
+  profileAvatar:{
+    width:36,
+    height:36,
+    borderRadius:12,
+    backgroundColor:colors.goldLight,
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  profileText:{
+    marginLeft:7,
+    marginRight:8
+  },
+  profileName:{
+    color:colors.white,
+    fontSize:10,
+    fontWeight:'900'
+  },
+  profileRole:{
+    color:'rgba(255,255,255,0.42)',
+    fontSize:7,
+    fontWeight:'900',
+    letterSpacing:1.2,
+    marginTop:2
+  },
+  pressed:{
+    opacity:0.72,
+    transform:[{scale:0.97}]
   },
   dashboardIntro:{
     marginHorizontal:12,

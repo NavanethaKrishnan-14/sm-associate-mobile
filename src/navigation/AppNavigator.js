@@ -57,7 +57,7 @@ function CustomTabBar({state,descriptors,navigation}){
         style={[styles.tabItem,focused&&styles.activeTabItem]}
       >
         {focused ? (
-          <BlurView tint="light" intensity={70} style={styles.activeGlass}>
+          <BlurView tint="light" intensity={85} style={styles.activeGlass}>
             <View pointerEvents="none" style={styles.activeGlassHighlight}/>
             {tabContent}
           </BlurView>
@@ -119,7 +119,7 @@ const styles=StyleSheet.create({
     overflow:'hidden',
   },
   activeTabItem:{
-    backgroundColor:'rgba(225,230,235,0.72)',
+    backgroundColor:'transparent',
   },
   activeGlass:{
     ...StyleSheet.absoluteFillObject,
@@ -131,9 +131,14 @@ const styles=StyleSheet.create({
   activeGlassHighlight:{
     ...StyleSheet.absoluteFillObject,
     borderRadius:30,
-    backgroundColor:'rgba(255,255,255,0.24)',
-    borderWidth:1,
-    borderColor:'rgba(255,255,255,0.70)',
+    backgroundColor:'rgba(255,255,255,0.28)',
+    borderWidth:1.5,
+    borderColor:'rgba(255,255,255,0.92)',
+    shadowColor:'#6D7C84',
+    shadowOffset:{width:0,height:2},
+    shadowOpacity:0.18,
+    shadowRadius:6,
+    elevation:4,
   },
   tabLabel:{
     marginTop:2,

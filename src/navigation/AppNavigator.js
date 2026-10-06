@@ -4,7 +4,6 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons';
 import {BlurView} from 'expo-blur';
-import {LinearGradient} from 'expo-linear-gradient';
 import {StyleSheet, Pressable, Text, View, Platform} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import LoginScreen from '../screens/LoginScreen';
@@ -64,31 +63,17 @@ function CustomTabBar({state,descriptors,navigation}){
               intensity={80}
               style={styles.activeGlass}
             >
-              <LinearGradient
-                pointerEvents="none"
-                colors={['rgba(255,255,255,0.82)','rgba(232,244,250,0.52)','rgba(255,255,255,0.72)']}
-                locations={[0,0.48,1]}
-                start={{x:0.15,y:0}}
-                end={{x:0.85,y:1}}
-                style={styles.waterGlass}
-              />
-              <View pointerEvents="none" style={styles.glassTint}/>
+              <View pointerEvents="none" style={styles.glassSurface}/>
               <View pointerEvents="none" style={styles.glassEdge}/>
+              <View pointerEvents="none" style={styles.glassInnerEdge}/>
               <View pointerEvents="none" style={styles.glassShine}/>
               <View style={styles.activeContent}>{tabContent}</View>
             </BlurView>
           ) : (
             <View style={styles.activeGlass}>
-              <LinearGradient
-                pointerEvents="none"
-                colors={['rgba(255,255,255,0.82)','rgba(232,244,250,0.52)','rgba(255,255,255,0.72)']}
-                locations={[0,0.48,1]}
-                start={{x:0.15,y:0}}
-                end={{x:0.85,y:1}}
-                style={styles.waterGlass}
-              />
-              <View pointerEvents="none" style={styles.glassTint}/>
+              <View pointerEvents="none" style={styles.glassSurface}/>
               <View pointerEvents="none" style={styles.glassEdge}/>
+              <View pointerEvents="none" style={styles.glassInnerEdge}/>
               <View pointerEvents="none" style={styles.glassShine}/>
               <View style={styles.activeContent}>{tabContent}</View>
             </View>
@@ -175,29 +160,40 @@ const styles=StyleSheet.create({
     alignItems:'center',
     justifyContent:'center',
   },
-  glassTint:{
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor:'rgba(255,255,255,0.12)',
-  },
-  waterGlass:{
+  glassSurface:{
     ...StyleSheet.absoluteFillObject,
     borderRadius:28,
+    backgroundColor:'rgba(255,255,255,0.10)',
   },
   glassEdge:{
     ...StyleSheet.absoluteFillObject,
     borderRadius:28,
-    borderWidth:1.2,
-    borderColor:'rgba(255,255,255,0.96)',
+    borderWidth:1.25,
+    borderColor:'rgba(255,255,255,0.88)',
+    shadowColor:'#FFFFFF',
+    shadowOffset:{width:0,height:0},
+    shadowOpacity:0.34,
+    shadowRadius:8,
+    elevation:4,
+  },
+  glassInnerEdge:{
+    position:'absolute',
+    top:1,
+    left:1,
+    right:1,
+    bottom:1,
+    borderRadius:27,
+    borderWidth:1,
+    borderColor:'rgba(255,255,255,0.22)',
   },
   glassShine:{
     position:'absolute',
     top:3,
-    left:'10%',
-    right:'10%',
-    height:10,
-    borderRadius:10,
-    backgroundColor:'rgba(255,255,255,0.48)',
-    opacity:0.9,
+    left:'14%',
+    right:'14%',
+    height:7,
+    borderRadius:8,
+    backgroundColor:'rgba(255,255,255,0.24)',
   },
   activeContent:{
     flex:1,

@@ -1,4 +1,5 @@
 import React,{useCallback,useState} from 'react';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ActivityIndicator,Pressable,RefreshControl,ScrollView,StyleSheet,Text,TextInput,View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {useFocusEffect} from '@react-navigation/native';
@@ -8,6 +9,7 @@ import {colors} from '../theme/colors';
 const sourceIcon={ "Car Buying":"car-sport-outline", "Car Sold":"checkmark-circle-outline", "Loan":"document-text-outline" };
 
 export default function DocumentsScreen({navigation}){
+  const {top,bottom}=useSafeAreaInsets();
   const [documents,setDocuments]=useState([]);
   const [search,setSearch]=useState('');
   const [loading,setLoading]=useState(true);

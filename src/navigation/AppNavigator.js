@@ -45,7 +45,7 @@ function CustomTabBar({state,descriptors,navigation}){
     const tabContent=(
       <>
         <Ionicons name={icons[route.name]} size={22} color={color}/>
-        <Text style={[styles.tabLabel,{color}]}>{label}</Text>
+        <Text allowFontScaling={false} maxFontSizeMultiplier={1} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.82} style={[styles.tabLabel,{color}]}>{label}</Text>
       </>
     );
 
@@ -97,8 +97,8 @@ const styles=StyleSheet.create({
   iosTabBar:{
     width:'100%',
     maxWidth:390,
-    height:72,
-    borderRadius:36,
+    height:76,
+    borderRadius:38,
     flexDirection:'row',
     alignItems:'center',
     paddingHorizontal:7,
@@ -116,7 +116,7 @@ const styles=StyleSheet.create({
     alignItems:'center',
     justifyContent:'center',
     borderRadius:30,
-    overflow:'hidden',
+    overflow:'visible',
   },
   activeTabItem:{
     backgroundColor:'transparent',
@@ -126,7 +126,7 @@ const styles=StyleSheet.create({
     alignItems:'center',
     justifyContent:'center',
     borderRadius:30,
-    overflow:'hidden',
+    overflow:'visible',
   },
   activeGlassHighlight:{
     ...StyleSheet.absoluteFillObject,
@@ -142,8 +142,13 @@ const styles=StyleSheet.create({
   },
   tabLabel:{
     marginTop:2,
-    fontSize:10,
+    fontSize:9.5,
     fontWeight:'800',
+    lineHeight:12,
+    textAlign:'center',
+    includeFontPadding:false,
+    flexShrink:1,
+    width:'100%',
   },
 });
 

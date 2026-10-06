@@ -34,12 +34,15 @@ const configuredIsLoopback =
 const localLanHost = expoHost || '192.168.1.10';
 const detectedApiUrl = `http://${localLanHost}:5000/api/v1`;
 
-// Production Vercel backend is the APK-safe default.
-// A non-loopback EXPO_PUBLIC_API_BASE_URL can still override it.
+// Development (Expo/Metro) uses the PC running the backend.
+// Production/standalone APK uses the deployed Vercel backend.
+// EXPO_PUBLIC_API_BASE_URL can explicitly override either environment.
 export const API_BASE_URL =
-  configuredApiUrl && !configuredIsLoopback
+  configuredApiUrl
     ? configuredApiUrl
-    : PRODUCTION_API_URL;
+    : __DEV__
+      ? detectedApiUrl
+      : PRODUCTION_API_URL;
 
 export const api = axios.create({
   baseURL: API_BASE_URL,

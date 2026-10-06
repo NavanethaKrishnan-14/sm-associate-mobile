@@ -49,7 +49,7 @@ export default function DashboardScreen({navigation}){
             <View style={styles.logoFrame}><Logo width={42}/></View>
             <View style={styles.brandCopy}>
               <Text style={styles.brandKicker}>SM ASSOCIATE</Text>
-              <Text style={styles.brandTitle}>COMMAND CENTER</Text>
+              <Text style={styles.brandTitle}>BUSINESS MANAGEMENT</Text>
             </View>
           </View>
           <View style={styles.commandActions}>

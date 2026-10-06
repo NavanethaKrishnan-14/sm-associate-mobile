@@ -22,7 +22,10 @@ export default function MoreScreen({navigation}){
    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[s.content,{paddingTop:top+18,paddingBottom:bottom+100}]}>
      <View style={s.header}>
        <View style={s.headerLine}>
-         <View style={s.brand}><Logo width={76}/><View><Text style={s.brandName}>SM ASSOCIATE</Text><Text style={s.brandSub}>BUSINESS MANAGEMENT</Text></View></View>
+         <View style={s.brand}>
+           <View style={s.logoPanel}><View style={s.logoGlow}/><Logo width={72}/></View>
+           <View><Text style={s.brandName}>SM ASSOCIATE</Text><Text style={s.brandSub}>BUSINESS MANAGEMENT</Text></View>
+         </View>
          <View style={s.headerButton}><Ionicons name="ellipsis-horizontal" size={18} color={colors.ink}/></View>
        </View>
        <View style={s.headerRule}/>
@@ -42,20 +45,13 @@ export default function MoreScreen({navigation}){
          <View style={s.featureTag}><Text style={s.featureTagText}>CONTROL CENTER</Text></View>
        </View>
        <View style={s.featureBody}>
-         <View style={{flex:1}}>
-           <Text style={s.featureKicker}>OPERATIONS</Text>
-           <Text style={s.featureTitle}>Business Command</Text>
-           <Text style={s.featureDesc}>Move from customers to revenue with a single workflow.</Text>
-         </View>
+         <View style={{flex:1}}><Text style={s.featureKicker}>OPERATIONS</Text><Text style={s.featureTitle}>Business Command</Text><Text style={s.featureDesc}>Move from customers to revenue with a single workflow.</Text></View>
          <View style={s.featureStat}><Text style={s.featureStatValue}>06</Text><Text style={s.featureStatLabel}>TOOLS</Text></View>
        </View>
        <View style={s.featureFooter}><View style={s.featureFooterLine}/><Text style={s.featureFooterText}>FINANCE  /  MOBILITY  /  REPORTING</Text></View>
      </View>
 
-     <View style={s.sectionHead}>
-       <View><Text style={s.sectionOverline}>YOUR WORKSPACE</Text><Text style={s.sectionTitle}>Management tools</Text></View>
-       <Text style={s.sectionCount}>06 MODULES</Text>
-     </View>
+     <View style={s.sectionHead}><View><Text style={s.sectionOverline}>YOUR WORKSPACE</Text><Text style={s.sectionTitle}>Management tools</Text></View><Text style={s.sectionCount}>06 MODULES</Text></View>
 
      <View style={s.list}>
        {items.map(([label,icon,section,group,desc],i)=><Pressable key={label} onPress={()=>go(section)} style={({pressed})=>[s.module,pressed&&s.modulePressed]}>
@@ -66,15 +62,9 @@ export default function MoreScreen({navigation}){
        </Pressable>)}
      </View>
 
-     <View style={s.security}>
-       <View style={s.securityMark}><Ionicons name="shield-checkmark-outline" size={19} color={colors.teal}/></View>
-       <View style={{flex:1}}><Text style={s.securityTitle}>Secure management space</Text><Text style={s.securitySub}>Administrative access protected</Text></View>
-       <View style={s.securityPill}><View style={s.securityDot}/><Text style={s.securityText}>SECURE</Text></View>
-     </View>
+     <View style={s.security}><View style={s.securityMark}><Ionicons name="shield-checkmark-outline" size={19} color={colors.teal}/></View><View style={{flex:1}}><Text style={s.securityTitle}>Secure management space</Text><Text style={s.securitySub}>Administrative access protected</Text></View><View style={s.securityPill}><View style={s.securityDot}/><Text style={s.securityText}>SECURE</Text></View></View>
 
-     <Pressable onPress={async()=>{await logout();navigation.replace('Login')}} style={({pressed})=>[s.signOut,pressed&&{opacity:.78}]}>
-       <Ionicons name="log-out-outline" size={18} color={colors.danger}/><Text style={s.signText}>Sign out</Text><Ionicons name="arrow-forward" size={15} color={colors.danger}/>
-     </Pressable>
+     <Pressable onPress={async()=>{await logout();navigation.replace('Login')}} style={({pressed})=>[s.signOut,pressed&&{opacity:.78}]}><Ionicons name="log-out-outline" size={18} color={colors.danger}/><Text style={s.signText}>Sign out</Text><Ionicons name="arrow-forward" size={15} color={colors.danger}/></Pressable>
    </ScrollView>
  </View>
 }
@@ -83,8 +73,10 @@ const s={
  page:{flex:1,backgroundColor:'#F5F6F4'},
  content:{paddingHorizontal:18,paddingBottom:110},
  header:{paddingHorizontal:2},
- headerLine:{minHeight:62,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},
- brand:{flexDirection:'row',alignItems:'center',gap:10,flex:1},
+ headerLine:{minHeight:78,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},
+ brand:{flexDirection:'row',alignItems:'center',gap:11,flex:1},
+ logoPanel:{width:82,height:72,borderRadius:20,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center',overflow:'hidden',borderWidth:1,borderColor:'rgba(39,168,154,.25)',shadowColor:'#172027',shadowOffset:{width:0,height:7},shadowOpacity:.16,shadowRadius:13,elevation:5},
+ logoGlow:{position:'absolute',width:72,height:72,borderRadius:36,right:-30,bottom:-35,backgroundColor:'rgba(39,168,154,.18)'},
  brandName:{fontSize:13,fontWeight:'900',letterSpacing:1.6,color:colors.ink},
  brandSub:{fontSize:7.5,fontWeight:'800',letterSpacing:1.15,color:colors.muted,marginTop:3},
  headerButton:{width:40,height:40,borderRadius:20,backgroundColor:colors.white,borderWidth:1,borderColor:'#E3E7E4',alignItems:'center',justifyContent:'center'},

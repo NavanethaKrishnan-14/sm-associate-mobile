@@ -60,7 +60,7 @@ function CustomTabBar({state,descriptors,navigation}){
           <BlurView
             tint="light"
             intensity={90}
-            experimentalBlurMethod="dimezisBlurView"
+            blurMethod="dimezisBlurView"
             style={styles.activeGlass}
           >
             <View pointerEvents="none" style={styles.glassTint}/>

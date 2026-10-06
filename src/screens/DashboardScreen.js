@@ -9,6 +9,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 export default function DashboardScreen({navigation}){
   const [data,setData]=useState(null);
   const [refreshing,setRefreshing]=useState(false);
+  const [loadError,setLoadError]=useState('');
   const {width}=useWindowDimensions();
   const {top:topInset}=useSafeAreaInsets();
   const isCompact=width<380;
@@ -16,10 +17,12 @@ export default function DashboardScreen({navigation}){
 
   async function load(){
     try{
+      setLoadError('');
       const response=await api.get('/reports/dashboard');
       setData(response.data?.data||{});
     }catch(error){
       setData({});
+      setLoadError(error?.response?.data?.message || error?.message || 'Unable to load dashboard data.');
     }finally{
       setRefreshing(false);
     }
@@ -46,7 +49,8 @@ export default function DashboardScreen({navigation}){
 
   return (
     <View style={styles.page}>
-      <View style={styles.commandBar}>
+      <View style={[styles.commandBar,{paddingTop:Math.max(12,topInset)}]}>
+
         <View style={styles.commandTop}>
           <View style={styles.commandBrand}>
             <View style={styles.commandLogo}>
@@ -117,6 +121,19 @@ export default function DashboardScreen({navigation}){
             </View>
           </View>
         </View>
+
+        {loadError ? (
+          <View style={styles.loadErrorCard}>
+            <Ionicons name="cloud-offline-outline" size={20} color={colors.danger}/>
+            <View style={styles.loadErrorBody}>
+              <Text style={styles.loadErrorTitle}>Unable to load dashboard</Text>
+              <Text style={styles.loadErrorText}>{loadError}</Text>
+              <Pressable onPress={load} style={styles.retryButton}>
+                <Text style={styles.retryText}>Retry</Text>
+              </Pressable>
+            </View>
+          </View>
+        ) : null}
 
         <View style={styles.sectionHeader}>
           <View>
@@ -209,7 +226,6 @@ const styles=StyleSheet.create({
   commandBar:{
     backgroundColor:colors.midnight,
     paddingHorizontal:16,
-    paddingTop:Math.max(12,topInset),
     paddingBottom:11,
     borderBottomWidth:1,
     borderBottomColor:'rgba(255,255,255,0.08)'
@@ -555,6 +571,22 @@ const styles=StyleSheet.create({
     alignItems:'center',
     justifyContent:'center'
   },
+  loadErrorCard:{
+    marginHorizontal:18,
+    marginTop:16,
+    padding:14,
+    borderRadius:18,
+    backgroundColor:'#FFF5F3',
+    borderWidth:1,
+    borderColor:'rgba(198,83,83,0.20)',
+    flexDirection:'row',
+    alignItems:'flex-start'
+  },
+  loadErrorBody:{flex:1,marginLeft:10},
+  loadErrorTitle:{color:colors.ink,fontSize:13,fontWeight:'900'},
+  loadErrorText:{color:colors.muted,fontSize:10,lineHeight:15,marginTop:3},
+  retryButton:{alignSelf:'flex-start',marginTop:9,paddingHorizontal:12,paddingVertical:7,borderRadius:9,backgroundColor:colors.midnight},
+  retryText:{color:colors.white,fontSize:10,fontWeight:'900'},
   sectionHeader:{
     marginHorizontal:18,
     marginTop:24,

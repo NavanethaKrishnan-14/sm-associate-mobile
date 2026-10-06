@@ -4,7 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons';
 import {BlurView} from 'expo-blur';
-import {StyleSheet, Pressable, Text, View, useWindowDimensions} from 'react-native';
+import {StyleSheet, Pressable, Text, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import LoginScreen from '../screens/LoginScreen';
 import DashboardScreen from '../screens/DashboardScreen';
@@ -140,4 +140,21 @@ const styles=StyleSheet.create({
     fontSize:10,
     fontWeight:'800',
   },
-});}
+});
+
+export default function AppNavigator(){
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{headerShown:false}}>
+        <Stack.Screen name="Login" component={LoginScreen}/>
+        <Stack.Screen name="Main" component={MainTabs}/>
+        <Stack.Screen name="AdminTools" component={AdminToolsScreen}/>
+        <Stack.Screen name="CarSale" component={CarSaleScreen}/>
+        <Stack.Screen name="Documents" component={DocumentsScreen}/>
+        <Stack.Screen name="CarProfit" component={CarProfitScreen}/>
+        <Stack.Screen name="LoanRevenue" component={LoanRevenueScreen}/>
+        <Stack.Screen name="OperationalReports" component={OperationalReportsScreen}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}

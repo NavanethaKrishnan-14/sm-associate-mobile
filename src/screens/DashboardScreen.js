@@ -64,7 +64,7 @@ export default function DashboardScreen({navigation}){
           <View style={styles.metaLeft}><Ionicons name="pulse-outline" size={12} color={colors.teal}/><AppText style={styles.metaText}>BUSINESS OPERATIONS</AppText></View>
           <View style={styles.metaRight}><AppText style={styles.metaHint}>SYSTEM ONLINE</AppText><View style={styles.metaIndicator}/></View>
         </View>
-        <View pointerEvents="none" style={styles.commandCurve}/>
+        
       </View>
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}
@@ -95,9 +95,8 @@ export default function DashboardScreen({navigation}){
 function PipelineRow({name,value,first}){return <View style={[styles.pipelineRow,first?null:styles.pipelineBorder]}><View style={styles.pipelineDot}/><AppText style={styles.pipelineName}>{name}</AppText><View style={styles.pipelineValueBox}><AppText style={styles.pipelineValue}>{value??0}</AppText></View></View>;}
 
 const styles=StyleSheet.create({
-  page:{flex:1,backgroundColor:colors.midnight},scroll:{flex:1},content:{paddingBottom:20,backgroundColor:colors.ivory},
-  commandBar:{backgroundColor:'#0E1A22',paddingLeft:10,paddingRight:12,paddingBottom:10,borderBottomLeftRadius:0,borderBottomRightRadius:0,borderWidth:1,borderTopWidth:0,borderColor:'rgba(255,255,255,0.08)',overflow:'visible'},
-  commandCurve:{position:'absolute',left:-1,right:-1,bottom:-24,height:48,backgroundColor:'transparent',borderTopWidth:24,borderTopColor:'#0E1A22',borderLeftWidth:58,borderLeftColor:'#0E1A22',borderRightWidth:58,borderRightColor:'#0E1A22',borderBottomLeftRadius:58,borderBottomRightRadius:58},
+  page:{flex:1,backgroundColor:colors.ivory},scroll:{flex:1},content:{paddingBottom:20,backgroundColor:colors.ivory},
+  commandBar:{backgroundColor:'#0E1A22',paddingLeft:10,paddingRight:12,paddingBottom:10,borderBottomLeftRadius:58,borderBottomRightRadius:58,borderWidth:1,borderTopWidth:0,borderColor:'rgba(255,255,255,0.08)',overflow:'hidden'},
   commandTop:{height:96,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},brandCluster:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0,paddingRight:10},
   logoFrame:{width:76,height:76,alignItems:'center',justifyContent:'center',overflow:'hidden'},brandCopy:{marginLeft:6,minWidth:0,flex:1,flexShrink:1,paddingRight:2},brandKicker:{color:'#53D3D1',fontSize:8,lineHeight:10,fontWeight:'600',letterSpacing:1.7,marginBottom:1},brandTitle:{color:colors.white,fontSize:21,lineHeight:25,fontWeight:'700',letterSpacing:-0.35,includeFontPadding:false},
   commandActions:{flexDirection:'row',alignItems:'center',gap:8},

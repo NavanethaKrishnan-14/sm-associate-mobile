@@ -133,7 +133,7 @@ export default function MoreScreen({navigation}) {
                       </View>
 
                       <View style={styles.actionArrow}>
-                        <Text style={styles.actionArrowText}>&gt;</Text>
+                        <Ionicons name="chevron-forward" size={17} color={colors.muted} />
                       </View>
                     </Pressable>
                   );

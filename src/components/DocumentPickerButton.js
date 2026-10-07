@@ -41,15 +41,15 @@ export default function DocumentPickerButton({label='Upload Document',file,uploa
       <Ionicons name={file?'document-text-outline':'cloud-upload-outline'} size={25} color={colors.teal}/>
     </View>
     <View style={styles.content}>
-      <AppText style={styles.title} numberOfLines={1}>{file?.name||label}</Text>
+      <AppText style={styles.title} numberOfLines={1}>{file?.name||label}</AppText>
       <AppText style={styles.hint} numberOfLines={2}>
         {file?'New document selected • Tap again to remove':uploaded?'Uploaded • Tap Replace to choose a new file':'Click here or drag & drop your document'}
-      </Text>
-      <AppText style={styles.supported}>PDF, JPG, PNG, WEBP, DOC or DOCX • Max 10 MB</Text>
+      </AppText>
+      <AppText style={styles.supported}>PDF, JPG, PNG, WEBP, DOC or DOCX • Max 10 MB</AppText>
     </View>
     <View style={[styles.action,file&&styles.removeAction]}>
       <Ionicons name={file?'close-circle-outline':'add-circle-outline'} size={18} color={file?colors.white:colors.midnight}/>
-      <AppText style={[styles.actionText,file&&styles.removeText]}>{file?'Remove':uploaded?'Replace':'Choose'}</Text>
+      <AppText style={[styles.actionText,file&&styles.removeText]}>{file?'Remove':uploaded?'Replace':'Choose'}</AppText>
     </View>
   </Pressable>;
 }

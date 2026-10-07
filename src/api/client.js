@@ -10,9 +10,7 @@ function normalizeApiUrl(value) {
     .replace(/\/$/, '');
 }
 
-// Expo environment variables are embedded at build time. Always keep a
-// production fallback so an APK built without the expected .env value does
-// not accidentally point to localhost or an empty backend URL.
+// Expo environment variables are embedded at build time. Vercel is the only supported production API.
 const configuredApiUrl = normalizeApiUrl(process.env.EXPO_PUBLIC_API_BASE_URL);
 export const API_BASE_URL = configuredApiUrl || PRODUCTION_API_URL;
 

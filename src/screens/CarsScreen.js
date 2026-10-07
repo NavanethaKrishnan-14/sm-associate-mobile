@@ -23,9 +23,17 @@ export default function CarsScreen({navigation}){
   try{
    let id=editing?editing._id:null;
    if(editing){
-    await api.patch('/cars/'+id,{registrationNumber:form.registrationNumber,make:form.make,model:form.model,year:Number(form.year||0),ownerNumber:Number(form.ownerNumber||1),km:Number(form.km||0),fuel:form.fuel,purchasePrice:Number(form.purchasePrice||0),notes:form.notes});
+    const payload={registrationNumber:form.registrationNumber,make:form.make,model:form.model,fuel:form.fuel,purchasePrice:Number(form.purchasePrice||0),notes:form.notes};
+if(String(form.year||'').trim()) payload.year=Number(form.year);
+if(String(form.ownerNumber||'').trim()) payload.ownerNumber=Number(form.ownerNumber);
+if(String(form.km||'').trim()) payload.km=Number(form.km);
+await api.patch('/cars/'+id,payload);
    }else{
-    const r=await api.post('/cars',{seller:{name:form.sellerName,mobile:form.sellerMobile},registrationNumber:form.registrationNumber,make:form.make,model:form.model,year:Number(form.year||0),ownerNumber:Number(form.ownerNumber||1),km:Number(form.km||0),fuel:form.fuel,purchasePrice:Number(form.purchasePrice||0),notes:form.notes});
+    const payload={seller:{name:form.sellerName,mobile:form.sellerMobile},registrationNumber:form.registrationNumber,make:form.make,model:form.model,fuel:form.fuel,purchasePrice:Number(form.purchasePrice||0),notes:form.notes};
+if(String(form.year||'').trim()) payload.year=Number(form.year);
+if(String(form.ownerNumber||'').trim()) payload.ownerNumber=Number(form.ownerNumber);
+if(String(form.km||'').trim()) payload.km=Number(form.km);
+const r=await api.post('/cars',payload);
     id=r.data?.data?._id;
    }
    if(!id)throw new Error('Vehicle was saved, but the server did not return the vehicle ID.');

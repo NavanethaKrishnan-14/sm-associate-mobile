@@ -3,14 +3,15 @@ import {StyleSheet,Text,TextInput} from 'react-native';
 
 function getInterFamily(fontWeight){
   switch(String(fontWeight||'400')){
-    case '300': return 'Inter_300Light';
-    case '500': return 'Inter_500Medium';
-    case '600': return 'Inter_600SemiBold';
+    case '300': return 'Inter_500Medium';
+    case '400': return 'Inter_500Medium';
+    case '500': return 'Inter_600SemiBold';
+    case '600': return 'Inter_700Bold';
     case '700':
-    case 'bold': return 'Inter_700Bold';
+    case 'bold': return 'Inter_800ExtraBold';
     case '800':
     case '900': return 'Inter_800ExtraBold';
-    default: return 'Inter_400Regular';
+    default: return 'Inter_500Medium';
   }
 }
 
@@ -22,9 +23,9 @@ function resolveWeight(flatStyle){
   const size=flatStyle.fontSize;
   if(typeof size==='number'){
     if(size>=28) return '800';
-    if(size>=20) return '700';
-    if(size>=15) return '600';
-    return '500';
+    if(size>=20) return '800';
+    if(size>=15) return '700';
+    return '600';
   }
 
   return '500';
@@ -34,9 +35,9 @@ function getVisibleFontSize(fontSize){
   if(typeof fontSize!=='number') return undefined;
   if(fontSize<=7) return fontSize+2;
   if(fontSize<=10) return fontSize+2;
-  if(fontSize<=12) return fontSize+1.5;
-  if(fontSize<=14) return fontSize+1;
-  return fontSize;
+  if(fontSize<=12) return fontSize+2;
+  if(fontSize<=14) return fontSize+1.5;
+  return fontSize+1;
 }
 
 function getVisibleLineHeight(lineHeight,fontSize){

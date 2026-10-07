@@ -112,7 +112,7 @@ const styles=StyleSheet.create({
   brandCopy:{marginLeft:12,flex:1,minWidth:0,paddingRight:8},
   brandKicker:{color:colors.teal,fontSize:8,lineHeight:10,fontWeight:'700',letterSpacing:1.9,marginBottom:4},
   brandTitle:{color:colors.ink,fontSize:19,lineHeight:23,fontWeight:'700',letterSpacing:-0.35,includeFontPadding:false},
-  profileButton:{width:46,height:46,borderRadius:23,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center',shadowColor:'#172027',shadowOpacity:0.16,shadowRadius:10,shadowOffset:{width:0,height:4},elevation:4},
+  profileButton:{width:42,height:42,borderRadius:21,alignItems:'center',justifyContent:'center'},
   profileAvatar:{width:38,height:38,borderRadius:19,backgroundColor:colors.teal,alignItems:'center',justifyContent:'center',borderWidth:2,borderColor:colors.white},
   headerRule:{height:1,backgroundColor:'rgba(23,32,39,0.08)'},
   statusRow:{minHeight:49,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},

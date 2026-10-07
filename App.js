@@ -1,6 +1,5 @@
 import React,{useEffect,useRef} from 'react';
 import {StatusBar} from 'expo-status-bar';
-import {ActivityIndicator,View} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';import AppNavigator from './src/navigation/AppNavigator';
 import {PremiumAlertHost,installPremiumAlert} from './src/components/PremiumAlert';
 

@@ -21,8 +21,8 @@ function resolveWeight(flatStyle){
 
   const size=flatStyle.fontSize;
   if(typeof size==='number'){
-    if(size>=24) return '800';
-    if(size>=18) return '700';
+    if(size>=28) return '800';
+    if(size>=20) return '700';
     if(size>=15) return '600';
     return '500';
   }
@@ -35,30 +35,13 @@ function getReadableTextStyle(style){
   const fontSize=flatStyle.fontSize;
   const resolvedWeight=resolveWeight(flatStyle);
 
-  const scale=
-    typeof fontSize!=='number' ? 1 :
-    fontSize<=7 ? 1.35 :
-    fontSize<=10 ? 1.24 :
-    fontSize<=14 ? 1.18 :
-    1.08;
-
-  const increasedFontSize=
-    typeof fontSize==='number'
-      ? Math.round(fontSize*scale*10)/10
-      : undefined;
-
-  const increasedLineHeight=
-    typeof flatStyle.lineHeight==='number'
-      ? Math.round(flatStyle.lineHeight*scale*10)/10
-      : undefined;
-
   return [
     style,
     {
       fontFamily:getInterFamily(resolvedWeight),
       fontWeight:'400',
-      ...(increasedFontSize!==undefined ? {fontSize:increasedFontSize} : {}),
-      ...(increasedLineHeight!==undefined ? {lineHeight:increasedLineHeight} : {}),
+      ...(typeof fontSize==='number' ? {fontSize} : {}),
+      ...(typeof flatStyle.lineHeight==='number' ? {lineHeight:flatStyle.lineHeight} : {}),
     },
   ];
 }
@@ -70,16 +53,6 @@ export const AppText=forwardRef(function AppText({style,...props},ref){
 export const AppTextInput=forwardRef(function AppTextInput({style,...props},ref){
   const flatStyle=StyleSheet.flatten(style)||{};
   const resolvedWeight=flatStyle.fontWeight ?? '500';
-  const inputSize=flatStyle.fontSize;
-  const inputScale=typeof inputSize==='number' && inputSize<=14 ? 1.08 : 1;
-  const increasedFontSize=
-    typeof inputSize==='number'
-      ? Math.round(inputSize*inputScale*10)/10
-      : undefined;
-  const increasedLineHeight=
-    typeof flatStyle.lineHeight==='number'
-      ? Math.round(flatStyle.lineHeight*inputScale*10)/10
-      : undefined;
 
   return (
     <TextInput
@@ -90,8 +63,6 @@ export const AppTextInput=forwardRef(function AppTextInput({style,...props},ref)
         {
           fontFamily:getInterFamily(resolvedWeight),
           fontWeight:'400',
-          ...(increasedFontSize!==undefined ? {fontSize:increasedFontSize} : {}),
-          ...(increasedLineHeight!==undefined ? {lineHeight:increasedLineHeight} : {}),
         },
       ]}
     />

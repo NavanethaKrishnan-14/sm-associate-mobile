@@ -55,9 +55,12 @@ export default function DashboardScreen({navigation}){
               <AppText numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.72} style={styles.brandTitle}>Business Management</AppText>
             </View>
           </View>
-          <Pressable onPress={()=>navigation.navigate('More')} style={({pressed})=>[styles.utilityButton,pressed&&styles.pressed]} accessibilityRole="button" accessibilityLabel="Open more options">
-            <Ionicons name="notifications-outline" size={19} color={colors.midnight}/>
-            <View style={styles.utilityDot}/>
+          <Pressable onPress={()=>navigation.navigate('More')} style={({pressed})=>[styles.profileButton,pressed&&styles.pressed]} accessibilityRole="button" accessibilityLabel="Open profile">
+            <View style={styles.profileAvatar}><Ionicons name="person" size={18} color={colors.white}/></View>
+            <View style={styles.profileCopy}>
+              <AppText style={styles.profileLabel}>SIGNED IN</AppText>
+              <AppText numberOfLines={1} style={styles.profileName}>Profile</AppText>
+            </View>
           </Pressable>
         </View>
         <View style={styles.headerRule}/>
@@ -111,8 +114,11 @@ const styles=StyleSheet.create({
   brandCopy:{marginLeft:12,flex:1,minWidth:0,paddingRight:8},
   brandKicker:{color:colors.teal,fontSize:8,lineHeight:10,fontWeight:'700',letterSpacing:1.9,marginBottom:4},
   brandTitle:{color:colors.ink,fontSize:19,lineHeight:23,fontWeight:'700',letterSpacing:-0.35,includeFontPadding:false},
-  utilityButton:{width:42,height:42,borderRadius:14,backgroundColor:colors.white,borderWidth:1,borderColor:'rgba(23,32,39,0.08)',alignItems:'center',justifyContent:'center',position:'relative',shadowColor:'#172027',shadowOpacity:0.08,shadowRadius:8,shadowOffset:{width:0,height:3},elevation:2},
-  utilityDot:{position:'absolute',top:8,right:8,width:6,height:6,borderRadius:3,backgroundColor:colors.teal,borderWidth:1.5,borderColor:colors.white},
+  profileButton:{height:48,minWidth:116,borderRadius:15,backgroundColor:colors.white,borderWidth:1,borderColor:'rgba(23,32,39,0.08)',paddingHorizontal:7,flexDirection:'row',alignItems:'center',shadowColor:'#172027',shadowOpacity:0.08,shadowRadius:8,shadowOffset:{width:0,height:3},elevation:2},
+  profileAvatar:{width:34,height:34,borderRadius:11,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center'},
+  profileCopy:{marginLeft:8,maxWidth:65},
+  profileLabel:{color:colors.teal,fontSize:6.5,fontWeight:'700',letterSpacing:1,marginBottom:2},
+  profileName:{color:colors.ink,fontSize:10,fontWeight:'700'},
   headerRule:{height:1,backgroundColor:'rgba(23,32,39,0.08)'},
   statusRow:{minHeight:49,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},
   statusIdentity:{flexDirection:'row',alignItems:'center',flex:1},

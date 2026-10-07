@@ -2,7 +2,7 @@
   "expo": {
     "name": "SM Associate",
     "slug": "sm-associate",
-    "version": "1.2.2",
+    "version": "1.2.1",
     "orientation": "default",
     "platforms": [
       "android",
@@ -15,8 +15,7 @@
     },
     "android": {
       "package": "com.smassociate.management",
-      "usesCleartextTraffic": true,
-      "versionCode": 2
+      "usesCleartextTraffic": true
     },
     "newArchEnabled": true
   }

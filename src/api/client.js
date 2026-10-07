@@ -142,40 +142,42 @@ export async function uploadDocument(path, asset, fields = {}) {
       throw new Error('The selected document is empty or could not be read.');
     }
 
-    const form = new FormData();
-    form.append('file', file);
-    form.append('api_key', String(signatureData.apiKey));
-    form.append('timestamp', String(signatureData.timestamp));
-    form.append('signature', String(signatureData.signature));
-    form.append('public_id', String(signatureData.publicId));
-
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 60000);
-
+    let cloudinaryData={};
     try {
-      const cloudinaryResponse = await expoFetch(signatureData.uploadUrl, {
-        method: 'POST',
-        headers: {Accept: 'application/json'},
-        body: form,
-        signal: controller.signal
+      const uploadResult=await file.upload(signatureData.uploadUrl,{
+        httpMethod:'POST',
+        uploadType:UploadType.MULTIPART,
+        fieldName:'file',
+        mimeType:String(asset.mimeType||asset.type||file.type||'application/octet-stream'),
+        parameters:{
+          api_key:String(signatureData.apiKey),
+          timestamp:String(signatureData.timestamp),
+          signature:String(signatureData.signature),
+          public_id:String(signatureData.publicId)
+        },
+        signal:controller.signal
       });
 
-      const responseText = await cloudinaryResponse.text();
-      let cloudinaryData = {};
       try {
-        cloudinaryData = responseText ? JSON.parse(responseText) : {};
+        cloudinaryData=uploadResult?.body?JSON.parse(uploadResult.body):{};
       } catch {
-        cloudinaryData = {
-          error: {message: responseText || 'Cloudinary returned an invalid response.'}
+        cloudinaryData={
+          error:{message:uploadResult?.body||'Cloudinary returned an invalid response.'}
         };
       }
 
-      if (!cloudinaryResponse.ok || !cloudinaryData?.secure_url || !cloudinaryData?.public_id) {
+      if(uploadResult?.status<200||uploadResult?.status>=300||!cloudinaryData?.secure_url||!cloudinaryData?.public_id){
         throw new Error(
           cloudinaryData?.error?.message ||
           'Cloudinary could not upload the selected document.'
         );
       }
+    } catch(error) {
+      if(error?.name==='AbortError'){
+        throw new Error('Document upload timed out. Please try again.');
+      }
+      throw error;
+    }
 
       const completeResponse = await api.post(path + '/complete', {
         originalName: fileName,

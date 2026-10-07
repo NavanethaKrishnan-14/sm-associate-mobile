@@ -18,7 +18,12 @@ export default function CarsScreen({navigation}){
  function openEdit(c){setEditing(c);setForm({sellerName:c.sellerId?.name||'',sellerMobile:c.sellerId?.mobile||'',registrationNumber:c.registrationNumber||'',make:c.make||'',model:c.model||'',year:String(c.year||''),ownerNumber:String(c.ownerNumber||1),km:String(c.km||''),fuel:c.fuel||'Petrol',purchasePrice:String(c.purchasePrice||''),notes:c.notes||''});setFiles({});setCustomDocs(c.documents?.customDocuments||[]);setCustomName('');setModal(true)}
  function set(key,value){setForm(p=>({...p,[key]:value}))}
  async function save(){
-  if(!form.registrationNumber||!form.make||!form.model||!form.purchasePrice)return Alert.alert('Vehicle','Registration, make, model and purchase price are required.');
+  if(!editing&&(!form.sellerName.trim()||!form.sellerMobile.trim()))return Alert.alert('Vehicle','Seller name and seller mobile are required.');
+  if(!form.registrationNumber.trim()||!form.make.trim()||!form.model.trim()||!String(form.purchasePrice).trim())return Alert.alert('Vehicle','Registration, make, model and purchase price are required.');
+  if(String(form.purchasePrice).trim()&&(!Number.isFinite(Number(form.purchasePrice))||Number(form.purchasePrice)<0))return Alert.alert('Vehicle','Purchase price must be a valid non-negative number.');
+  if(String(form.year).trim()&&(!Number.isInteger(Number(form.year))||Number(form.year)<1900||Number(form.year)>new Date().getFullYear()+1))return Alert.alert('Vehicle','Year must be between 1900 and next year.');
+  if(String(form.ownerNumber).trim()&&(!Number.isInteger(Number(form.ownerNumber))||Number(form.ownerNumber)<1))return Alert.alert('Vehicle','Owner number must be at least 1.');
+  if(String(form.km).trim()&&(!Number.isFinite(Number(form.km))||Number(form.km)<0))return Alert.alert('Vehicle','KM cannot be negative.');
   setSaving(true);
   try{
    let id=editing?editing._id:null;

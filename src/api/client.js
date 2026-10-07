@@ -113,7 +113,11 @@ export async function uploadDocument(path, asset, fields = {}) {
   // This accepts Android content/file URIs directly and avoids JS Blob/FormData
   // conversion and the modern File API's readability check for Expo Go picker URIs.
   const fileSize=Number(asset.size||0);
+  const MAX_DOCUMENT_SIZE=10*1024*1024;
   if(fileSize<0) throw new Error('The selected document could not be read.');
+  if(fileSize>MAX_DOCUMENT_SIZE){
+    throw new Error('Document is too large. Maximum allowed size is 10 MB.');
+  }
 
   const isCustomerDocument=/^\/customers\/[^/]+\/documents\/[^/]+$/i.test(path);
 

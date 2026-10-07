@@ -1,5 +1,6 @@
+import {AppText,AppTextInput} from './AppText';
 import React,{forwardRef,useImperativeHandle,useRef,useState} from 'react';
-import {Modal,Pressable,StyleSheet,Text,View} from 'react-native';
+import {Modal, Pressable, StyleSheet, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {colors} from '../theme/colors';
 
@@ -38,11 +39,11 @@ export const PremiumAlertHost=forwardRef(function PremiumAlertHost(_,ref){
         <View style={[styles.icon,{backgroundColor:destructive?'#FCECEC':'#E4F5F0'}]}>
           <Ionicons name={icon} size={28} color={destructive?colors.danger:colors.teal}/>
         </View>
-        <Text style={styles.title}>{state.title}</Text>
-        <Text style={styles.message}>{state.message}</Text>
+        <AppText style={styles.title}>{state.title}</Text>
+        <AppText style={styles.message}>{state.message}</Text>
         <View style={styles.actions}>
           {state.buttons.map((b,i)=><Pressable key={String(b.text)+i} onPress={()=>run(b)} style={[styles.button,i===state.buttons.length-1&&styles.primaryButton,b.style==='destructive'&&styles.dangerButton]}>
-            <Text style={[styles.buttonText,i===state.buttons.length-1&&styles.primaryText,b.style==='destructive'&&styles.dangerText]}>{b.text||'OK'}</Text>
+            <AppText style={[styles.buttonText,i===state.buttons.length-1&&styles.primaryText,b.style==='destructive'&&styles.dangerText]}>{b.text||'OK'}</Text>
           </Pressable>)}
         </View>
       </View>

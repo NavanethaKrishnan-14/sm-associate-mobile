@@ -64,6 +64,7 @@ export default function DashboardScreen({navigation}){
           <View style={styles.metaLeft}><Ionicons name="pulse-outline" size={12} color={colors.teal}/><AppText style={styles.metaText}>BUSINESS OPERATIONS</AppText></View>
           <View style={styles.metaRight}><AppText style={styles.metaHint}>SYSTEM ONLINE</AppText><View style={styles.metaIndicator}/></View>
         </View>
+        <View pointerEvents="none" style={styles.commandCurve}/>
       </View>
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}
@@ -95,7 +96,8 @@ function PipelineRow({name,value,first}){return <View style={[styles.pipelineRow
 
 const styles=StyleSheet.create({
   page:{flex:1,backgroundColor:colors.midnight},scroll:{flex:1},content:{paddingBottom:20,backgroundColor:colors.ivory},
-  commandBar:{backgroundColor:'#0E1A22',paddingLeft:10,paddingRight:12,paddingBottom:10,borderBottomLeftRadius:58,borderBottomRightRadius:58,borderWidth:1,borderTopWidth:0,borderColor:'rgba(255,255,255,0.08)',overflow:'hidden'},
+  commandBar:{backgroundColor:'#0E1A22',paddingLeft:10,paddingRight:12,paddingBottom:22,borderBottomLeftRadius:0,borderBottomRightRadius:0,borderWidth:1,borderTopWidth:0,borderColor:'rgba(255,255,255,0.08)',overflow:'hidden'},
+  commandCurve:{position:'absolute',left:-1,right:-1,bottom:-1,height:26,backgroundColor:colors.ivory,borderTopLeftRadius:58,borderTopRightRadius:58},
   commandTop:{height:96,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},brandCluster:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0,paddingRight:10},
   logoFrame:{width:76,height:76,alignItems:'center',justifyContent:'center',overflow:'hidden'},brandCopy:{marginLeft:6,minWidth:0,flex:1,flexShrink:1,paddingRight:2},brandKicker:{color:'#53D3D1',fontSize:8,lineHeight:10,fontWeight:'600',letterSpacing:1.7,marginBottom:1},brandTitle:{color:colors.white,fontSize:21,lineHeight:25,fontWeight:'700',letterSpacing:-0.35,includeFontPadding:false},
   commandActions:{flexDirection:'row',alignItems:'center',gap:8},

@@ -12,13 +12,14 @@ const docs=[['idProof','ID Proof'],['addressProof','Address Proof'],['incomeProo
 export default function CustomersScreen({navigation}){
  const {top}=useSafeAreaInsets();
  const [items,setItems]=useState([]),[q,setQ]=useState(''),[busy,setBusy]=useState(true);
- const [modal,setModal]=useState(false),[editing,setEditing]=useState(null),[form,setForm]=useState(empty),[files,setFiles]=useState({}),[customDocs,setCustomDocs]=useState([]),[customName,setCustomName]=useState(''),[customModal,setCustomModal]=useState(false),[saving,setSaving]=useState(false),[history,setHistory]=useState(null),[profile,setProfile]=useState(null);
+ const [modal,setModal]=useState(false),[editing,setEditing]=useState(null),[form,setForm]=useState(empty),[files,setFiles]=useState({}),[customDocs,setCustomDocs]=useState([]),[customName,setCustomName]=useState(''),[saving,setSaving]=useState(false),[history,setHistory]=useState(null),[profile,setProfile]=useState(null);
  async function load(){setBusy(true);try{const r=await api.get('/customers');setItems(r.data?.data||[])}catch(e){Alert.alert('Customers',e?.response?.data?.message||'Unable to load customers.')}finally{setBusy(false)}}
  useEffect(()=>{load()},[]);
  const filtered=items.filter(x=>(x.name||'').toLowerCase().includes(q.toLowerCase())||(x.mobile||'').includes(q));
- function openAdd(){setEditing(null);setForm({...empty});setFiles({});setCustomDocs([]);setModal(true)}
+ function openAdd(){setEditing(null);setForm({...empty});setFiles({});setCustomDocs([]);setCustomName('');setModal(true)}
  function openProfile(item){setProfile(item)}
- function openEdit(item){setEditing(item);const { _id, documents, ...editable }=item||{};setForm({...empty,...editable});setFiles({});setCustomDocs(Array.isArray(documents?.customDocuments)?documents.customDocuments:[]);setModal(true)}
+ function openEdit(item){setEditing(item);const { _id, documents, ...editable }=item||{};setForm({...empty,...editable});setFiles({});setCustomDocs(Array.isArray(documents?.customDocuments)?documents.customDocuments:[]);setCustomName('');setModal(true)}
+ function addCustom(){const n=customName.trim();if(!n)return Alert.alert('Document','Enter a document name.');if(docs.some(([,title])=>title.toLowerCase()===n.toLowerCase())||customDocs.some(x=>x.toLowerCase()===n.toLowerCase()))return Alert.alert('Document','This document already exists.');setCustomDocs(p=>[...p,n]);setCustomName('')}
  async function save(){
    if(!form.name.trim()||!form.mobile.trim())return Alert.alert('Customer','Name and mobile are required.');
    setSaving(true);
@@ -35,12 +36,10 @@ export default function CustomersScreen({navigation}){
      for(const name of customDocs){
        const key='custom:'+name;
        if(!files[key])continue;
-       const data=new FormData();
-       data.append('documentName',name);
-       data.append('file',{uri:files[key].uri,name:files[key].name||'document',type:files[key].mimeType||files[key].type||'application/octet-stream'});
        try{await uploadDocument('/customers/'+id+'/documents/custom',files[key],{documentName:name})}
        catch(uploadError){throw new Error((editing?'Customer updated':'Customer created')+' successfully, but '+name+' upload failed: '+(uploadError?.message||'Document upload failed.'))}
      }
+     await api.patch('/customers/'+id+'/documents',{customDocuments:customDocs,...Object.fromEntries(docs.map(([key])=>[key,Boolean(editing?.documents?.[key]||files[key])]))});
      setModal(false);await load();
    }catch(e){Alert.alert('Customer',e?.message||e?.response?.data?.message||'Unable to save customer.')}finally{setSaving(false)}
  }
@@ -75,7 +74,8 @@ export default function CustomersScreen({navigation}){
       <ScrollView contentContainerStyle={s.form}>{Object.entries(form).map(([key,value])=><Field key={key} label={label(key)} value={value} onChangeText={v=>setForm(prev=>({...prev,[key]:v}))}/>)}
       <Text style={s.section}>Documents</Text>{docs.map(([key,title])=>{const uploaded=editing?.documents?.uploads?.[key];return <View key={key} style={s.doc}><Text style={s.docTitle}>{title}</Text>{uploaded?.originalName&&<Text style={s.muted}>Uploaded: {uploaded.originalName}</Text>}<DocumentPickerButton label={'Upload '+title} file={files[key]} uploaded={!!uploaded} onPick={f=>setFiles(p=>({...p,[key]:f}))}/></View>})}
       {customDocs.map(name=>{const uploaded=editing?.documents?.customUploads?.find(x=>String(x.name).toLowerCase()===name.toLowerCase());const key='custom:'+name;return <View key={key} style={s.doc}><Text style={s.docTitle}>{name}</Text>{uploaded?.originalName&&<Text style={s.muted}>Uploaded: {uploaded.originalName}</Text>}<DocumentPickerButton label={'Upload '+name} file={files[key]} uploaded={!!uploaded} onPick={f=>setFiles(p=>({...p,[key]:f}))}/></View>})}
-      <Pressable onPress={()=>{setCustomName('');setCustomModal(true)}} style={s.addDocType}><Ionicons name="add-circle-outline" size={18} color={colors.midnight}/><Text style={s.addDocTypeText}>Add Document Type</Text></Pressable>
+      <View style={s.customRow}><TextInput value={customName} onChangeText={setCustomName} placeholder="Custom document name" placeholderTextColor="#9AA4AD" style={[s.input,{flex:1}]}/><Pressable onPress={addCustom} style={s.smallAdd}><Text style={s.smallAddText}>Add</Text></Pressable></View>
+      {customDocs.map(name=>{const uploaded=editing?.documents?.customUploads?.find(x=>String(x.name).toLowerCase()===name.toLowerCase());const key='custom:'+name;return <View key={key} style={s.doc}><View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}><Text style={s.docTitle}>{name}</Text><View style={{flexDirection:'row',alignItems:'center',gap:8}}>{uploaded?.url&&<View style={s.uploadedBadge}><Ionicons name="checkmark-circle" size={13} color={colors.teal}/><Text style={s.uploadedBadgeText}>Uploaded</Text></View>}<Pressable onPress={()=>setCustomDocs(p=>p.filter(x=>x!==name))}><Text style={s.deleteText}>Remove</Text></Pressable></View></View>{uploaded?.originalName&&!files[key]&&<Text style={s.fileMeta} numberOfLines={1}>Current file: {uploaded.originalName}</Text>}<DocumentPickerButton label={'Upload '+name} file={files[key]} uploaded={!!uploaded} onPick={f=>setFiles(p=>({...p,[key]:f}))}/></View>})}
       <Pressable disabled={saving} onPress={save} style={s.primary}><Text style={s.primaryText}>{saving?'Saving...':editing?'Update Customer':'Add Customer'}</Text></Pressable></ScrollView>
     </View></View>
    </Modal>

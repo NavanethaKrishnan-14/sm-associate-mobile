@@ -1,5 +1,6 @@
+import {AppText,AppTextInput} from './AppText';
 import React from 'react';
-import {Alert,Pressable,Text,View} from 'react-native';
+import {Alert, Pressable, View} from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import {Ionicons} from '@expo/vector-icons';
 import {colors} from '../theme/colors';
@@ -40,15 +41,15 @@ export default function DocumentPickerButton({label='Upload Document',file,uploa
       <Ionicons name={file?'document-text-outline':'cloud-upload-outline'} size={25} color={colors.teal}/>
     </View>
     <View style={styles.content}>
-      <Text style={styles.title} numberOfLines={1}>{file?.name||label}</Text>
-      <Text style={styles.hint} numberOfLines={2}>
+      <AppText style={styles.title} numberOfLines={1}>{file?.name||label}</Text>
+      <AppText style={styles.hint} numberOfLines={2}>
         {file?'New document selected • Tap again to remove':uploaded?'Uploaded • Tap Replace to choose a new file':'Click here or drag & drop your document'}
       </Text>
-      <Text style={styles.supported}>PDF, JPG, PNG, WEBP, DOC or DOCX • Max 10 MB</Text>
+      <AppText style={styles.supported}>PDF, JPG, PNG, WEBP, DOC or DOCX • Max 10 MB</Text>
     </View>
     <View style={[styles.action,file&&styles.removeAction]}>
       <Ionicons name={file?'close-circle-outline':'add-circle-outline'} size={18} color={file?colors.white:colors.midnight}/>
-      <Text style={[styles.actionText,file&&styles.removeText]}>{file?'Remove':uploaded?'Replace':'Choose'}</Text>
+      <AppText style={[styles.actionText,file&&styles.removeText]}>{file?'Remove':uploaded?'Replace':'Choose'}</Text>
     </View>
   </Pressable>;
 }

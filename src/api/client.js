@@ -72,18 +72,10 @@ export async function login(email, password) {
 
     if (!token) throw new Error('Login succeeded, but the server did not return an access token.');
 
+    // The login endpoint has already authenticated the credentials and issued
+    // the JWT. Persist it before allowing navigation to the protected app.
+    // /auth/me is used separately by AppNavigator to validate restored sessions.
     await storeAccessToken(token);
-    // Verify the newly issued token explicitly. This avoids relying on the
-    // Axios interceptor during the first authenticated request on native.
-    const meResponse = await api.get('/auth/me', {
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'x-access-token': token
-      }
-    });
-    if (!meResponse.data?.success) {
-      throw new Error('Authentication succeeded, but the session could not be verified.');
-    }
     return data;
   } catch (error) {
     const status = error?.response?.status;

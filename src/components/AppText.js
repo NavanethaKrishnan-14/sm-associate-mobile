@@ -1,22 +1,22 @@
 import React,{forwardRef} from 'react';
 import {StyleSheet,Text,TextInput} from 'react-native';
 
-function getPlusJakartaSansFamily(fontWeight){
+function getInterFamily(fontWeight){
   switch(String(fontWeight||'400')){
     case '300':
-      return 'PlusJakartaSans_300Light';
+      return 'Inter_300Light';
     case '500':
-      return 'PlusJakartaSans_500Medium';
+      return 'Inter_500Medium';
     case '600':
-      return 'PlusJakartaSans_600SemiBold';
+      return 'Inter_600SemiBold';
     case '700':
     case 'bold':
-      return 'PlusJakartaSans_700Bold';
+      return 'Inter_700Bold';
     case '800':
     case '900':
-      return 'PlusJakartaSans_800ExtraBold';
+      return 'Inter_800ExtraBold';
     default:
-      return 'PlusJakartaSans_400Regular';
+      return 'Inter_400Regular';
   }
 }
 
@@ -44,7 +44,7 @@ function getReadableTextStyle(style){
   return [
     style,
     {
-      fontFamily:getPlusJakartaSansFamily(flatStyle.fontWeight),
+      fontFamily:getInterFamily(flatStyle.fontWeight),
       ...(increasedFontSize!==undefined ? {fontSize:increasedFontSize} : {}),
       ...(increasedLineHeight!==undefined ? {lineHeight:increasedLineHeight} : {}),
     },
@@ -63,7 +63,7 @@ export const AppTextInput=forwardRef(function AppTextInput({style,...props},ref)
       {...props}
       style={[
         style,
-        {fontFamily:getPlusJakartaSansFamily(flatStyle.fontWeight)},
+        {fontFamily:getInterFamily(flatStyle.fontWeight)},
       ]}
     />
   );

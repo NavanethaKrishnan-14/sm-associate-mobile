@@ -86,17 +86,31 @@ export default function MoreScreen({navigation}) {
 
         <View style={styles.body}>
           <View style={styles.hero}>
-            <View style={styles.heroLeft}>
-              <Text style={styles.heroOverline}>MORE</Text>
-              <Text style={styles.heroTitle}>Everything beyond the dashboard.</Text>
-              <Text style={styles.heroSub}>
-                Your control room for the decisions that keep SM Associate moving.
-              </Text>
+            <View style={styles.heroTopRow}>
+              <View style={styles.heroPill}>
+                <View style={styles.heroPillDot} />
+                <Text style={styles.heroPillText}>MORE</Text>
+              </View>
+              <Text style={styles.heroIndex}>06 / TOOLS</Text>
             </View>
 
-            <View style={styles.heroMark}>
-              <Ionicons name="arrow-down-outline" size={20} color={colors.teal} />
-              <Text style={styles.heroMarkText}>EXPLORE</Text>
+            <View style={styles.heroContent}>
+              <View style={styles.heroAccent} />
+              <View style={styles.heroText}>
+                <Text style={styles.heroTitle}>Manage more.</Text>
+                <Text style={styles.heroSub}>
+                  Everything you need to run the business beyond the dashboard.
+                </Text>
+              </View>
+
+              <View style={styles.heroMark}>
+                <Ionicons name="grid-outline" size={22} color={colors.white} />
+              </View>
+            </View>
+
+            <View style={styles.heroBottom}>
+              <Text style={styles.heroBottomText}>BUSINESS MANAGEMENT</Text>
+              <Ionicons name="arrow-down" size={16} color={colors.teal} />
             </View>
           </View>
 
@@ -287,51 +301,96 @@ const styles = {
     minHeight: 650,
   },
   hero: {
+    backgroundColor: colors.midnight,
+    borderRadius: 24,
+    padding: 17,
+    marginBottom: 8,
+    overflow: 'hidden',
+  },
+  heroTopRow: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    paddingBottom: 25,
   },
-  heroLeft: {
-    flex: 1,
+  heroPill: {
+    height: 25,
+    paddingHorizontal: 9,
+    borderRadius: 9,
+    backgroundColor: 'rgba(39,168,154,0.12)',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  heroOverline: {
-    fontSize: 8,
-    fontWeight: '900',
-    letterSpacing: 2,
+  heroPillDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: colors.teal,
+    marginRight: 6,
+  },
+  heroPillText: {
+    fontSize: 7,
+    fontWeight: '600',
+    letterSpacing: 1.5,
     color: colors.teal,
   },
+  heroIndex: {
+    fontSize: 7,
+    fontWeight: '500',
+    letterSpacing: 1.1,
+    color: '#748187',
+  },
+  heroContent: {
+    minHeight: 118,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+  },
+  heroAccent: {
+    width: 3,
+    height: 67,
+    borderRadius: 2,
+    backgroundColor: colors.teal,
+    marginRight: 13,
+  },
+  heroText: {
+    flex: 1,
+    paddingRight: 10,
+  },
   heroTitle: {
-    fontSize: 29,
-    lineHeight: 32,
-    fontWeight: '900',
-    letterSpacing: -0.8,
-    color: colors.ink,
-    marginTop: 5,
-    maxWidth: 320,
+    fontSize: 28,
+    lineHeight: 31,
+    fontWeight: '600',
+    letterSpacing: -0.7,
+    color: colors.white,
   },
   heroSub: {
     fontSize: 10.5,
     lineHeight: 16,
-    color: colors.muted,
+    color: '#AAB5B8',
     marginTop: 7,
-    maxWidth: 315,
+    maxWidth: 285,
   },
   heroMark: {
-    width: 57,
-    height: 57,
-    borderRadius: 18,
-    backgroundColor: colors.midnight,
+    width: 54,
+    height: 54,
+    borderRadius: 17,
+    backgroundColor: '#24383B',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 10,
   },
-  heroMarkText: {
-    fontSize: 5.5,
-    fontWeight: '900',
-    letterSpacing: 0.9,
-    color: '#93A0A4',
-    marginTop: 4,
+  heroBottom: {
+    borderTopWidth: 1,
+    borderTopColor: '#354149',
+    paddingTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  heroBottomText: {
+    fontSize: 6.5,
+    fontWeight: '500',
+    letterSpacing: 1.2,
+    color: '#7F8D92',
   },
   group: {
     marginBottom: 27,

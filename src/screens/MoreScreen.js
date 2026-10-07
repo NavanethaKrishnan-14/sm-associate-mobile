@@ -86,51 +86,45 @@ export default function MoreScreen({navigation}) {
 
         <View style={styles.body}>
           <View style={styles.hero}>
-            <View style={styles.heroBackdrop} />
+            <View style={styles.heroShapeOne} />
+            <View style={styles.heroShapeTwo} />
 
-            <View style={styles.heroTop}>
-              <View>
-                <Text style={styles.heroSmallLabel}>SM ASSOCIATE</Text>
-                <Text style={styles.heroHeading}>Management</Text>
-                <Text style={styles.heroHeadingAccent}>at a glance.</Text>
+            <View style={styles.heroTopLine}>
+              <Text style={styles.heroIndex}>02</Text>
+              <Text style={styles.heroCategory}>BUSINESS INTELLIGENCE</Text>
+              <View style={styles.heroTopRule} />
+            </View>
+
+            <View style={styles.heroContent}>
+              <Text style={styles.heroTitle}>Your business,</Text>
+              <Text style={styles.heroTitleAccent}>one clear view.</Text>
+              <Text style={styles.heroDescription}>
+                A focused space for the people, money and operations that keep SM Associate moving.
+              </Text>
+            </View>
+
+            <View style={styles.heroInsights}>
+              <View style={styles.heroInsightPrimary}>
+                <Text style={styles.heroInsightNumber}>06</Text>
+                <Text style={styles.heroInsightLabel}>TOOLS AT HAND</Text>
               </View>
 
-              <View style={styles.heroControl}>
-                <Ionicons name="apps-outline" size={20} color={colors.midnight} />
+              <View style={styles.heroInsightDivider} />
+
+              <View style={styles.heroInsight}>
+                <Text style={styles.heroInsightValue}>01</Text>
+                <Text style={styles.heroInsightCaption}>OPERATE</Text>
+              </View>
+
+              <View style={styles.heroInsight}>
+                <Text style={styles.heroInsightValue}>02</Text>
+                <Text style={styles.heroInsightCaption}>INSIGHT</Text>
               </View>
             </View>
 
-            <View style={styles.heroDashboard}>
-              <View style={styles.heroDashboardHeader}>
-                <Text style={styles.heroDashboardLabel}>CONTROL CENTER</Text>
-                <View style={styles.heroPulse}>
-                  <View style={styles.heroPulseDot} />
-                </View>
-              </View>
-
-              <View style={styles.heroStats}>
-                <View style={styles.heroStatMain}>
-                  <Text style={styles.heroStatNumber}>06</Text>
-                  <Text style={styles.heroStatLabel}>ACTIVE TOOLS</Text>
-                </View>
-
-                <View style={styles.heroStatDivider} />
-
-                <View style={styles.heroStatItem}>
-                  <Ionicons name="flash-outline" size={15} color={colors.teal} />
-                  <Text style={styles.heroStatItemText}>Operations</Text>
-                </View>
-
-                <View style={styles.heroStatItem}>
-                  <Ionicons name="analytics-outline" size={15} color={colors.teal} />
-                  <Text style={styles.heroStatItemText}>Insights</Text>
-                </View>
-              </View>
-            </View>
-
-            <View style={styles.heroFooter}>
-              <Text style={styles.heroFooterText}>ONE SPACE. COMPLETE CONTROL.</Text>
-              <Ionicons name="arrow-forward" size={15} color={colors.teal} />
+            <View style={styles.heroBottomLine}>
+              <View style={styles.heroStatusMark} />
+              <Text style={styles.heroBottomText}>CONTROL • CLARITY • MOMENTUM</Text>
             </View>
           </View>
 
@@ -322,151 +316,153 @@ const styles = {
   },
   hero: {
     position: 'relative',
-    minHeight: 270,
-    backgroundColor: '#E9EFEC',
+    minHeight: 286,
+    backgroundColor: '#F7F8F5',
     borderRadius: 30,
-    padding: 18,
+    padding: 19,
     marginBottom: 20,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#D6DFDB',
+    borderColor: '#E1E6E2',
   },
-  heroBackdrop: {
+  heroShapeOne: {
     position: 'absolute',
-    width: 240,
-    height: 240,
-    borderRadius: 120,
-    right: -105,
-    top: -80,
-    backgroundColor: '#D4E8E2',
+    width: 210,
+    height: 210,
+    borderRadius: 105,
+    right: -90,
+    top: -88,
+    backgroundColor: '#DCEFEA',
   },
-  heroTop: {
+  heroShapeTwo: {
+    position: 'absolute',
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    right: -22,
+    top: -34,
+    backgroundColor: '#BFDCD5',
+    opacity: 0.72,
+  },
+  heroTopLine: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  heroSmallLabel: {
-    fontSize: 6.5,
-    fontWeight: '800',
-    letterSpacing: 2,
+  heroIndex: {
+    fontSize: 9,
+    fontWeight: '700',
     color: colors.teal,
-    marginBottom: 8,
+    letterSpacing: 0.5,
+    marginRight: 9,
   },
-  heroHeading: {
-    fontSize: 28,
-    lineHeight: 30,
+  heroCategory: {
+    fontSize: 6,
+    fontWeight: '700',
+    letterSpacing: 1.5,
+    color: '#899594',
+  },
+  heroTopRule: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#DCE2DF',
+    marginLeft: 10,
+  },
+  heroContent: {
+    marginTop: 31,
+    maxWidth: 310,
+  },
+  heroTitle: {
+    fontSize: 31,
+    lineHeight: 33,
     fontWeight: '500',
-    letterSpacing: -1,
+    letterSpacing: -1.2,
     color: colors.ink,
   },
-  heroHeadingAccent: {
-    fontSize: 28,
-    lineHeight: 30,
+  heroTitleAccent: {
+    fontSize: 31,
+    lineHeight: 33,
     fontWeight: '600',
-    letterSpacing: -1,
+    letterSpacing: -1.2,
     color: colors.teal,
   },
-  heroControl: {
-    width: 46,
-    height: 46,
-    borderRadius: 16,
-    backgroundColor: colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#D8E1DD',
+  heroDescription: {
+    fontSize: 10,
+    lineHeight: 16,
+    color: colors.muted,
+    marginTop: 13,
+    maxWidth: 292,
   },
-  heroDashboard: {
-    marginTop: 22,
-    backgroundColor: colors.midnight,
-    borderRadius: 22,
-    padding: 15,
-    minHeight: 105,
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    shadowOffset: {width: 0, height: 5},
-    elevation: 3,
-  },
-  heroDashboardHeader: {
+  heroInsights: {
+    position: 'absolute',
+    left: 19,
+    right: 19,
+    bottom: 42,
+    height: 55,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    borderTopWidth: 1,
+    borderTopColor: '#DDE3DF',
+    paddingTop: 9,
   },
-  heroDashboardLabel: {
-    fontSize: 6,
-    fontWeight: '800',
-    letterSpacing: 1.5,
-    color: '#89969A',
+  heroInsightPrimary: {
+    width: 72,
   },
-  heroPulse: {
-    width: 17,
-    height: 17,
-    borderRadius: 9,
-    backgroundColor: '#263C3E',
+  heroInsightNumber: {
+    fontSize: 20,
+    lineHeight: 20,
+    fontWeight: '500',
+    color: colors.ink,
+  },
+  heroInsightLabel: {
+    fontSize: 5.5,
+    fontWeight: '700',
+    letterSpacing: 0.8,
+    color: '#8A9695',
+    marginTop: 3,
+  },
+  heroInsightDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: '#D7DEDA',
+    marginHorizontal: 11,
+  },
+  heroInsight: {
+    flex: 1,
+    paddingLeft: 10,
+  },
+  heroInsightValue: {
+    fontSize: 12,
+    lineHeight: 13,
+    fontWeight: '600',
+    color: colors.teal,
+  },
+  heroInsightCaption: {
+    fontSize: 5.5,
+    fontWeight: '700',
+    letterSpacing: 0.9,
+    color: '#8A9695',
+    marginTop: 3,
+  },
+  heroBottomLine: {
+    position: 'absolute',
+    left: 19,
+    right: 19,
+    bottom: 14,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  heroPulseDot: {
+  heroStatusMark: {
     width: 5,
     height: 5,
     borderRadius: 3,
     backgroundColor: colors.success,
+    marginRight: 7,
   },
-  heroStats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 14,
-  },
-  heroStatMain: {
-    width: 62,
-  },
-  heroStatNumber: {
-    fontSize: 27,
-    lineHeight: 28,
-    fontWeight: '500',
-    color: colors.white,
-  },
-  heroStatLabel: {
-    fontSize: 5,
-    fontWeight: '700',
-    letterSpacing: 0.8,
-    color: '#7D8B90',
-    marginTop: 2,
-  },
-  heroStatDivider: {
-    width: 1,
-    height: 43,
-    backgroundColor: '#35434A',
-    marginHorizontal: 12,
-  },
-  heroStatItem: {
-    flex: 1,
-    height: 38,
-    borderLeftWidth: 1,
-    borderLeftColor: '#2F3D43',
-    paddingLeft: 10,
-    justifyContent: 'center',
-  },
-  heroStatItemText: {
-    fontSize: 7.5,
-    fontWeight: '600',
-    color: '#C4CED0',
-    marginTop: 4,
-  },
-  heroFooter: {
-    position: 'absolute',
-    left: 18,
-    right: 18,
-    bottom: 13,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  heroFooterText: {
-    fontSize: 6,
+  heroBottomText: {
+    fontSize: 5.5,
     fontWeight: '700',
     letterSpacing: 1.1,
-    color: '#7A898D',
+    color: '#909A98',
   },
   group: {
     marginBottom: 32,

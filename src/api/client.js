@@ -1,6 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {notifyAuthExpired} from './authEvents';
+import {fetch as expoFetch} from 'expo/fetch';
+import {File} from 'expo-file-system';
 
 const PRODUCTION_API_URL = 'https://sm-associate-backend.vercel.app/api/v1';
 
@@ -112,33 +114,27 @@ export async function uploadDocument(path, asset, fields = {}) {
   const token = await readAccessToken();
   if (!token) throw new Error('Your login session has expired. Please sign in again.');
 
-  // React Native 0.86 / Expo 57 can reject the legacy {uri,name,type}
-  // FormData part with "Unsupported FormDataPart implementation".
-  // Read the selected local file as a real Blob and append that Blob instead.
-  let fileResponse;
+  // Use Expo's native File implementation directly. This avoids both:
+  // 1) the legacy React Native {uri,name,type} FormDataPart error, and
+  // 2) Response.blob()'s expensive native Blob/base64 copy warning.
+  let file;
   try {
-    fileResponse = await fetch(asset.uri);
+    file = new File(asset.uri);
   } catch (error) {
-    throw new Error('Unable to read the selected document. Please choose the file again.');
+    throw new Error('Unable to access the selected document. Please choose the file again.');
   }
 
-  if (!fileResponse.ok) {
-    throw new Error('Unable to read the selected document. Please choose the file again.');
+  if (!file.exists) {
+    throw new Error('The selected document is no longer available. Please choose it again.');
   }
 
-  let fileBlob;
-  try {
-    fileBlob = await fileResponse.blob();
-  } catch (error) {
-    throw new Error('Unable to prepare the selected document for upload. Please choose the file again.');
-  }
-
-  if (!fileBlob || !fileBlob.size) {
+  const fileSize = Number(file.size || 0);
+  if (!fileSize) {
     throw new Error('The selected document is empty or could not be read.');
   }
 
   const form = new FormData();
-  form.append('file', fileBlob, fileName);
+  form.append('file', file);
 
   Object.entries(fields).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
@@ -150,7 +146,7 @@ export async function uploadDocument(path, asset, fields = {}) {
   const timer = setTimeout(() => controller.abort(), 60000);
 
   try {
-    const response = await fetch(API_BASE_URL + path, {
+    const response = await expoFetch(API_BASE_URL + path, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

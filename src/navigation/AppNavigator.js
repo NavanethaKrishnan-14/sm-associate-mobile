@@ -255,7 +255,7 @@ export default function AppNavigator(){
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={authenticated?'Main':'Login'} screenOptions={{headerShown:false}}>
+      <Stack.Navigator key={authenticated?'authenticated':'guest'} initialRouteName={authenticated?'Main':'Login'} screenOptions={{headerShown:false}}>
         <Stack.Screen name="Login" component={LoginScreen}/>
         <Stack.Screen name="Main" component={MainTabs}/>
         <Stack.Screen name="AdminTools" component={AdminToolsScreen}/>

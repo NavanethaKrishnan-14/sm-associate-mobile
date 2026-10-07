@@ -1,5 +1,6 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {notifyAuthExpired} from './authEvents';
 
 const PRODUCTION_API_URL = 'https://sm-associate-backend.vercel.app/api/v1';
 
@@ -51,6 +52,7 @@ api.interceptors.response.use(
   async error => {
     if (error?.response?.status === 401) {
       await AsyncStorage.multiRemove(['sm_access_token', 'accessToken', 'token']);
+      notifyAuthExpired();
     }
     return Promise.reject(error);
   }

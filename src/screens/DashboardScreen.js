@@ -79,7 +79,7 @@ export default function DashboardScreen({navigation}){
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{setRefreshing(true);load();}} tintColor={colors.gold}/>}
       >
         <View style={[styles.editorialGreeting,{marginHorizontal:horizontalPadding,minHeight:isCompact?205:218}]}>
-          <View style={styles.editorialAccent}/><View style={styles.editorialTop}><View><AppText style={styles.editorialKicker}>{greeting}</AppText><AppText style={styles.editorialDate}>Your business at a glance</AppText></View><View style={styles.editorialStatus}><View style={styles.editorialStatusDot}/><AppText style={styles.editorialStatusText}>ONLINE</AppText></View></View>
+          <View style={styles.editorialAccent}/><View style={styles.editorialTop}><View><AppText style={styles.editorialKicker}>{greeting}</AppText><AppText style={styles.editorialDate}>Your business at a glance</AppText></View></View>
           <View style={styles.editorialContent}><AppText style={[styles.editorialTitle,{fontSize:isCompact?28:32,lineHeight:isCompact?34:38}]}>Welcome back.</AppText><AppText style={styles.editorialDescription}>Keep track of your customers, loans and vehicle operations from one dashboard.</AppText></View>
           <View style={styles.editorialBottom}><View><AppText style={styles.editorialBottomLabel}>TODAY'S FOCUS</AppText><AppText style={styles.editorialBottomText}>Manage your daily operations</AppText></View><Pressable onPress={()=>navigation.navigate('More')} style={({pressed})=>[styles.editorialAction,pressed&&styles.pressed]} accessibilityRole="button" accessibilityLabel="Open more management options"><Ionicons name="arrow-forward" size={17} color={colors.white}/></Pressable></View>
         </View>

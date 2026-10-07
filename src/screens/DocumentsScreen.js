@@ -7,7 +7,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {api} from '../api/client';
 import {colors} from '../theme/colors';
 
-const sourceIcon={ "Car Buying":"car-sport-outline", "Car Sold":"checkmark-circle-outline", "Loan":"document-text-outline" };
+const sourceIcon={ "Customer":"person-circle-outline", "Car Buying":"car-sport-outline", "Car Sold":"checkmark-circle-outline", "Loan":"document-text-outline" };
 
 export default function DocumentsScreen({navigation}){
   const {top,bottom}=useSafeAreaInsets();

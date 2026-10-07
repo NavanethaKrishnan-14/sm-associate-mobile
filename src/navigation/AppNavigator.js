@@ -101,9 +101,9 @@ function MainTabs(){
     tabBar={(props)=><CustomTabBar {...props}/>} 
     screenOptions={{headerShown:false}}
   >
-    <Tabs.Screen name="Dashboard" component={DashboardScreen}/>
     <Tabs.Screen name="Customers" component={CustomersScreen}/>
     <Tabs.Screen name="Cars" component={CarsScreen}/>
+    <Tabs.Screen name="Dashboard" component={DashboardScreen}/>
     <Tabs.Screen name="Loans" component={LoansScreen}/>
     <Tabs.Screen name="More" component={MoreScreen}/>
   </Tabs.Navigator>

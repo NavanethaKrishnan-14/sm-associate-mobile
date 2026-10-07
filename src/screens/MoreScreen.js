@@ -86,31 +86,28 @@ export default function MoreScreen({navigation}) {
 
         <View style={styles.body}>
           <View style={styles.hero}>
-            <View style={styles.heroTopRow}>
-              <View style={styles.heroPill}>
-                <View style={styles.heroPillDot} />
-                <Text style={styles.heroPillText}>MORE</Text>
+            <View style={styles.heroGlow} />
+            <View style={styles.heroHeader}>
+              <View>
+                <Text style={styles.heroOverline}>CONTROL CENTER</Text>
+                <Text style={styles.heroTitle}>More tools.<Text style={styles.heroTitleAccent}> More control.</Text></Text>
               </View>
-              <Text style={styles.heroIndex}>06 / TOOLS</Text>
-            </View>
-
-            <View style={styles.heroContent}>
-              <View style={styles.heroAccent} />
-              <View style={styles.heroText}>
-                <Text style={styles.heroTitle}>Manage more.</Text>
-                <Text style={styles.heroSub}>
-                  Everything you need to run the business beyond the dashboard.
-                </Text>
-              </View>
-
-              <View style={styles.heroMark}>
-                <Ionicons name="grid-outline" size={22} color={colors.white} />
+              <View style={styles.heroBadge}>
+                <Ionicons name="options-outline" size={18} color={colors.teal} />
               </View>
             </View>
 
-            <View style={styles.heroBottom}>
-              <Text style={styles.heroBottomText}>BUSINESS MANAGEMENT</Text>
-              <Ionicons name="arrow-down" size={16} color={colors.teal} />
+            <Text style={styles.heroSub}>
+              Manage operations, review performance and access the tools behind your business.
+            </Text>
+
+            <View style={styles.heroFooter}>
+              <View style={styles.heroStatus}>
+                <View style={styles.heroStatusDot} />
+                <Text style={styles.heroStatusText}>ALL SYSTEMS READY</Text>
+              </View>
+              <View style={styles.heroMiniLine} />
+              <Text style={styles.heroCount}>06 TOOLS</Text>
             </View>
           </View>
 
@@ -301,96 +298,99 @@ const styles = {
     minHeight: 650,
   },
   hero: {
-    backgroundColor: colors.midnight,
-    borderRadius: 24,
-    padding: 17,
+    position: 'relative',
+    minHeight: 188,
+    backgroundColor: colors.white,
+    borderRadius: 26,
+    padding: 18,
     marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#E3E7E4',
     overflow: 'hidden',
   },
-  heroTopRow: {
+  heroGlow: {
+    position: 'absolute',
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    right: -55,
+    top: -55,
+    backgroundColor: '#E3F2EF',
+  },
+  heroHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
   },
-  heroPill: {
-    height: 25,
-    paddingHorizontal: 9,
-    borderRadius: 9,
-    backgroundColor: 'rgba(39,168,154,0.12)',
+  heroOverline: {
+    fontSize: 7,
+    fontWeight: '600',
+    letterSpacing: 1.8,
+    color: colors.teal,
+    marginBottom: 7,
+  },
+  heroTitle: {
+    fontSize: 27,
+    lineHeight: 31,
+    fontWeight: '600',
+    letterSpacing: -0.8,
+    color: colors.ink,
+    maxWidth: 275,
+  },
+  heroTitleAccent: {
+    color: colors.teal,
+  },
+  heroBadge: {
+    width: 43,
+    height: 43,
+    borderRadius: 14,
+    backgroundColor: '#E7F3F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heroSub: {
+    fontSize: 10.5,
+    lineHeight: 16,
+    color: colors.muted,
+    marginTop: 12,
+    maxWidth: 305,
+  },
+  heroFooter: {
+    position: 'absolute',
+    left: 18,
+    right: 18,
+    bottom: 15,
     flexDirection: 'row',
     alignItems: 'center',
   },
-  heroPillDot: {
+  heroStatus: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  heroStatusDot: {
     width: 6,
     height: 6,
     borderRadius: 3,
     backgroundColor: colors.teal,
     marginRight: 6,
   },
-  heroPillText: {
-    fontSize: 7,
-    fontWeight: '600',
-    letterSpacing: 1.5,
-    color: colors.teal,
-  },
-  heroIndex: {
-    fontSize: 7,
-    fontWeight: '500',
-    letterSpacing: 1.1,
-    color: '#748187',
-  },
-  heroContent: {
-    minHeight: 118,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 6,
-  },
-  heroAccent: {
-    width: 3,
-    height: 67,
-    borderRadius: 2,
-    backgroundColor: colors.teal,
-    marginRight: 13,
-  },
-  heroText: {
-    flex: 1,
-    paddingRight: 10,
-  },
-  heroTitle: {
-    fontSize: 28,
-    lineHeight: 31,
-    fontWeight: '600',
-    letterSpacing: -0.7,
-    color: colors.white,
-  },
-  heroSub: {
-    fontSize: 10.5,
-    lineHeight: 16,
-    color: '#AAB5B8',
-    marginTop: 7,
-    maxWidth: 285,
-  },
-  heroMark: {
-    width: 54,
-    height: 54,
-    borderRadius: 17,
-    backgroundColor: '#24383B',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  heroBottom: {
-    borderTopWidth: 1,
-    borderTopColor: '#354149',
-    paddingTop: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  heroBottomText: {
+  heroStatusText: {
     fontSize: 6.5,
-    fontWeight: '500',
-    letterSpacing: 1.2,
-    color: '#7F8D92',
+    fontWeight: '600',
+    letterSpacing: 1,
+    color: colors.muted,
+  },
+  heroMiniLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#DCE2DF',
+    marginHorizontal: 10,
+  },
+  heroCount: {
+    fontSize: 6.5,
+    fontWeight: '600',
+    letterSpacing: 1,
+    color: '#8A969A',
   },
   group: {
     marginBottom: 27,

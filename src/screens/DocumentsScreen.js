@@ -40,10 +40,10 @@ export default function DocumentsScreen({navigation}){
     <View style={[styles.topBar,compactHeader&&styles.topBarCompact,{paddingTop:top+26}]}>
       <Pressable onPress={()=>navigation.goBack()} style={[styles.back,compactHeader&&styles.backCompact]}><Ionicons name="arrow-back" size={compactHeader?19:22} color={colors.ink}/></Pressable>
       <View style={{flex:1,marginLeft:compactHeader?8:10}}>
-        <AppText style={[styles.title,compactHeader&&styles.titleCompact]}>Documents</Text>
-        {!compactHeader&&<AppText style={styles.subtitle}>All uploaded documents</Text>}
+        <AppText style={[styles.title,compactHeader&&styles.titleCompact]}>Documents</AppText>
+        {!compactHeader&&<AppText style={styles.subtitle}>All uploaded documents</AppText>}
       </View>
-      <View style={[styles.count,compactHeader&&styles.countCompact]}><AppText style={styles.countText}>{documents.length}</Text></View>
+      <View style={[styles.count,compactHeader&&styles.countCompact]}><AppText style={styles.countText}>{documents.length}</AppText></View>
     </View>
 
     <View style={styles.searchBox}>
@@ -53,14 +53,14 @@ export default function DocumentsScreen({navigation}){
 
     <ScrollView onScroll={event=>setCompactHeader(event.nativeEvent.contentOffset.y>35)} scrollEventThrottle={16} contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{setRefreshing(true);load()}} tintColor={colors.gold}/>}>
       {loading?<View style={styles.center}><ActivityIndicator size="large" color={colors.midnight}/></View>:
-       filtered.length===0?<View style={styles.empty}><Ionicons name="folder-open-outline" size={44} color={colors.muted}/><AppText style={styles.emptyTitle}>{documents.length?'No matching documents':'No uploaded documents'}</Text><AppText style={styles.emptyText}>{documents.length?'Try another document name or record.':'Uploaded Car Buying, Car Sold and Loan documents will appear here.'}</Text></View>:
+       filtered.length===0?<View style={styles.empty}><Ionicons name="folder-open-outline" size={44} color={colors.muted}/><AppText style={styles.emptyTitle}>{documents.length?'No matching documents':'No uploaded documents'}</AppText><AppText style={styles.emptyText}>{documents.length?'Try another document name or record.':'Uploaded Car Buying, Car Sold and Loan documents will appear here.'}</AppText></View>:
        filtered.map(d=><View key={d.id} style={styles.card}>
          <View style={styles.icon}><Ionicons name={sourceIcon[d.source]||'document-outline'} size={21} color={colors.midnight}/></View>
          <View style={{flex:1}}>
-           <AppText style={styles.name}>{d.name}</Text>
-           <AppText style={styles.file}>{d.originalName}{d.size?' • '+formatSize(d.size):''}</Text>
-           <View style={styles.metaRow}><AppText style={styles.source}>{d.source}</Text><AppText style={styles.date}>{formatDate(d.uploadedAt)}</Text></View>
-           <AppText style={styles.record} numberOfLines={2}>{d.recordLabel}</Text>
+           <AppText style={styles.name}>{d.name}</AppText>
+           <AppText style={styles.file}>{d.originalName}{d.size?' • '+formatSize(d.size):''}</AppText>
+           <View style={styles.metaRow}><AppText style={styles.source}>{d.source}</AppText><AppText style={styles.date}>{formatDate(d.uploadedAt)}</AppText></View>
+           <AppText style={styles.record} numberOfLines={2}>{d.recordLabel}</AppText>
          </View>
        </View>)
       }

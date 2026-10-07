@@ -2,17 +2,17 @@ import React,{forwardRef} from 'react';
 import {Text,TextInput,StyleSheet} from 'react-native';
 
 const MANROPE={
-  100:'Manrope_200ExtraLight',
-  200:'Manrope_200ExtraLight',
-  300:'Manrope_300Light',
-  400:'Manrope_400Regular',
-  500:'Manrope_500Medium',
-  600:'Manrope_600SemiBold',
-  700:'Manrope_700Bold',
-  800:'Manrope_800ExtraBold',
-  900:'Manrope_800ExtraBold',
-  normal:'Manrope_400Regular',
-  bold:'Manrope_700Bold'
+  100:'Manrope200',
+  200:'Manrope200',
+  300:'Manrope300',
+  400:'Manrope400',
+  500:'Manrope500',
+  600:'Manrope600',
+  700:'Manrope700',
+  800:'Manrope800',
+  900:'Manrope800',
+  normal:'Manrope400',
+  bold:'Manrope700'
 };
 
 function resolveFontFamily(style){

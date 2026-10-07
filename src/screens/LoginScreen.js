@@ -34,7 +34,7 @@ export default function LoginScreen({navigation}){
         <View style={{marginBottom:24,alignItems:'center',justifyContent:'center'}}>
           <Logo width={logoWidth}/>
         </View>
-        <AppText style={{color:colors.white,fontSize:27,fontFamily:'Manrope_800ExtraBold',textAlign:'center'}}>Welcome back</Text>
+        <AppText style={{color:colors.white,fontSize:27,fontFamily:'Manrope800',textAlign:'center'}}>Welcome back</Text>
         <AppText style={{color:'rgba(255,255,255,.72)',fontSize:14,marginTop:7,textAlign:'center'}}>Manage finance, customers, loans and vehicles in one place.</Text>
       </View>
       <View style={styles.card}>
@@ -68,12 +68,12 @@ export default function LoginScreen({navigation}){
 }
 const styles=StyleSheet.create({
   card:{backgroundColor:'rgba(251,250,246,.98)',borderRadius:28,padding:22},
-  label:{fontSize:12,fontFamily:'Manrope_800ExtraBold',color:colors.ink,letterSpacing:.6},
+  label:{fontSize:12,fontFamily:'Manrope800',color:colors.ink,letterSpacing:.6},
   input:{backgroundColor:colors.white,borderWidth:1,borderColor:'#E3E6E3',borderRadius:16,paddingHorizontal:15,height:54,marginTop:8,color:colors.ink,fontSize:15},
   passwordWrap:{position:'relative',marginTop:8},
   passwordInput:{backgroundColor:colors.white,borderWidth:1,borderColor:'#E3E6E3',borderRadius:16,paddingHorizontal:15,paddingRight:70,height:54,color:colors.ink,fontSize:15},
   eyeButton:{position:'absolute',right:6,top:6,height:42,minWidth:58,paddingHorizontal:10,borderRadius:12,alignItems:'center',justifyContent:'center'},
-  eyeText:{color:colors.midnight,fontFamily:'Manrope_800ExtraBold',fontSize:13},
+  eyeText:{color:colors.midnight,fontFamily:'Manrope800',fontSize:13},
   button:{height:56,borderRadius:17,backgroundColor:colors.gold,alignItems:'center',justifyContent:'center',marginTop:24},
-  buttonText:{color:colors.midnight,fontFamily:'Manrope_800ExtraBold',fontSize:15}
+  buttonText:{color:colors.midnight,fontFamily:'Manrope800',fontSize:15}
 });

@@ -175,18 +175,15 @@ export default function MoreScreen({navigation}) {
               <View style={styles.logoutIcon}>
                 <Ionicons
                   name="log-out-outline"
-                  size={18}
-                  color={colors.danger}
+                  size={20}
+                  color={colors.white}
                 />
               </View>
 
-              <View>
-                <Text style={styles.logoutTitle}>Sign out</Text>
-                <Text style={styles.logoutSub}>End current session</Text>
-              </View>
+              <Text style={styles.logoutTitle}>Sign out</Text>
             </View>
 
-            <Ionicons name="arrow-forward" size={17} color={colors.danger} />
+            <Ionicons name="arrow-forward" size={19} color={colors.white} />
           </Pressable>
         </View>
       </ScrollView>
@@ -503,27 +500,25 @@ const styles = {
     backgroundColor: colors.success,
   },
   logout: {
-    height: 57,
-    marginTop: 10,
-    borderRadius: 18,
-    backgroundColor: '#FFF9F9',
-    borderWidth: 1,
-    borderColor: '#E7CACA',
-    paddingHorizontal: 12,
+    height: 64,
+    marginTop: 14,
+    borderRadius: 20,
+    backgroundColor: colors.danger,
+    borderWidth: 0,
+    paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    gap: 10,
   },
   logoutLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    justifyContent: 'center',
   },
   logoutIcon: {
-    width: 37,
-    height: 37,
-    borderRadius: 12,
-    backgroundColor: '#FCEFEF',
+    width: 24,
+    height: 24,
     alignItems: 'center',
     justifyContent: 'center',
   },

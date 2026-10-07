@@ -7,7 +7,7 @@ import {colors} from '../theme/colors';
 
 export async function pickDocument(){
   const result=await DocumentPicker.getDocumentAsync({
-    type:['application/pdf','image/jpeg','image/png','image/webp','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/octet-stream'],
+    type:['application/pdf','image/jpeg','image/png','image/webp','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.presentationml.presentation','text/plain','text/csv','application/octet-stream'],
     copyToCacheDirectory:true,
     multiple:false
   });
@@ -45,7 +45,7 @@ export default function DocumentPickerButton({label='Upload Document',file,uploa
       <AppText style={styles.hint} numberOfLines={2}>
         {file?'New document selected • Tap again to remove':uploaded?'Uploaded • Tap Replace to choose a new file':'Click here or drag & drop your document'}
       </AppText>
-      <AppText style={styles.supported}>PDF, JPG, PNG, WEBP, DOC or DOCX • Max 10 MB</AppText>
+      <AppText style={styles.supported}>PDF, JPG, PNG, WEBP, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT or CSV • Max 10 MB</AppText>
     </View>
     <View style={[styles.action,file&&styles.removeAction]}>
       <Ionicons name={file?'close-circle-outline':'add-circle-outline'} size={18} color={file?colors.white:colors.midnight}/>

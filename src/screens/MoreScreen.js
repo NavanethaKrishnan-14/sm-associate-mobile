@@ -141,11 +141,7 @@ export default function MoreScreen({navigation}) {
                       </View>
 
                       <View style={styles.actionArrow}>
-                        <Ionicons
-                          name="arrow-up-outline"
-                          size={16}
-                          color={colors.ink}
-                        />
+                        <Text style={styles.actionArrowText}>&gt;</Text>
                       </View>
                     </Pressable>
                   );
@@ -440,6 +436,12 @@ const styles = {
     backgroundColor: '#F0F2F0',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  actionArrowText: {
+    fontSize: 22,
+    lineHeight: 24,
+    fontWeight: '700',
+    color: colors.ink,
   },
   pressed: {
     opacity: 0.78,

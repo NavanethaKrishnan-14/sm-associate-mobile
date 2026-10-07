@@ -30,18 +30,39 @@ function resolveWeight(flatStyle){
   return '500';
 }
 
+function getVisibleFontSize(fontSize){
+  if(typeof fontSize!=='number') return undefined;
+
+  if(fontSize<=7) return fontSize+2;
+  if(fontSize<=10) return fontSize+2;
+  if(fontSize<=12) return fontSize+1.5;
+  if(fontSize<=14) return fontSize+1;
+  return fontSize;
+}
+
+function getVisibleLineHeight(lineHeight,fontSize){
+  if(typeof fontSize!=='number') return lineHeight;
+  const visibleSize=getVisibleFontSize(fontSize);
+  if(typeof lineHeight==='number'){
+    return Math.max(lineHeight,Math.round((visibleSize+5)*10)/10);
+  }
+  return undefined;
+}
+
 function getReadableTextStyle(style){
   const flatStyle=StyleSheet.flatten(style)||{};
   const fontSize=flatStyle.fontSize;
   const resolvedWeight=resolveWeight(flatStyle);
+  const visibleFontSize=getVisibleFontSize(fontSize);
+  const visibleLineHeight=getVisibleLineHeight(flatStyle.lineHeight,fontSize);
 
   return [
     style,
     {
       fontFamily:getInterFamily(resolvedWeight),
       fontWeight:'400',
-      ...(typeof fontSize==='number' ? {fontSize} : {}),
-      ...(typeof flatStyle.lineHeight==='number' ? {lineHeight:flatStyle.lineHeight} : {}),
+      ...(visibleFontSize!==undefined ? {fontSize:visibleFontSize} : {}),
+      ...(visibleLineHeight!==undefined ? {lineHeight:visibleLineHeight} : {}),
     },
   ];
 }
@@ -53,6 +74,9 @@ export const AppText=forwardRef(function AppText({style,...props},ref){
 export const AppTextInput=forwardRef(function AppTextInput({style,...props},ref){
   const flatStyle=StyleSheet.flatten(style)||{};
   const resolvedWeight=flatStyle.fontWeight ?? '500';
+  const fontSize=flatStyle.fontSize;
+  const visibleFontSize=getVisibleFontSize(fontSize);
+  const visibleLineHeight=getVisibleLineHeight(flatStyle.lineHeight,fontSize);
 
   return (
     <TextInput
@@ -63,6 +87,8 @@ export const AppTextInput=forwardRef(function AppTextInput({style,...props},ref)
         {
           fontFamily:getInterFamily(resolvedWeight),
           fontWeight:'400',
+          ...(visibleFontSize!==undefined ? {fontSize:visibleFontSize} : {}),
+          ...(visibleLineHeight!==undefined ? {lineHeight:visibleLineHeight} : {}),
         },
       ]}
     />

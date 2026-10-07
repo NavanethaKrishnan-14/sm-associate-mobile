@@ -1,8 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {notifyAuthExpired} from './authEvents';
-import {fetch as expoFetch} from 'expo/fetch';
-import {File} from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 
 const PRODUCTION_API_URL = 'https://sm-associate-backend.vercel.app/api/v1';
 
@@ -114,87 +113,67 @@ export async function uploadDocument(path, asset, fields = {}) {
   const token = await readAccessToken();
   if (!token) throw new Error('Your login session has expired. Please sign in again.');
 
-  // Use Expo's native File implementation directly. This avoids both:
-  // 1) the legacy React Native {uri,name,type} FormDataPart error, and
-  // 2) Response.blob()'s expensive native Blob/base64 copy warning.
-  let file;
-  try {
-    file = new File(asset.uri);
-  } catch (error) {
-    throw new Error('Unable to access the selected document. Please choose the file again.');
-  }
-
-  if (!file.exists) {
-    throw new Error('The selected document is no longer available. Please choose it again.');
-  }
-
-  const fileSize = Number(file.size || 0);
-  if (!fileSize) {
-    throw new Error('The selected document is empty or could not be read.');
-  }
-
-  const form = new FormData();
-  form.append('file', file);
-
+  // Use Expo's native multipart uploader instead of JavaScript FormData.
+  // This completely avoids React Native's FormDataPart implementation and
+  // avoids Response.blob()/base64 copies for document uploads.
+  const parameters = {};
   Object.entries(fields).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
-      form.append(key, String(value));
+      parameters[key] = String(value);
     }
   });
 
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 60000);
-
+  let result;
   try {
-    const response = await expoFetch(API_BASE_URL + path, {
-      method: 'POST',
+    result = await FileSystem.uploadAsync(API_BASE_URL + path, asset.uri, {
+      httpMethod: 'POST',
+      uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+      fieldName: 'file',
+      mimeType: fileType,
+      parameters,
       headers: {
         Accept: 'application/json',
         Authorization: 'Bearer ' + token,
         'x-access-token': token
-      },
-      body: form,
-      signal: controller.signal
+      }
     });
-
-    const responseText = await response.text();
-    let data = {};
-    try {
-      data = responseText ? JSON.parse(responseText) : {};
-    } catch {
-      data = {
-        message: responseText || 'The server returned an invalid response.'
-      };
-    }
-
-    if (response.status === 401) {
-      await logout();
-      notifyAuthExpired();
-      throw new Error('Your login session has expired. Please sign in again.');
-    }
-
-    if (!response.ok) {
-      throw new Error(
-        data?.message ||
-        'Document upload failed with HTTP ' + response.status + '.'
-      );
-    }
-
-    if (data?.success !== true) {
-      throw new Error(
-        data?.message || 'Document upload was not confirmed by the server.'
-      );
-    }
-
-    return data;
   } catch (error) {
-    if (error?.name === 'AbortError') {
-      throw new Error('Document upload timed out. Please try again.');
+    const message = error?.message || String(error || 'Unknown upload error.');
+    if (/Unsupported FormDataPart|UnsupportedFormDataPart/i.test(message)) {
+      throw new Error('The native document uploader could not prepare this file. Please restart the app and try again.');
     }
-    throw error;
-  } finally {
-    clearTimeout(timer);
+    throw new Error('Document upload failed: ' + message);
   }
+
+  let data = {};
+  try {
+    data = result?.body ? JSON.parse(result.body) : {};
+  } catch {
+    data = {
+      message: result?.body || 'The server returned an invalid upload response.'
+    };
+  }
+
+  if (result?.status === 401) {
+    await logout();
+    notifyAuthExpired();
+    throw new Error('Your login session has expired. Please sign in again.');
+  }
+
+  if (!result || result.status < 200 || result.status >= 300) {
+    throw new Error(
+      data?.message ||
+      'Document upload failed with HTTP ' + (result?.status || 'unknown') + '.'
+    );
+  }
+
+  if (data?.success !== true) {
+    throw new Error(
+      data?.message || 'Document upload was not confirmed by the server.'
+    );
+  }
+
+  return data;
 }
 
 export async function getApiHealth() {

@@ -1,6 +1,7 @@
+import {AppText,AppTextInput} from '../components/AppText';
 import React from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Pressable, ScrollView, Text, View} from 'react-native';
+import {Pressable, ScrollView, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {colors} from '../theme/colors';
 import Logo from '../components/Logo';
@@ -65,22 +66,22 @@ export default function MoreScreen({navigation}) {
             </View>
 
             <View style={styles.headerCenter}>
-              <Text style={styles.headerKicker}>SM ASSOCIATE</Text>
-              <Text style={styles.headerTitle}>CONTROL ROOM</Text>
+              <AppText style={styles.headerKicker}>SM ASSOCIATE</Text>
+              <AppText style={styles.headerTitle}>CONTROL ROOM</Text>
             </View>
 
             <View style={styles.headerCode}>
-              <Text style={styles.headerCodeTop}>06</Text>
-              <Text style={styles.headerCodeBottom}>TOOLS</Text>
+              <AppText style={styles.headerCodeTop}>06</Text>
+              <AppText style={styles.headerCodeBottom}>TOOLS</Text>
             </View>
           </View>
 
           <View style={styles.headerBottom}>
             <View style={styles.headerStatus}>
               <View style={styles.liveDot} />
-              <Text style={styles.statusText}>OPERATIONS ACTIVE</Text>
+              <AppText style={styles.statusText}>OPERATIONS ACTIVE</Text>
             </View>
-            <Text style={styles.headerDate}>BUSINESS / MANAGEMENT</Text>
+            <AppText style={styles.headerDate}>BUSINESS / MANAGEMENT</Text>
           </View>
         </View>
 
@@ -90,41 +91,41 @@ export default function MoreScreen({navigation}) {
             <View style={styles.heroShapeTwo} />
 
             <View style={styles.heroTopLine}>
-              <Text style={styles.heroIndex}>02</Text>
-              <Text style={styles.heroCategory}>BUSINESS INTELLIGENCE</Text>
+              <AppText style={styles.heroIndex}>02</Text>
+              <AppText style={styles.heroCategory}>BUSINESS INTELLIGENCE</Text>
               <View style={styles.heroTopRule} />
             </View>
 
             <View style={styles.heroContent}>
-              <Text style={styles.heroTitle}>Your business,</Text>
-              <Text style={styles.heroTitleAccent}>one clear view.</Text>
-              <Text style={styles.heroDescription}>
+              <AppText style={styles.heroTitle}>Your business,</Text>
+              <AppText style={styles.heroTitleAccent}>one clear view.</Text>
+              <AppText style={styles.heroDescription}>
                 A focused space for the people, money and operations that keep SM Associate moving.
               </Text>
             </View>
 
             <View style={styles.heroInsights}>
               <View style={styles.heroInsightPrimary}>
-                <Text style={styles.heroInsightNumber}>06</Text>
-                <Text style={styles.heroInsightLabel}>TOOLS AT HAND</Text>
+                <AppText style={styles.heroInsightNumber}>06</Text>
+                <AppText style={styles.heroInsightLabel}>TOOLS AT HAND</Text>
               </View>
 
               <View style={styles.heroInsightDivider} />
 
               <View style={styles.heroInsight}>
-                <Text style={styles.heroInsightValue}>01</Text>
-                <Text style={styles.heroInsightCaption}>OPERATE</Text>
+                <AppText style={styles.heroInsightValue}>01</Text>
+                <AppText style={styles.heroInsightCaption}>OPERATE</Text>
               </View>
 
               <View style={styles.heroInsight}>
-                <Text style={styles.heroInsightValue}>02</Text>
-                <Text style={styles.heroInsightCaption}>INSIGHT</Text>
+                <AppText style={styles.heroInsightValue}>02</Text>
+                <AppText style={styles.heroInsightCaption}>INSIGHT</Text>
               </View>
             </View>
 
             <View style={styles.heroBottomLine}>
               <View style={styles.heroStatusMark} />
-              <Text style={styles.heroBottomText}>CONTROL • CLARITY • MOMENTUM</Text>
+              <AppText style={styles.heroBottomText}>CONTROL • CLARITY • MOMENTUM</Text>
             </View>
           </View>
 
@@ -132,10 +133,10 @@ export default function MoreScreen({navigation}) {
             <View key={group.label} style={styles.group}>
               <View style={styles.groupHead}>
                 <View>
-                  <Text style={styles.groupLabel}>{group.label}</Text>
-                  <Text style={styles.groupTitle}>{group.title}</Text>
+                  <AppText style={styles.groupLabel}>{group.label}</Text>
+                  <AppText style={styles.groupTitle}>{group.title}</Text>
                 </View>
-                <Text style={styles.groupNumber}>0{groupIndex + 1}</Text>
+                <AppText style={styles.groupNumber}>0{groupIndex + 1}</Text>
               </View>
 
               <View style={styles.actions}>
@@ -156,8 +157,8 @@ export default function MoreScreen({navigation}) {
                       </View>
 
                       <View style={styles.actionCopy}>
-                        <Text style={styles.actionTitle}>{label}</Text>
-                        <Text style={styles.actionDesc}>{description}</Text>
+                        <AppText style={styles.actionTitle}>{label}</Text>
+                        <AppText style={styles.actionDesc}>{description}</Text>
                       </View>
 
                       <View style={styles.actionArrow}>
@@ -179,18 +180,18 @@ export default function MoreScreen({navigation}) {
                   color={colors.teal}
                 />
               </View>
-              <Text style={styles.adminTag}>ADMIN AREA</Text>
+              <AppText style={styles.adminTag}>ADMIN AREA</Text>
             </View>
 
-            <Text style={styles.adminTitle}>Protected workspace</Text>
-            <Text style={styles.adminDesc}>
+            <AppText style={styles.adminTitle}>Protected workspace</Text>
+            <AppText style={styles.adminDesc}>
               Management controls are available according to your account permissions.
             </Text>
 
             <View style={styles.adminRule} />
 
             <View style={styles.adminBottom}>
-              <Text style={styles.adminBottomText}>ACCESS CONTROLLED</Text>
+              <AppText style={styles.adminBottomText}>ACCESS CONTROLLED</Text>
               <View style={styles.adminDot} />
             </View>
           </View>
@@ -204,7 +205,7 @@ export default function MoreScreen({navigation}) {
               size={20}
               color={colors.white}
             />
-            <Text style={styles.logoutTitle}>Sign out</Text>
+            <AppText style={styles.logoutTitle}>Sign out</Text>
           </Pressable>
         </View>
       </ScrollView>

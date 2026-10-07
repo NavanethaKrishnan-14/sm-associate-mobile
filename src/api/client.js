@@ -94,24 +94,27 @@ export async function login(email, password) {
 export async function uploadDocument(path, asset, fields = {}) {
   if (!asset?.uri) throw new Error('Please select a document first.');
 
-  const fileName = String(asset.name || 'document');
-  const lowerName = fileName.toLowerCase();
+  const fileName = String(asset.name || asset.fileName || 'document');
+  const fileType = String(
+    asset.mimeType ||
+    asset.type ||
+    'application/octet-stream'
+  );
   const token = await readAccessToken();
   if (!token) throw new Error('Your login session has expired. Please sign in again.');
 
-  let blob;
-  try {
-    const fileResponse = await fetch(asset.uri);
-    if (!fileResponse.ok) throw new Error('Unable to read the selected document from device storage.');
-    blob = await fileResponse.blob();
-  } catch (error) {
-    throw new Error(error?.message || 'Unable to prepare the selected document for upload.');
-  }
-
   const form = new FormData();
-  form.append('file', blob, fileName);
+  // React Native multipart uploads are more reliable when the native file
+  // descriptor is passed directly instead of converting it to a Blob first.
+  form.append('file', {
+    uri: asset.uri,
+    name: fileName,
+    type: fileType
+  });
   Object.entries(fields).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) form.append(key, String(value));
+    if (value !== undefined && value !== null) {
+      form.append(key, String(value));
+    }
   });
 
   const controller = new AbortController();
@@ -131,14 +134,38 @@ export async function uploadDocument(path, asset, fields = {}) {
 
     const responseText = await response.text();
     let data = {};
-    try { data = responseText ? JSON.parse(responseText) : {}; }
-    catch { data = {message: responseText || 'The server returned an invalid response.'}; }
+    try {
+      data = responseText ? JSON.parse(responseText) : {};
+    } catch {
+      data = {
+        message: responseText || 'The server returned an invalid response.'
+      };
+    }
 
-    if (!response.ok) throw new Error(data?.message || 'Document upload failed with HTTP ' + response.status + '.');
-    if (data?.success !== true) throw new Error(data?.message || 'Document upload was not confirmed by the server.');
+    if (response.status === 401) {
+      await logout();
+      notifyAuthExpired();
+      throw new Error('Your login session has expired. Please sign in again.');
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data?.message ||
+        'Document upload failed with HTTP ' + response.status + '.'
+      );
+    }
+
+    if (data?.success !== true) {
+      throw new Error(
+        data?.message || 'Document upload was not confirmed by the server.'
+      );
+    }
+
     return data;
   } catch (error) {
-    if (error?.name === 'AbortError') throw new Error('Document upload timed out. Please try again.');
+    if (error?.name === 'AbortError') {
+      throw new Error('Document upload timed out. Please try again.');
+    }
     throw error;
   } finally {
     clearTimeout(timer);

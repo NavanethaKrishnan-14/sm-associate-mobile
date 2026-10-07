@@ -104,51 +104,53 @@ export async function login(email, password) {
 export async function uploadDocument(path, asset, fields = {}) {
   if (!asset?.uri) throw new Error('Please select a document first.');
 
-  const fileName = String(asset.name || asset.fileName || 'document');
-  const token = await readAccessToken();
-  if (!token) throw new Error('Your login session has expired. Please sign in again.');
+  const fileName=String(asset.name||asset.fileName||'document');
+  const mimeType=String(asset.mimeType||asset.type||'application/octet-stream');
+  const token=await readAccessToken();
+  if(!token) throw new Error('Your login session has expired. Please sign in again.');
 
-  const isCustomerDocument = /^\/customers\/[^/]+\/documents\/[^/]+$/i.test(path);
+  let file;
+  try{
+    file=new File(asset.uri);
+  }catch{
+    throw new Error('Unable to access the selected document. Please choose the file again.');
+  }
 
-  // Customer documents use the backend's signed Cloudinary flow:
-  // 1. Ask the backend for a short-lived Cloudinary signature.
-  // 2. Upload the native Expo File directly to Cloudinary.
-  // 3. Tell the backend to persist the verified Cloudinary metadata.
-  // This avoids Vercel/Multer multipart parsing completely.
-  if (isCustomerDocument) {
-    const signatureResponse = await api.post(path + '/signature', {
-      originalName: fileName,
-      ...(fields || {})
-    });
+  if(!file.exists){
+    throw new Error('The selected document is no longer available. Please choose it again.');
+  }
 
-    const signatureData = signatureResponse?.data?.data;
-    if (!signatureData?.signature || !signatureData?.uploadUrl || !signatureData?.publicId) {
-      throw new Error('The server could not prepare the Cloudinary upload.');
-    }
+  const fileSize=Number(file.size||0);
+  if(!fileSize){
+    throw new Error('The selected document is empty or could not be read.');
+  }
 
-    let file;
-    try {
-      file = new File(asset.uri);
-    } catch {
-      throw new Error('Unable to access the selected document. Please choose the file again.');
-    }
+  const isCustomerDocument=/^\/customers\/[^/]+\/documents\/[^/]+$/i.test(path);
 
-    if (!file.exists) {
-      throw new Error('The selected document is no longer available. Please choose it again.');
-    }
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),60000);
 
-    const fileSize = Number(file.size || 0);
-    if (!fileSize) {
-      throw new Error('The selected document is empty or could not be read.');
-    }
+  try{
+    if(isCustomerDocument){
+      // Customer documents bypass Vercel/Express multipart parsing:
+      // backend signs the upload, the native Expo file uploads directly
+      // to Cloudinary, then the backend persists the returned metadata.
+      const signatureResponse=await api.post(path+'/signature',{
+        originalName:fileName,
+        ...(fields||{})
+      });
 
-    let cloudinaryData={};
-    try {
+      const signatureData=signatureResponse?.data?.data;
+      if(!signatureData?.signature||!signatureData?.uploadUrl||!signatureData?.publicId){
+        throw new Error('The server could not prepare the Cloudinary upload.');
+      }
+
+      let cloudinaryData={};
       const uploadResult=await file.upload(signatureData.uploadUrl,{
         httpMethod:'POST',
         uploadType:UploadType.MULTIPART,
         fieldName:'file',
-        mimeType:String(asset.mimeType||asset.type||file.type||'application/octet-stream'),
+        mimeType,
         parameters:{
           api_key:String(signatureData.apiKey),
           timestamp:String(signatureData.timestamp),
@@ -158,128 +160,95 @@ export async function uploadDocument(path, asset, fields = {}) {
         signal:controller.signal
       });
 
-      try {
+      try{
         cloudinaryData=uploadResult?.body?JSON.parse(uploadResult.body):{};
-      } catch {
+      }catch{
         cloudinaryData={
           error:{message:uploadResult?.body||'Cloudinary returned an invalid response.'}
         };
       }
 
-      if(uploadResult?.status<200||uploadResult?.status>=300||!cloudinaryData?.secure_url||!cloudinaryData?.public_id){
+      if(
+        Number(uploadResult?.status||0)<200||
+        Number(uploadResult?.status||0)>=300||
+        !cloudinaryData?.secure_url||
+        !cloudinaryData?.public_id
+      ){
         throw new Error(
-          cloudinaryData?.error?.message ||
+          cloudinaryData?.error?.message||
           'Cloudinary could not upload the selected document.'
         );
       }
-    } catch(error) {
-      if(error?.name==='AbortError'){
-        throw new Error('Document upload timed out. Please try again.');
-      }
-      throw error;
-    }
 
-      const completeResponse = await api.post(path + '/complete', {
-        originalName: fileName,
-        publicId: cloudinaryData.public_id,
-        secureUrl: cloudinaryData.secure_url,
-        resourceType: cloudinaryData.resource_type || signatureData.resourceType,
-        format: cloudinaryData.format || '',
-        size: Number(cloudinaryData.bytes || fileSize),
-        ...(fields || {})
+      const completeResponse=await api.post(path+'/complete',{
+        originalName:fileName,
+        publicId:String(cloudinaryData.public_id),
+        secureUrl:String(cloudinaryData.secure_url),
+        resourceType:String(cloudinaryData.resource_type||signatureData.resourceType||'raw'),
+        format:String(cloudinaryData.format||''),
+        size:Number(cloudinaryData.bytes||fileSize),
+        ...(fields||{})
       });
 
-      if (completeResponse?.data?.success !== true) {
+      if(completeResponse?.data?.success!==true){
         throw new Error(
-          completeResponse?.data?.message ||
+          completeResponse?.data?.message||
           'The document uploaded to Cloudinary but could not be saved to the customer.'
         );
       }
 
       return completeResponse.data;
-    } catch (error) {
-      if (error?.name === 'AbortError') {
-        throw new Error('Document upload timed out. Please try again.');
-      }
-      throw error;
-    } finally {
-      clearTimeout(timer);
     }
-  }
 
-  // Keep the existing multipart route for car/loan documents.
-  const fileType = String(
-    asset.mimeType ||
-    asset.type ||
-    'application/octet-stream'
-  );
-
-  let file;
-  try {
-    file = new File(asset.uri);
-  } catch {
-    throw new Error('Unable to access the selected document. Please choose the file again.');
-  }
-
-  if (!file.exists) {
-    throw new Error('The selected document is no longer available. Please choose it again.');
-  }
-
-  if (!Number(file.size || 0)) {
-    throw new Error('The selected document is empty or could not be read.');
-  }
-
-  const form = new FormData();
-  form.append('file', file);
-
-  Object.entries(fields).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) form.append(key, String(value));
-  });
-
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 60000);
-
-  try {
-    const response = await expoFetch(API_BASE_URL + path, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer ' + token,
-        'x-access-token': token
+    // Car/loan document endpoints also use native multipart upload.
+    // No JS FormData or Blob is created.
+    const uploadResult=await file.upload(API_BASE_URL+path,{
+      httpMethod:'POST',
+      uploadType:UploadType.MULTIPART,
+      fieldName:'file',
+      mimeType,
+      headers:{
+        Accept:'application/json',
+        Authorization:'Bearer '+token,
+        'x-access-token':token
       },
-      body: form,
-      signal: controller.signal
+      parameters:Object.fromEntries(
+        Object.entries(fields||{}).map(([key,value])=>[key,String(value)])
+      ),
+      signal:controller.signal
     });
 
-    const responseText = await response.text();
-    let data = {};
-    try {
-      data = responseText ? JSON.parse(responseText) : {};
-    } catch {
-      data = {message: responseText || 'The server returned an invalid response.'};
+    let data={};
+    try{
+      data=uploadResult?.body?JSON.parse(uploadResult.body):{};
+    }catch{
+      data={message:uploadResult?.body||'The server returned an invalid response.'};
     }
 
-    if (response.status === 401) {
+    if(Number(uploadResult?.status||0)===401){
       await logout();
       notifyAuthExpired();
       throw new Error('Your login session has expired. Please sign in again.');
     }
 
-    if (!response.ok) {
-      throw new Error(data?.message || 'Document upload failed with HTTP ' + response.status + '.');
+    if(Number(uploadResult?.status||0)<200||Number(uploadResult?.status||0)>=300){
+      throw new Error(
+        data?.message||
+        'Document upload failed with HTTP '+String(uploadResult?.status||0)+'.'
+      );
     }
 
-    if (data?.success !== true) {
-      throw new Error(data?.message || 'Document upload was not confirmed by the server.');
+    if(data?.success!==true){
+      throw new Error(data?.message||'Document upload was not confirmed by the server.');
     }
 
     return data;
-  } catch (error) {
-    if (error?.name === 'AbortError') {
+  }catch(error){
+    if(error?.name==='AbortError'){
       throw new Error('Document upload timed out. Please try again.');
     }
     throw error;
-  } finally {
+  }finally{
     clearTimeout(timer);
   }
 }

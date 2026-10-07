@@ -45,42 +45,30 @@ export default function DashboardScreen({navigation}){
   return (
     <View style={styles.page}>
       <View style={[styles.commandBar,{paddingTop:Math.max(4,topInset)}]}>
-        <View style={styles.commandGlow}/>
-        <View style={styles.commandTop}>
+        <View style={styles.headerTopLine}/>
+        <View style={styles.headerMain}>
           <View style={styles.brandCluster}>
-            <View style={styles.logoFrame}>
-              <View style={styles.logoHalo}/>
-              <Logo width={66}/>
-            </View>
+            <View style={styles.logoFrame}><Logo width={62}/></View>
             <View style={styles.brandCopy}>
-              <View style={styles.brandEyebrowRow}>
-                <View style={styles.brandEyebrowLine}/>
-                <AppText style={styles.brandKicker}>SM ASSOCIATE</AppText>
-              </View>
+              <AppText style={styles.brandKicker}>SM ASSOCIATE</AppText>
               <AppText numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.72} style={styles.brandTitle}>Business Management</AppText>
-              <AppText style={styles.brandSubtitle}>Finance • Automotive • Operations</AppText>
             </View>
           </View>
-          <View style={styles.commandActions}>
-            <Pressable onPress={()=>navigation.navigate('More')} style={({pressed})=>[styles.iconButton,pressed&&styles.pressed]} accessibilityRole="button" accessibilityLabel="Open notifications">
-              <Ionicons name="notifications-outline" size={18} color={colors.white}/>
-              <View style={styles.notificationDot}/>
-            </Pressable>
-          </View>
+          <Pressable onPress={()=>navigation.navigate('More')} style={({pressed})=>[styles.profileButton,pressed&&styles.pressed]} accessibilityRole="button" accessibilityLabel="Open more options">
+            <View style={styles.profileIcon}><Ionicons name="grid-outline" size={18} color={colors.teal}/></View>
+          </Pressable>
         </View>
-        <View style={styles.commandDivider}/>
-        <View style={styles.commandMeta}>
-          <View style={styles.metaLeft}>
-            <View style={styles.metaPulse}><View style={styles.metaPulseDot}/></View>
-            <AppText style={styles.metaText}>BUSINESS OPERATIONS</AppText>
+        <View style={styles.headerBottom}>
+          <View style={styles.operationChip}>
+            <View style={styles.liveDot}/>
+            <AppText style={styles.operationText}>BUSINESS OPERATIONS</AppText>
           </View>
-          <View style={styles.metaRight}>
-            <View style={styles.metaIndicator}/>
-            <AppText style={styles.metaHint}>SYSTEM ONLINE</AppText>
+          <View style={styles.onlineState}>
+            <AppText style={styles.onlineText}>ONLINE</AppText>
+            <View style={styles.onlineLine}/>
           </View>
         </View>
       </View>
-
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{setRefreshing(true);load();}} tintColor={colors.gold}/>}
       >
@@ -110,14 +98,24 @@ function PipelineRow({name,value,first}){return <View style={[styles.pipelineRow
 
 const styles=StyleSheet.create({
   page:{flex:1,backgroundColor:colors.ivory},scroll:{flex:1},content:{paddingBottom:20,backgroundColor:colors.ivory},
-  commandBar:{backgroundColor:'#0E1A22',paddingLeft:12,paddingRight:12,paddingBottom:8,borderBottomLeftRadius:30,borderBottomRightRadius:30,borderWidth:1,borderTopWidth:0,borderColor:'rgba(39,168,154,0.14)',overflow:'hidden'},
-  commandGlow:{position:'absolute',top:-42,right:-30,width:150,height:150,borderRadius:75,backgroundColor:'rgba(39,168,154,0.08)'},
-  commandTop:{height:86,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},brandCluster:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0,paddingRight:10},
-  logoFrame:{width:68,height:68,borderRadius:19,alignItems:'center',justifyContent:'center',overflow:'hidden',backgroundColor:'rgba(255,255,255,0.045)',borderWidth:1,borderColor:'rgba(39,168,154,0.24)'},logoHalo:{position:'absolute',width:58,height:58,borderRadius:29,borderWidth:1,borderColor:'rgba(39,168,154,0.16)'},
-  brandCopy:{marginLeft:9,minWidth:0,flex:1,flexShrink:1,paddingRight:2},brandEyebrowRow:{flexDirection:'row',alignItems:'center',height:12},brandEyebrowLine:{width:16,height:2,borderRadius:1,backgroundColor:colors.teal,marginRight:6},brandKicker:{color:'#5BE0D1',fontSize:7,lineHeight:9,fontWeight:'700',letterSpacing:1.7},brandTitle:{color:colors.white,fontSize:19,lineHeight:23,fontWeight:'700',letterSpacing:-0.3,includeFontPadding:false,marginTop:1},brandSubtitle:{color:'rgba(255,255,255,0.48)',fontSize:7.5,lineHeight:10,letterSpacing:0.15,marginTop:2},
-  commandActions:{flexDirection:'row',alignItems:'center',gap:8},
-  iconButton:{width:40,height:40,borderRadius:14,backgroundColor:'rgba(39,168,154,0.10)',borderWidth:1,borderColor:'rgba(39,168,154,0.25)',alignItems:'center',justifyContent:'center',position:'relative'},notificationDot:{position:'absolute',top:6,right:6,width:6,height:6,borderRadius:4,backgroundColor:colors.teal,borderWidth:1.5,borderColor:'#13232A'},commandDivider:{height:1,backgroundColor:'rgba(255,255,255,0.08)',marginTop:0,marginBottom:4},
-  commandMeta:{minHeight:25,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},metaLeft:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0},metaPulse:{width:18,height:18,borderRadius:9,backgroundColor:'rgba(39,168,154,0.11)',alignItems:'center',justifyContent:'center'},metaPulseDot:{width:6,height:6,borderRadius:3,backgroundColor:colors.teal},metaText:{color:'rgba(255,255,255,0.62)',fontSize:7,letterSpacing:0.8,fontWeight:'600',marginLeft:6},metaRight:{height:24,minWidth:98,paddingHorizontal:9,borderRadius:12,backgroundColor:'rgba(39,168,154,0.13)',borderWidth:1,borderColor:'rgba(39,168,154,0.18)',flexDirection:'row',alignItems:'center',justifyContent:'center'},metaHint:{color:'#5BE0D1',fontSize:7,letterSpacing:0.15,fontWeight:'700'},metaIndicator:{width:6,height:6,borderRadius:3,backgroundColor:colors.teal,marginRight:6},pressed:{opacity:0.72,transform:[{scale:0.97}]},
+  commandBar:{backgroundColor:colors.midnight,paddingHorizontal:16,paddingBottom:13,borderBottomLeftRadius:24,borderBottomRightRadius:24,borderBottomWidth:1,borderBottomColor:'rgba(39,168,154,0.22)',overflow:'hidden'},
+  headerTopLine:{position:'absolute',top:0,left:24,right:24,height:2,borderRadius:2,backgroundColor:colors.teal},
+  headerMain:{height:82,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},
+  brandCluster:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0},
+  logoFrame:{width:64,height:64,borderRadius:18,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(255,255,255,0.045)',borderWidth:1,borderColor:'rgba(255,255,255,0.09)',overflow:'hidden'},
+  brandCopy:{marginLeft:12,flex:1,minWidth:0,paddingRight:8},
+  brandKicker:{color:colors.teal,fontSize:8,lineHeight:10,fontWeight:'700',letterSpacing:2,marginBottom:4},
+  brandTitle:{color:colors.white,fontSize:19,lineHeight:23,fontWeight:'700',letterSpacing:-0.35,includeFontPadding:false},
+  profileButton:{width:44,height:44,borderRadius:15,backgroundColor:'rgba(39,168,154,0.10)',borderWidth:1,borderColor:'rgba(39,168,154,0.24)',alignItems:'center',justifyContent:'center'},
+  profileIcon:{width:32,height:32,borderRadius:11,backgroundColor:'rgba(39,168,154,0.10)',alignItems:'center',justifyContent:'center'},
+  headerBottom:{height:32,flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingTop:5,borderTopWidth:1,borderTopColor:'rgba(255,255,255,0.07)'},
+  operationChip:{height:25,paddingHorizontal:9,borderRadius:9,backgroundColor:'rgba(255,255,255,0.045)',flexDirection:'row',alignItems:'center'},
+  liveDot:{width:6,height:6,borderRadius:3,backgroundColor:colors.teal,marginRight:7},
+  operationText:{color:'rgba(255,255,255,0.64)',fontSize:7,letterSpacing:1.05,fontWeight:'700'},
+  onlineState:{height:25,paddingHorizontal:9,borderRadius:9,flexDirection:'row',alignItems:'center',backgroundColor:'rgba(39,168,154,0.11)',borderWidth:1,borderColor:'rgba(39,168,154,0.17)'},
+  onlineText:{color:'#5BE0D1',fontSize:7,letterSpacing:1.1,fontWeight:'700'},
+  onlineLine:{width:5,height:5,borderRadius:3,backgroundColor:colors.teal,marginLeft:6},
+  pressed:{opacity:0.72,transform:[{scale:0.97}]},
   editorialGreeting:{marginTop:20,padding:20,backgroundColor:'#F8F7F2',borderRadius:26,borderWidth:1,borderColor:'rgba(24,32,39,0.08)',overflow:'hidden'},editorialAccent:{position:'absolute',left:0,top:0,bottom:0,width:5,backgroundColor:colors.teal},editorialTop:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginLeft:4},editorialKicker:{color:colors.teal,fontSize:9,letterSpacing:1.8},editorialDate:{color:colors.muted,fontSize:10,marginTop:3},editorialStatus:{height:27,paddingHorizontal:9,borderRadius:9,flexDirection:'row',alignItems:'center',backgroundColor:'rgba(39,168,154,0.08)',borderWidth:1,borderColor:'rgba(39,168,154,0.16)'},editorialStatusDot:{width:6,height:6,borderRadius:3,backgroundColor:colors.teal,marginRight:5},editorialStatusText:{color:colors.teal,fontSize:7,letterSpacing:1.1},
   editorialContent:{flex:1,justifyContent:'center',marginLeft:4,paddingRight:8},editorialTitle:{color:colors.ink,fontSize:32,lineHeight:38,letterSpacing:-0.8},editorialDescription:{color:'#68747B',fontSize:12,lineHeight:18,marginTop:7,maxWidth:315},editorialBottom:{marginLeft:4,paddingTop:13,borderTopWidth:1,borderTopColor:'rgba(24,32,39,0.09)',flexDirection:'row',alignItems:'center',justifyContent:'space-between'},editorialBottomLabel:{color:colors.muted,fontSize:7,letterSpacing:1.5},editorialBottomText:{color:colors.ink,fontSize:10,marginTop:3},editorialAction:{width:35,height:35,borderRadius:11,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center'},
   loadErrorCard:{marginHorizontal:18,marginTop:16,padding:14,borderRadius:18,backgroundColor:'#FFF5F3',borderWidth:1,borderColor:'rgba(198,83,83,0.20)',flexDirection:'row',alignItems:'flex-start'},loadErrorBody:{flex:1,marginLeft:10},loadErrorTitle:{color:colors.ink,fontSize:13,},loadErrorText:{color:colors.muted,fontSize:10,lineHeight:15,marginTop:3},retryButton:{alignSelf:'flex-start',marginTop:9,paddingHorizontal:12,paddingVertical:7,borderRadius:9,backgroundColor:colors.midnight},retryText:{color:colors.white,fontSize:10,},

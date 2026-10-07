@@ -1,22 +1,22 @@
 import React,{forwardRef} from 'react';
 import {StyleSheet,Text,TextInput} from 'react-native';
 
-function getNunitoSansFamily(fontWeight){
+function getPoppinsFamily(fontWeight){
   switch(String(fontWeight||'400')){
     case '300':
-      return 'NunitoSans_300Light';
+      return 'Poppins_300Light';
     case '500':
-      return 'NunitoSans_500Medium';
+      return 'Poppins_500Medium';
     case '600':
-      return 'NunitoSans_600SemiBold';
+      return 'Poppins_600SemiBold';
     case '700':
     case 'bold':
-      return 'NunitoSans_700Bold';
+      return 'Poppins_700Bold';
     case '800':
     case '900':
-      return 'NunitoSans_800ExtraBold';
+      return 'Poppins_800ExtraBold';
     default:
-      return 'NunitoSans_400Regular';
+      return 'Poppins_400Regular';
   }
 }
 
@@ -44,7 +44,7 @@ function getReadableTextStyle(style){
   return [
     style,
     {
-      fontFamily:getNunitoSansFamily(flatStyle.fontWeight),
+      fontFamily:getPoppinsFamily(flatStyle.fontWeight),
       ...(increasedFontSize!==undefined ? {fontSize:increasedFontSize} : {}),
       ...(increasedLineHeight!==undefined ? {lineHeight:increasedLineHeight} : {}),
     },
@@ -63,7 +63,7 @@ export const AppTextInput=forwardRef(function AppTextInput({style,...props},ref)
       {...props}
       style={[
         style,
-        {fontFamily:getNunitoSansFamily(flatStyle.fontWeight)},
+        {fontFamily:getPoppinsFamily(flatStyle.fontWeight)},
       ]}
     />
   );

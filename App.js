@@ -1,11 +1,11 @@
 import React,{useEffect,useRef} from 'react';
-import {useFonts} from '@expo-google-fonts/plus-jakarta-sans/useFonts';
-import {PlusJakartaSans_300Light} from '@expo-google-fonts/plus-jakarta-sans/300Light';
-import {PlusJakartaSans_400Regular} from '@expo-google-fonts/plus-jakarta-sans/400Regular';
-import {PlusJakartaSans_500Medium} from '@expo-google-fonts/plus-jakarta-sans/500Medium';
-import {PlusJakartaSans_600SemiBold} from '@expo-google-fonts/plus-jakarta-sans/600SemiBold';
-import {PlusJakartaSans_700Bold} from '@expo-google-fonts/plus-jakarta-sans/700Bold';
-import {PlusJakartaSans_800ExtraBold} from '@expo-google-fonts/plus-jakarta-sans/800ExtraBold';
+import {useFonts} from '@expo-google-fonts/inter/useFonts';
+import {Inter_300Light} from '@expo-google-fonts/inter/300Light';
+import {Inter_400Regular} from '@expo-google-fonts/inter/400Regular';
+import {Inter_500Medium} from '@expo-google-fonts/inter/500Medium';
+import {Inter_600SemiBold} from '@expo-google-fonts/inter/600SemiBold';
+import {Inter_700Bold} from '@expo-google-fonts/inter/700Bold';
+import {Inter_800ExtraBold} from '@expo-google-fonts/inter/800ExtraBold';
 import {StatusBar} from 'expo-status-bar';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
@@ -14,12 +14,12 @@ import {PremiumAlertHost,installPremiumAlert} from './src/components/PremiumAler
 export default function App(){
   const alertRef=useRef(null);
   const [fontsLoaded]=useFonts({
-    PlusJakartaSans_300Light,
-    PlusJakartaSans_400Regular,
-    PlusJakartaSans_500Medium,
-    PlusJakartaSans_600SemiBold,
-    PlusJakartaSans_700Bold,
-    PlusJakartaSans_800ExtraBold,
+    Inter_300Light,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+    Inter_800ExtraBold,
   });
 
   useEffect(()=>{installPremiumAlert();},[]);

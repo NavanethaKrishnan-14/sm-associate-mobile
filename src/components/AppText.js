@@ -45,6 +45,7 @@ function getReadableTextStyle(style){
     style,
     {
       fontFamily:getInterFamily(flatStyle.fontWeight),
+      fontWeight:'400',
       ...(increasedFontSize!==undefined ? {fontSize:increasedFontSize} : {}),
       ...(increasedLineHeight!==undefined ? {lineHeight:increasedLineHeight} : {}),
     },
@@ -63,7 +64,7 @@ export const AppTextInput=forwardRef(function AppTextInput({style,...props},ref)
       {...props}
       style={[
         style,
-        {fontFamily:getInterFamily(flatStyle.fontWeight)},
+        {fontFamily:getInterFamily(flatStyle.fontWeight),fontWeight:'400'},
       ]}
     />
   );

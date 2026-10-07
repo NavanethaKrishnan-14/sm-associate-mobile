@@ -22,7 +22,26 @@ export default function LoansScreen({navigation}){
   setSaving(true);
   try{
    let id=editing?editing._id:null;
-   const payload={...form,requiredAmount:Number(form.requiredAmount),approvedAmount:form.approvedAmount?Number(form.approvedAmount):undefined,commission:Number(form.commission||0)};
+   const me=await api.get('/auth/me');
+   const isAdmin=me.data?.data?.role==='ADMIN';
+   const payload={
+    customerId:form.customerId,
+    loanType:form.loanType,
+    requiredAmount:Number(form.requiredAmount),
+    financeCompany:form.financeCompany,
+    applicationDate:form.applicationDate||undefined,
+    expectedDisbursementDate:form.expectedDisbursementDate||undefined,
+    notes:form.notes
+   };
+   if(isAdmin){
+    payload.approvedAmount=form.approvedAmount?Number(form.approvedAmount):undefined;
+    payload.commission=Number(form.commission||0);
+    payload.disbursementDate=form.disbursementDate||undefined;
+    payload.rejectionReason=form.rejectionReason;
+    payload.status=form.status;
+   }else{
+    payload.status=['ENTERED','DOCUMENTS_PENDING','SUBMITTED','UNDER_REVIEW'].includes(form.status)?form.status:'ENTERED';
+   }
    if(editing)await api.patch('/loans/'+id,payload);else{const r=await api.post('/loans',payload);id=r.data?.data?._id}
    if(!id)throw new Error('Loan was saved, but the server did not return the loan ID.');
    for(const [key] of docs){

@@ -24,9 +24,10 @@ function resolveWeight(flatStyle){
     if(size>=24) return '800';
     if(size>=18) return '700';
     if(size>=15) return '600';
+    return '500';
   }
 
-  return '400';
+  return '500';
 }
 
 function getReadableTextStyle(style){
@@ -37,8 +38,8 @@ function getReadableTextStyle(style){
   const scale=
     typeof fontSize!=='number' ? 1 :
     fontSize<=7 ? 1.35 :
-    fontSize<=10 ? 1.22 :
-    fontSize<=14 ? 1.14 :
+    fontSize<=10 ? 1.24 :
+    fontSize<=14 ? 1.18 :
     1.08;
 
   const increasedFontSize=
@@ -68,13 +69,30 @@ export const AppText=forwardRef(function AppText({style,...props},ref){
 
 export const AppTextInput=forwardRef(function AppTextInput({style,...props},ref){
   const flatStyle=StyleSheet.flatten(style)||{};
+  const resolvedWeight=flatStyle.fontWeight ?? '500';
+  const inputSize=flatStyle.fontSize;
+  const inputScale=typeof inputSize==='number' && inputSize<=14 ? 1.08 : 1;
+  const increasedFontSize=
+    typeof inputSize==='number'
+      ? Math.round(inputSize*inputScale*10)/10
+      : undefined;
+  const increasedLineHeight=
+    typeof flatStyle.lineHeight==='number'
+      ? Math.round(flatStyle.lineHeight*inputScale*10)/10
+      : undefined;
+
   return (
     <TextInput
       ref={ref}
       {...props}
       style={[
         style,
-        {fontFamily:getInterFamily(flatStyle.fontWeight),fontWeight:'400'},
+        {
+          fontFamily:getInterFamily(resolvedWeight),
+          fontWeight:'400',
+          ...(increasedFontSize!==undefined ? {fontSize:increasedFontSize} : {}),
+          ...(increasedLineHeight!==undefined ? {lineHeight:increasedLineHeight} : {}),
+        },
       ]}
     />
   );

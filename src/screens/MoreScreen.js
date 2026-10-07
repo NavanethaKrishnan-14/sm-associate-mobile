@@ -516,13 +516,9 @@ const styles = {
     justifyContent: 'center',
   },
   logoutTitle: {
-    fontSize: 11.5,
-    fontWeight: '900',
-    color: colors.danger,
-  },
-  logoutSub: {
-    fontSize: 8,
-    color: '#9B7C7C',
-    marginTop: 2,
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.white,
+    includeFontPadding: false,
   },
 };

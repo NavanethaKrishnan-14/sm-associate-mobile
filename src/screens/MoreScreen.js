@@ -110,8 +110,6 @@ export default function MoreScreen({navigation}) {
                 <Text style={styles.groupNumber}>0{groupIndex + 1}</Text>
               </View>
 
-              <View style={styles.groupLine} />
-
               <View style={styles.actions}>
                 {group.items.map((item, itemIndex) => {
                   const [label, icon, section, description] = item;

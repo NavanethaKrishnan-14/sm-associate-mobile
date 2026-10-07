@@ -1,22 +1,22 @@
 import React,{forwardRef} from 'react';
 import {StyleSheet,Text,TextInput} from 'react-native';
 
-function getNotoSansFamily(fontWeight){
+function getPlusJakartaSansFamily(fontWeight){
   switch(String(fontWeight||'400')){
     case '300':
-      return 'NotoSans_300Light';
+      return 'PlusJakartaSans_300Light';
     case '500':
-      return 'NotoSans_500Medium';
+      return 'PlusJakartaSans_500Medium';
     case '600':
-      return 'NotoSans_600SemiBold';
+      return 'PlusJakartaSans_600SemiBold';
     case '700':
     case 'bold':
-      return 'NotoSans_700Bold';
+      return 'PlusJakartaSans_700Bold';
     case '800':
     case '900':
-      return 'NotoSans_800ExtraBold';
+      return 'PlusJakartaSans_800ExtraBold';
     default:
-      return 'NotoSans_400Regular';
+      return 'PlusJakartaSans_400Regular';
   }
 }
 
@@ -44,7 +44,7 @@ function getReadableTextStyle(style){
   return [
     style,
     {
-      fontFamily:getNotoSansFamily(flatStyle.fontWeight),
+      fontFamily:getPlusJakartaSansFamily(flatStyle.fontWeight),
       ...(increasedFontSize!==undefined ? {fontSize:increasedFontSize} : {}),
       ...(increasedLineHeight!==undefined ? {lineHeight:increasedLineHeight} : {}),
     },
@@ -63,7 +63,7 @@ export const AppTextInput=forwardRef(function AppTextInput({style,...props},ref)
       {...props}
       style={[
         style,
-        {fontFamily:getNotoSansFamily(flatStyle.fontWeight)},
+        {fontFamily:getPlusJakartaSansFamily(flatStyle.fontWeight)},
       ]}
     />
   );

@@ -7,9 +7,15 @@ import {Inter_600SemiBold} from '@expo-google-fonts/inter/600SemiBold';
 import {Inter_700Bold} from '@expo-google-fonts/inter/700Bold';
 import {Inter_800ExtraBold} from '@expo-google-fonts/inter/800ExtraBold';
 import {StatusBar} from 'expo-status-bar';
+import {Text,TextInput} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
 import {PremiumAlertHost,installPremiumAlert} from './src/components/PremiumAlert';
+
+function applyGlobalInterDefaults(){
+  Text.defaultProps={...(Text.defaultProps||{}),style:[Text.defaultProps?.style,{fontFamily:'Inter_400Regular'}]};
+  TextInput.defaultProps={...(TextInput.defaultProps||{}),style:[TextInput.defaultProps?.style,{fontFamily:'Inter_400Regular'}]};
+}
 
 export default function App(){
   const alertRef=useRef(null);
@@ -23,6 +29,7 @@ export default function App(){
   });
 
   useEffect(()=>{installPremiumAlert();},[]);
+  useEffect(()=>{if(fontsLoaded) applyGlobalInterDefaults();},[fontsLoaded]);
 
   if(!fontsLoaded) return null;
 

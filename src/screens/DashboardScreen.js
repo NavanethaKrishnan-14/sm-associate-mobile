@@ -50,8 +50,7 @@ export default function DashboardScreen({navigation}){
             <View style={styles.logoFrame}><Logo width={84}/></View>
             <View style={styles.brandCopy}>
               <AppText style={styles.brandKicker}>SM ASSOCIATE</AppText>
-              <AppText style={styles.brandTitle}>Business</AppText>
-              <AppText style={styles.brandTitle}>Management</AppText>
+              <AppText numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.72} style={styles.brandTitle}>Business Management</AppText>
             </View>
           </View>
           <View style={styles.commandActions}>
@@ -98,7 +97,7 @@ const styles=StyleSheet.create({
   page:{flex:1,backgroundColor:colors.midnight},scroll:{flex:1},content:{paddingBottom:20,backgroundColor:colors.ivory},
   commandBar:{backgroundColor:'#0E1A22',paddingLeft:14,paddingRight:14,paddingBottom:18,borderBottomLeftRadius:48,borderBottomRightRadius:48,borderWidth:1,borderTopWidth:0,borderColor:'rgba(255,255,255,0.08)',overflow:'hidden'},
   commandTop:{minHeight:158,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},brandCluster:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0,paddingRight:10},
-  logoFrame:{width:88,height:88,alignItems:'center',justifyContent:'center',overflow:'hidden'},brandCopy:{marginLeft:12,minWidth:0,flex:1,flexShrink:1,paddingRight:2},brandKicker:{color:'#53D3D1',fontSize:8,lineHeight:11,fontWeight:'700',letterSpacing:1.8,marginBottom:5},brandTitle:{color:colors.white,fontSize:27,lineHeight:32,fontWeight:'700',letterSpacing:-0.5,includeFontPadding:false},
+  logoFrame:{width:88,height:88,alignItems:'center',justifyContent:'center',overflow:'hidden'},brandCopy:{marginLeft:12,minWidth:0,flex:1,flexShrink:1,paddingRight:2},brandKicker:{color:'#53D3D1',fontSize:8,lineHeight:11,fontWeight:'700',letterSpacing:1.8,marginBottom:5},brandTitle:{color:colors.white,fontSize:23,lineHeight:28,fontWeight:'700',letterSpacing:-0.45,includeFontPadding:false},
   commandActions:{flexDirection:'row',alignItems:'center',gap:8},
   iconButton:{width:48,height:48,borderRadius:16,backgroundColor:'rgba(31,49,60,0.88)',borderWidth:1,borderColor:'rgba(120,178,190,0.18)',alignItems:'center',justifyContent:'center',position:'relative'},notificationDot:{position:'absolute',top:8,right:8,width:7,height:7,borderRadius:4,backgroundColor:'#53D3D1',borderWidth:1.5,borderColor:'#1A2A34'},commandDivider:{height:1,backgroundColor:'rgba(255,255,255,0.10)',marginTop:2,marginBottom:17},
   commandMeta:{minHeight:48,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},metaLeft:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0},metaText:{color:'rgba(255,255,255,0.74)',fontSize:12,letterSpacing:1.55,fontWeight:'600',marginLeft:8},metaRight:{height:46,minWidth:146,paddingHorizontal:16,borderRadius:23,backgroundColor:'rgba(39,168,154,0.16)',flexDirection:'row',alignItems:'center',justifyContent:'center'},metaHint:{color:'#5BE0D1',fontSize:12,letterSpacing:0.05,fontWeight:'700'},metaIndicator:{width:12,height:12,borderRadius:6,backgroundColor:'#53D3D1',marginLeft:9,marginRight:0},pressed:{opacity:0.72,transform:[{scale:0.97}]},

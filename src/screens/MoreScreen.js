@@ -242,13 +242,13 @@ const styles = {
   },
   headerKicker: {
     fontSize: 7,
-    fontWeight: '900',
+    fontFamily:'Manrope_800ExtraBold',
     letterSpacing: 2,
     color: colors.teal,
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: '900',
+    fontFamily:'Manrope_800ExtraBold',
     letterSpacing: 0.5,
     color: colors.white,
     marginTop: 3,
@@ -263,13 +263,13 @@ const styles = {
   },
   headerCodeTop: {
     fontSize: 18,
-    fontWeight: '900',
+    fontFamily:'Manrope_800ExtraBold',
     color: colors.white,
     lineHeight: 19,
   },
   headerCodeBottom: {
     fontSize: 5.5,
-    fontWeight: '900',
+    fontFamily:'Manrope_800ExtraBold',
     letterSpacing: 1.1,
     color: '#839095',
     marginTop: 2,
@@ -296,13 +296,13 @@ const styles = {
   },
   statusText: {
     fontSize: 6.5,
-    fontWeight: '900',
+    fontFamily:'Manrope_800ExtraBold',
     letterSpacing: 1,
     color: colors.success,
   },
   headerDate: {
     fontSize: 6.5,
-    fontWeight: '800',
+    fontFamily:'Manrope_800ExtraBold',
     letterSpacing: 1,
     color: '#75848A',
   },
@@ -350,14 +350,14 @@ const styles = {
   },
   heroIndex: {
     fontSize: 9,
-    fontWeight: '700',
+    fontFamily:'Manrope_700Bold',
     color: colors.teal,
     letterSpacing: 0.5,
     marginRight: 9,
   },
   heroCategory: {
     fontSize: 6,
-    fontWeight: '700',
+    fontFamily:'Manrope_700Bold',
     letterSpacing: 1.5,
     color: '#657274',
   },
@@ -374,14 +374,14 @@ const styles = {
   heroTitle: {
     fontSize: 31,
     lineHeight: 33,
-    fontWeight: '500',
+    fontFamily:'Manrope_500Medium',
     letterSpacing: -1.2,
     color: colors.ink,
   },
   heroTitleAccent: {
     fontSize: 31,
     lineHeight: 33,
-    fontWeight: '600',
+    fontFamily:'Manrope_600SemiBold',
     letterSpacing: -1.2,
     color: colors.teal,
   },
@@ -410,12 +410,12 @@ const styles = {
   heroInsightNumber: {
     fontSize: 20,
     lineHeight: 20,
-    fontWeight: '500',
+    fontFamily:'Manrope_500Medium',
     color: colors.ink,
   },
   heroInsightLabel: {
     fontSize: 5.5,
-    fontWeight: '700',
+    fontFamily:'Manrope_700Bold',
     letterSpacing: 0.8,
     color: '#687574',
     marginTop: 3,
@@ -433,12 +433,12 @@ const styles = {
   heroInsightValue: {
     fontSize: 12,
     lineHeight: 13,
-    fontWeight: '600',
+    fontFamily:'Manrope_600SemiBold',
     color: colors.teal,
   },
   heroInsightCaption: {
     fontSize: 5.5,
-    fontWeight: '700',
+    fontFamily:'Manrope_700Bold',
     letterSpacing: 0.9,
     color: '#687574',
     marginTop: 3,
@@ -460,7 +460,7 @@ const styles = {
   },
   heroBottomText: {
     fontSize: 5.5,
-    fontWeight: '700',
+    fontFamily:'Manrope_700Bold',
     letterSpacing: 1.1,
     color: '#687574',
   },
@@ -474,19 +474,19 @@ const styles = {
   },
   groupLabel: {
     fontSize: 7,
-    fontWeight: '900',
+    fontFamily:'Manrope_800ExtraBold',
     letterSpacing: 1.8,
     color: colors.teal,
   },
   groupTitle: {
     fontSize: 19,
-    fontWeight: '900',
+    fontFamily:'Manrope_800ExtraBold',
     color: colors.ink,
     marginTop: 3,
   },
   groupNumber: {
     fontSize: 24,
-    fontWeight: '900',
+    fontFamily:'Manrope_800ExtraBold',
     color: '#D7DCDA',
   },
   groupLine: {
@@ -517,7 +517,7 @@ const styles = {
   },
   actionNoText: {
     fontSize: 7,
-    fontWeight: '900',
+    fontFamily:'Manrope_800ExtraBold',
     letterSpacing: 0.5,
     color: '#9AA5A9',
   },
@@ -536,7 +536,7 @@ const styles = {
   },
   actionTitle: {
     fontSize: 14,
-    fontWeight: '900',
+    fontFamily:'Manrope_800ExtraBold',
     color: colors.ink,
   },
   actionDesc: {
@@ -553,7 +553,7 @@ const styles = {
   actionArrowText: {
     fontSize: 22,
     lineHeight: 24,
-    fontWeight: '700',
+    fontFamily:'Manrope_700Bold',
     color: colors.ink,
   },
   pressed: {
@@ -581,13 +581,13 @@ const styles = {
   },
   adminTag: {
     fontSize: 6.5,
-    fontWeight: '900',
+    fontFamily:'Manrope_800ExtraBold',
     letterSpacing: 1.2,
     color: '#8E9BA0',
   },
   adminTitle: {
     fontSize: 20,
-    fontWeight: '900',
+    fontFamily:'Manrope_800ExtraBold',
     color: colors.white,
     marginTop: 15,
   },
@@ -611,7 +611,7 @@ const styles = {
   },
   adminBottomText: {
     fontSize: 6,
-    fontWeight: '900',
+    fontFamily:'Manrope_800ExtraBold',
     letterSpacing: 1.1,
     color: '#77858A',
   },
@@ -646,7 +646,7 @@ const styles = {
   },
   logoutTitle: {
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily:'Manrope_600SemiBold',
     color: colors.white,
     includeFontPadding: false,
   },

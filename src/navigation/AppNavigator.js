@@ -4,8 +4,9 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons';
 import {BlurView} from 'expo-blur';
-import {StyleSheet, Pressable, Text, View, Platform} from 'react-native';
+import {ActivityIndicator, StyleSheet, Pressable, Text, View, Platform} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getCurrentUser} from '../api/client';
 import LoginScreen from '../screens/LoginScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import CustomersScreen from '../screens/CustomersScreen';
@@ -217,6 +218,32 @@ const styles=StyleSheet.create({
 });
 
 export default function AppNavigator(){
+  const [checkingSession,setCheckingSession]=React.useState(true);
+  const [authenticated,setAuthenticated]=React.useState(false);
+
+  React.useEffect(()=>{
+    let active=true;
+    (async()=>{
+      try{
+        await getCurrentUser();
+        if(active)setAuthenticated(true);
+      }catch{
+        if(active)setAuthenticated(false);
+      }finally{
+        if(active)setCheckingSession(false);
+      }
+    })();
+    return()=>{active=false};
+  },[]);
+
+  if(checkingSession){
+    return (
+      <View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'#0B1720'}}>
+        <ActivityIndicator size="large" color="#D7B96E"/>
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown:false}}>

@@ -225,8 +225,8 @@ export default function AppNavigator(){
     let active=true;
     (async()=>{
       try{
-        await getCurrentUser();
-        if(active)setAuthenticated(true);
+        const user=await getCurrentUser();
+        if(active)setAuthenticated(Boolean(user));
       }catch{
         if(active)setAuthenticated(false);
       }finally{

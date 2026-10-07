@@ -58,9 +58,6 @@ export default function DashboardScreen({navigation}){
             <Pressable onPress={()=>navigation.navigate('More')} style={({pressed})=>[styles.iconButton,pressed&&styles.pressed]} accessibilityRole="button" accessibilityLabel="Open notifications">
               <Ionicons name="notifications-outline" size={23} color={colors.white}/><View style={styles.notificationDot}/>
             </Pressable>
-            <Pressable onPress={()=>navigation.navigate('More')} style={({pressed})=>[styles.iconButton,pressed&&styles.pressed]} accessibilityRole="button" accessibilityLabel="Open settings">
-              <Ionicons name="settings-outline" size={23} color={colors.white}/>
-            </Pressable>
           </View>
         </View>
         <View style={styles.commandDivider}/>

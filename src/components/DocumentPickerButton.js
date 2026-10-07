@@ -14,12 +14,15 @@ export async function pickDocument(){
   return result.assets?.[0]||null;
 }
 
-export default function DocumentPickerButton({label='Upload Document',file,onPick}){
+export default function DocumentPickerButton({label='Upload Document',file,uploaded,onPick}){
   async function choose(){
     if(file){
       onPick?.(null);
       return;
     }
+    // An already uploaded document can be replaced by selecting a new file.
+    // Do not treat the existing server-side document as a selected local file.
+
     try{
       const asset=await pickDocument();
       if(asset)onPick?.(asset);
@@ -39,13 +42,13 @@ export default function DocumentPickerButton({label='Upload Document',file,onPic
     <View style={styles.content}>
       <Text style={styles.title} numberOfLines={1}>{file?.name||label}</Text>
       <Text style={styles.hint} numberOfLines={2}>
-        {file?'Document selected • Tap again to deselect':'Click here or drag & drop your document'}
+        {file?'New document selected • Tap again to remove':uploaded?'Uploaded • Tap Replace to choose a new file':'Click here or drag & drop your document'}
       </Text>
       <Text style={styles.supported}>PDF, JPG, PNG, WEBP, DOC or DOCX • Max 10 MB</Text>
     </View>
     <View style={[styles.action,file&&styles.removeAction]}>
       <Ionicons name={file?'close-circle-outline':'add-circle-outline'} size={18} color={file?colors.white:colors.midnight}/>
-      <Text style={[styles.actionText,file&&styles.removeText]}>{file?'Remove':'Choose'}</Text>
+      <Text style={[styles.actionText,file&&styles.removeText]}>{file?'Remove':uploaded?'Replace':'Choose'}</Text>
     </View>
   </Pressable>;
 }

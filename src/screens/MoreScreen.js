@@ -125,6 +125,10 @@ export default function MoreScreen({navigation}) {
                         pressed && styles.pressed,
                       ]}
                     >
+                      <View style={styles.actionIcon}>
+                        <Ionicons name={icon} size={21} color={colors.teal} />
+                      </View>
+
                       <View style={styles.actionCopy}>
                         <Text style={styles.actionTitle}>{label}</Text>
                         <Text style={styles.actionDesc}>{description}</Text>

@@ -209,7 +209,7 @@ const styles=StyleSheet.create({
   tabLabel:{
     marginTop:2,
     fontSize:9,
-    fontWeight:'800',
+    fontFamily:'Manrope_800ExtraBold',
     lineHeight:11,
     textAlign:'center',
     includeFontPadding:false,

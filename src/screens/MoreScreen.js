@@ -114,7 +114,7 @@ export default function MoreScreen({navigation}) {
 
               <View style={styles.actions}>
                 {group.items.map((item, itemIndex) => {
-                  const [label, , section, description] = item;
+                  const [label, icon, section, description] = item;
 
                   return (
                     <Pressable
@@ -125,12 +125,6 @@ export default function MoreScreen({navigation}) {
                         pressed && styles.pressed,
                       ]}
                     >
-                      <View style={styles.actionNo}>
-                        <Text style={styles.actionNoText}>
-                          0{itemIndex + 1}
-                        </Text>
-                      </View>
-
                       <View style={styles.actionCopy}>
                         <Text style={styles.actionTitle}>{label}</Text>
                         <Text style={styles.actionDesc}>{description}</Text>

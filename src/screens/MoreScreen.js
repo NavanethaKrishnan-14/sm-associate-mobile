@@ -171,21 +171,13 @@ export default function MoreScreen({navigation}) {
             onPress={signOut}
             style={({pressed}) => [styles.logout, pressed && styles.pressed]}
           >
-            <View style={styles.logoutLeft}>
-              <View style={styles.logoutIcon}>
-                <Ionicons
-                  name="log-out-outline"
-                  size={20}
-                  color={colors.white}
-                />
-              </View>
-
-              <Text style={styles.logoutTitle}>Sign out</Text>
-            </View>
-
-            <Ionicons name="arrow-forward" size={19} color={colors.white} />
-          </Pressable>
-        </View>
+            <Ionicons
+              name="log-out-outline"
+              size={20}
+              color={colors.white}
+            />
+            <Text style={styles.logoutTitle}>Sign out</Text>
+          </Pressable>     </View>
       </ScrollView>
     </View>
   );

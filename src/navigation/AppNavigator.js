@@ -7,6 +7,7 @@ import {BlurView} from 'expo-blur';
 import {ActivityIndicator, StyleSheet, Pressable, Text, View, Platform} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getCurrentUser} from '../api/client';
+import {onAuthExpired} from '../api/authEvents';
 import LoginScreen from '../screens/LoginScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import CustomersScreen from '../screens/CustomersScreen';
@@ -233,7 +234,15 @@ export default function AppNavigator(){
         if(active)setCheckingSession(false);
       }
     })();
-    return()=>{active=false};
+
+    const unsubscribe=onAuthExpired(()=>{
+      if(active)setAuthenticated(false);
+    });
+
+    return()=>{
+      active=false;
+      unsubscribe();
+    };
   },[]);
 
   if(checkingSession){

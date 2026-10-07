@@ -47,7 +47,7 @@ export default function DashboardScreen({navigation}){
       <View style={[styles.commandBar,{paddingTop:Math.max(10,topInset)}]}>
         <View style={styles.commandTop}>
           <View style={styles.brandCluster}>
-            <View style={styles.logoFrame}><Logo width={74}/></View>
+            <View style={styles.logoFrame}><Logo width={84}/></View>
             <View style={styles.brandCopy}>
               <AppText style={styles.brandKicker}>SM ASSOCIATE</AppText>
               <AppText style={styles.brandTitle}>BUSINESS MANAGEMENT</AppText>
@@ -98,9 +98,9 @@ function PipelineRow({name,value,first}){return <View style={[styles.pipelineRow
 
 const styles=StyleSheet.create({
   page:{flex:1,backgroundColor:colors.midnight},scroll:{flex:1},content:{paddingBottom:20,backgroundColor:colors.ivory},
-  commandBar:{backgroundColor:'#0E1A22',paddingHorizontal:18,paddingBottom:16,borderBottomLeftRadius:46,borderBottomRightRadius:46,borderWidth:1,borderTopWidth:0,borderColor:'rgba(255,255,255,0.08)',overflow:'hidden'},
-  commandTop:{minHeight:152,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},brandCluster:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0},
-  logoFrame:{width:88,height:88,borderRadius:25,backgroundColor:'#1A2A34',borderWidth:1,borderColor:'rgba(107,196,201,0.18)',alignItems:'center',justifyContent:'center',overflow:'hidden'},brandCopy:{marginLeft:14,minWidth:0,flexShrink:1,paddingRight:6},brandKicker:{color:'#53D3D1',fontSize:12,fontWeight:'700',letterSpacing:2.5},brandTitle:{color:colors.white,fontSize:28,lineHeight:34,fontWeight:'700',letterSpacing:-0.45,marginTop:7,maxWidth:190},
+  commandBar:{backgroundColor:'#0E1A22',paddingHorizontal:18,paddingBottom:15,borderBottomLeftRadius:46,borderBottomRightRadius:46,borderWidth:1,borderTopWidth:0,borderColor:'rgba(255,255,255,0.08)',overflow:'hidden'},
+  commandTop:{height:78,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},brandCluster:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0},
+  logoFrame:{width:88,height:88,alignItems:'center',justifyContent:'center',overflow:'hidden'},brandCopy:{marginLeft:12,minWidth:0,flexShrink:1,paddingRight:6},brandKicker:{color:'#53D3D1',fontSize:7,fontWeight:'700',letterSpacing:2},brandTitle:{color:colors.white,fontSize:20,lineHeight:24,fontWeight:'700',letterSpacing:0.5,marginTop:3,maxWidth:210},
   commandActions:{flexDirection:'row',alignItems:'center',gap:9},
   iconButton:{width:56,height:56,borderRadius:20,backgroundColor:'rgba(31,49,60,0.88)',borderWidth:1,borderColor:'rgba(120,178,190,0.18)',alignItems:'center',justifyContent:'center',position:'relative'},notificationDot:{position:'absolute',top:12,right:12,width:9,height:9,borderRadius:5,backgroundColor:'#53D3D1',borderWidth:1.5,borderColor:'#1A2A34'},commandDivider:{height:1,backgroundColor:'rgba(255,255,255,0.10)',marginTop:1,marginBottom:17},
   commandMeta:{minHeight:43,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},metaLeft:{flexDirection:'row',alignItems:'center'},metaText:{color:'rgba(255,255,255,0.74)',fontSize:12,letterSpacing:1.65,fontWeight:'600',marginLeft:8},metaRight:{height:42,paddingHorizontal:18,borderRadius:22,backgroundColor:'rgba(39,168,154,0.16)',flexDirection:'row',alignItems:'center'},metaHint:{color:'#5BE0D1',fontSize:11,letterSpacing:0.1,fontWeight:'700'},metaIndicator:{width:14,height:14,borderRadius:7,backgroundColor:'#53D3D1',marginRight:10},pressed:{opacity:0.72,transform:[{scale:0.97}]},

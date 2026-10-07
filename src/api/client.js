@@ -105,75 +105,95 @@ export async function uploadDocument(path, asset, fields = {}) {
   if (!asset?.uri) throw new Error('Please select a document first.');
 
   const fileName = String(asset.name || asset.fileName || 'document');
-  const fileType = String(
-    asset.mimeType ||
-    asset.type ||
-    'application/octet-stream'
-  );
+  const fileType = String(asset.mimeType || asset.type || 'application/octet-stream');
   const token = await readAccessToken();
   if (!token) throw new Error('Your login session has expired. Please sign in again.');
 
-  // Use Expo's native multipart uploader instead of JavaScript FormData.
-  // This completely avoids React Native's FormDataPart implementation and
-  // avoids Response.blob()/base64 copies for document uploads.
-  const parameters = {};
-  Object.entries(fields).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
-      parameters[key] = String(value);
-    }
-  });
+  const match = String(path).match(/^\/customers\/([^/]+)\/documents\/([^/]+)$/);
+  if (!match) throw new Error('Unsupported document upload path.');
 
-  let result;
+  const customerId = decodeURIComponent(match[1]);
+  const documentKey = decodeURIComponent(match[2]);
+  const documentName = fields?.documentName ? String(fields.documentName) : '';
+
+  let tempUri = asset.uri;
+  let copiedTempFile = false;
+
   try {
-    result = await FileSystem.uploadAsync(API_BASE_URL + path, asset.uri, {
-      httpMethod: 'POST',
-      uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-      fieldName: 'file',
-      mimeType: fileType,
-      parameters,
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer ' + token,
-        'x-access-token': token
+    if (!String(tempUri).startsWith('file://')) {
+      const safeName = fileName.replace(/[^a-zA-Z0-9._-]/g, '_');
+      tempUri = FileSystem.cacheDirectory + 'sm-upload-' + Date.now() + '-' + safeName;
+      await FileSystem.copyAsync({from: asset.uri, to: tempUri});
+      copiedTempFile = true;
+    }
+
+    const signatureResponse = await api.post(
+      '/customers/' + encodeURIComponent(customerId) +
+      '/documents/' + encodeURIComponent(documentKey) + '/signature',
+      {originalName: fileName, ...(documentName ? {documentName} : {})}
+    );
+
+    const signed = signatureResponse?.data?.data;
+    if (!signed?.uploadUrl || !signed?.signature || !signed?.apiKey) {
+      throw new Error('The server could not prepare the Cloudinary upload.');
+    }
+
+    let cloudinaryResult;
+    try {
+      cloudinaryResult = await FileSystem.uploadAsync(signed.uploadUrl, tempUri, {
+        httpMethod: 'POST',
+        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+        fieldName: 'file',
+        mimeType: fileType,
+        parameters: {
+          api_key: String(signed.apiKey),
+          timestamp: String(signed.timestamp),
+          signature: String(signed.signature),
+          public_id: String(signed.publicId)
+        }
+      });
+    } catch (error) {
+      throw new Error('Cloudinary upload failed: ' + (error?.message || String(error)));
+    }
+
+    let cloudData = {};
+    try { cloudData = cloudinaryResult?.body ? JSON.parse(cloudinaryResult.body) : {}; } catch {}
+
+    if (!cloudinaryResult || cloudinaryResult.status < 200 || cloudinaryResult.status >= 300) {
+      throw new Error(cloudData?.error?.message || 'Cloudinary upload failed with HTTP ' + (cloudinaryResult?.status || 'unknown') + '.');
+    }
+
+    if (!cloudData?.public_id || !cloudData?.secure_url) {
+      throw new Error('Cloudinary did not return a valid uploaded document.');
+    }
+
+    const completeResponse = await api.post(
+      '/customers/' + encodeURIComponent(customerId) +
+      '/documents/' + encodeURIComponent(documentKey) + '/complete',
+      {
+        originalName: fileName,
+        documentName: documentName || undefined,
+        publicId: cloudData.public_id,
+        secureUrl: cloudData.secure_url,
+        resourceType: cloudData.resource_type || signed.resourceType,
+        format: cloudData.format || '',
+        size: Number(cloudData.bytes || asset.size || 0)
       }
-    });
-  } catch (error) {
-    const message = error?.message || String(error || 'Unknown upload error.');
-    if (/Unsupported FormDataPart|UnsupportedFormDataPart/i.test(message)) {
-      throw new Error('The native document uploader could not prepare this file. Please restart the app and try again.');
+    );
+
+    const completed = completeResponse?.data;
+    if (completed?.success !== true) {
+      throw new Error(completed?.message || 'The document uploaded to Cloudinary but could not be saved.');
     }
-    throw new Error('Document upload failed: ' + message);
-  }
 
-  let data = {};
-  try {
-    data = result?.body ? JSON.parse(result.body) : {};
-  } catch {
-    data = {
-      message: result?.body || 'The server returned an invalid upload response.'
-    };
+    return completed;
+  } catch (error) {
+    throw new Error(error?.response?.data?.message || error?.message || 'Document upload failed. Please try again.');
+  } finally {
+    if (copiedTempFile && tempUri) {
+      try { await FileSystem.deleteAsync(tempUri, {idempotent: true}); } catch {}
+    }
   }
-
-  if (result?.status === 401) {
-    await logout();
-    notifyAuthExpired();
-    throw new Error('Your login session has expired. Please sign in again.');
-  }
-
-  if (!result || result.status < 200 || result.status >= 300) {
-    throw new Error(
-      data?.message ||
-      'Document upload failed with HTTP ' + (result?.status || 'unknown') + '.'
-    );
-  }
-
-  if (data?.success !== true) {
-    throw new Error(
-      data?.message || 'Document upload was not confirmed by the server.'
-    );
-  }
-
-  return data;
 }
 
 export async function getApiHealth() {

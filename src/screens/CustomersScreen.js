@@ -16,7 +16,7 @@ export default function CustomersScreen({navigation}){
  const filtered=items.filter(x=>(x.name||'').toLowerCase().includes(q.toLowerCase())||(x.mobile||'').includes(q));
  function openAdd(){setEditing(null);setForm({...empty});setModal(true)}
  function openProfile(item){setProfile(item)}
- function openEdit(item){setEditing(item);setForm({...empty,...item});setModal(true)}
+ function openEdit(item){setEditing(item);const { _id, ...editable }=item||{};setForm({...empty,...editable});setModal(true)}
  async function save(){
    if(!form.name.trim()||!form.mobile.trim())return Alert.alert('Customer','Name and mobile are required.');
    setSaving(true);

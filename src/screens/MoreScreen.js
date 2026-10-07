@@ -114,7 +114,7 @@ export default function MoreScreen({navigation}) {
 
               <View style={styles.actions}>
                 {group.items.map((item, itemIndex) => {
-                  const [label, icon, section, description] = item;
+                  const [label, , section, description] = item;
 
                   return (
                     <Pressable
@@ -129,10 +129,6 @@ export default function MoreScreen({navigation}) {
                         <Text style={styles.actionNoText}>
                           0{itemIndex + 1}
                         </Text>
-                      </View>
-
-                      <View style={styles.actionIcon}>
-                        <Ionicons name={icon} size={21} color={colors.teal} />
                       </View>
 
                       <View style={styles.actionCopy}>

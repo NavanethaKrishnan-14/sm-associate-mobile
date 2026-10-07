@@ -80,7 +80,7 @@ const styles={
     alignItems:'center',justifyContent:'center'
   },
   content:{flex:1,minWidth:0,justifyContent:'center'},
-  title:{fontSize:13,fontFamily:'Manrope800',color:colors.ink},
+  title:{fontSize:13,color:colors.ink},
   hint:{fontSize:11,lineHeight:16,color:colors.muted,marginTop:4},
   supported:{fontSize:9,color:'#9AA4AD',marginTop:3},
   action:{
@@ -91,6 +91,6 @@ const styles={
     flexDirection:'row',gap:4
   },
   removeAction:{backgroundColor:colors.midnight},
-  actionText:{fontSize:10,fontFamily:'Manrope800',color:colors.midnight},
+  actionText:{fontSize:10,color:colors.midnight},
   removeText:{color:colors.white}
 };

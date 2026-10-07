@@ -4,7 +4,9 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons';
 import {BlurView} from 'expo-blur';
-import {StyleSheet, Pressable, Text, View, Platform} from 'react-native';
+import {StyleSheet, Pressable, Text, View, Platform, ActivityIndicator} from 'react-native';
+import {useAuth} from '../context/AuthContext';
+import Logo from '../components/Logo';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import LoginScreen from '../screens/LoginScreen';
 import DashboardScreen from '../screens/DashboardScreen';
@@ -106,6 +108,8 @@ function MainTabs(){
   </Tabs.Navigator>
 }
 const styles=StyleSheet.create({
+  boot:{flex:1,backgroundColor:'#182027',alignItems:'center',justifyContent:'center',paddingHorizontal:30},
+  bootText:{marginTop:10,color:'#D9E0E1',fontSize:12,fontWeight:'700'},
   bottomBarWrap:{
     position:'absolute',
     left:0,
@@ -217,18 +221,33 @@ const styles=StyleSheet.create({
 });
 
 export default function AppNavigator(){
-  return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown:false}}>
-        <Stack.Screen name="Login" component={LoginScreen}/>
-        <Stack.Screen name="Main" component={MainTabs}/>
-        <Stack.Screen name="AdminTools" component={AdminToolsScreen}/>
-        <Stack.Screen name="CarSale" component={CarSaleScreen}/>
-        <Stack.Screen name="Documents" component={DocumentsScreen}/>
-        <Stack.Screen name="CarProfit" component={CarProfitScreen}/>
-        <Stack.Screen name="LoanRevenue" component={LoanRevenueScreen}/>
-        <Stack.Screen name="OperationalReports" component={OperationalReportsScreen}/>
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+  const {user,loading}=useAuth();
+  const navigationRef=React.useRef(null);
+
+  React.useEffect(()=>{
+    if(loading||!navigationRef.current)return;
+    navigationRef.current.reset({index:0,routes:[{name:user?'Main':'Login'}]});
+  },[user,loading]);
+
+  if(loading){
+    return <View style={styles.boot}>
+      <Logo width={150}/>
+      <ActivityIndicator size="large" color="#27A89A" style={{marginTop:18}}/>
+      <Text style={styles.bootText}>Restoring your session...</Text>
+    </View>;
+  }
+
+  return <NavigationContainer ref={navigationRef}>
+    <Stack.Navigator screenOptions={{headerShown:false}} initialRouteName={user?'Main':'Login'}>
+      <Stack.Screen name="Login" component={LoginScreen}/>
+      <Stack.Screen name="Main" component={MainTabs}/>
+      <Stack.Screen name="AdminTools" component={AdminToolsScreen}/>
+      <Stack.Screen name="CarSale" component={CarSaleScreen}/>
+      <Stack.Screen name="Documents" component={DocumentsScreen}/>
+      <Stack.Screen name="CarProfit" component={CarProfitScreen}/>
+      <Stack.Screen name="LoanRevenue" component={LoanRevenueScreen}/>
+      <Stack.Screen name="OperationalReports" component={OperationalReportsScreen}/>
+    </Stack.Navigator>
+  </NavigationContainer>;
 }
+

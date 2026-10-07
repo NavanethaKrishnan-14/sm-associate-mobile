@@ -16,7 +16,7 @@ The mobile app is wired to the existing authenticated modules:
 - Finance services: `/finance-services`
 - Finance enquiries: `/finance-enquiries`
 
-The API client automatically attaches the stored bearer token after login.
+The API client restores the stored session, attaches the bearer token, and returns to login when the session expires.
 
 ## Branding
 

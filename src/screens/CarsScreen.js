@@ -4,6 +4,7 @@ import {Alert,ActivityIndicator,Modal,Pressable,ScrollView,Text,TextInput,View} 
 import {Ionicons} from '@expo/vector-icons';
 import {api,uploadDocument} from '../api/client';
 import {colors} from '../theme/colors';
+import {useAuth} from '../context/AuthContext';
 import DocumentPickerButton from '../components/DocumentPickerButton';
 
 const blank={sellerName:'',sellerMobile:'',registrationNumber:'',make:'',model:'',year:'',ownerNumber:'1',km:'',fuel:'Petrol',purchasePrice:'',notes:''};
@@ -11,6 +12,7 @@ const fixedDocs=[['carBook','Car Book','RC / registration document'],['carInsura
 
 export default function CarsScreen({navigation}){
  const {top}=useSafeAreaInsets();
+ const {isAdmin}=useAuth();
  const[items,setItems]=useState([]),[busy,setBusy]=useState(true),[modal,setModal]=useState(false),[editing,setEditing]=useState(null),[form,setForm]=useState(blank),[saving,setSaving]=useState(false),[files,setFiles]=useState({}),[viewItem,setViewItem]=useState(null),[customName,setCustomName]=useState(''),[customDocs,setCustomDocs]=useState([]),[notice,setNotice]=useState(null);
  async function load(){setBusy(true);try{const r=await api.get('/cars');setItems(r.data?.data||[])}catch(e){Alert.alert('Cars',e?.response?.data?.message||'Unable to load cars.')}finally{setBusy(false)}}
  useEffect(()=>{load()},[]);
@@ -19,6 +21,7 @@ export default function CarsScreen({navigation}){
  function set(key,value){setForm(p=>({...p,[key]:value}))}
  async function save(){
   if(!form.registrationNumber||!form.make||!form.model||!form.purchasePrice)return Alert.alert('Vehicle','Registration, make, model and purchase price are required.');
+  if(!editing&&(!form.sellerName.trim()||!form.sellerMobile.trim()))return Alert.alert('Vehicle','Seller name and mobile are required for a new vehicle.');
   setSaving(true);
   try{
    let id=editing?editing._id:null;
@@ -48,7 +51,7 @@ export default function CarsScreen({navigation}){
  function addCustom(){const n=customName.trim();if(!n)return;if(customDocs.some(x=>x.toLowerCase()===n.toLowerCase()))return Alert.alert('Document','This document already exists.');setCustomDocs(p=>[...p,n]);setCustomName('')}
  return <View style={[s.page,{paddingTop:Math.max(22,top+22)}]}>
   <View style={s.header}><Pressable onPress={()=>navigation.goBack()} style={s.backButton}><Ionicons name="arrow-back" size={20} color={colors.ink}/></Pressable><View style={{flex:1}}><Text style={s.title}>Car Inventory</Text><Text style={s.subtitle}>Add, edit, delete and upload documents.</Text></View><Pressable onPress={openAdd} style={s.add}><Ionicons name="add" size={22} color={colors.goldLight}/></Pressable></View>
-  {busy?<ActivityIndicator style={{marginTop:40}} color={colors.gold}/>:<ScrollView contentContainerStyle={s.list}>{items.map(c=><View key={c._id} style={s.card}><View style={s.cardTop}><View style={{flex:1}}><Text style={s.id}>{c.vehicleId}</Text><Text style={s.cardTitle}>{c.make} {c.model}</Text><Text style={s.muted}>{c.registrationNumber} · {c.year}</Text></View><Text style={s.status}>{c.status}</Text></View><View style={s.stats}><Spec l="KM" v={c.km}/><Spec l="Fuel" v={c.fuel}/><Spec l="Price" v={'₹'+Number(c.purchasePrice||0).toLocaleString('en-IN')}/></View><View style={s.actions}><Pressable onPress={()=>setViewItem(c)} style={s.secondary}><Text style={s.secondaryText}>View</Text></Pressable><Pressable onPress={()=>openEdit(c)} style={s.secondary}><Text style={s.secondaryText}>Edit</Text></Pressable><Pressable onPress={()=>remove(c)} style={s.delete}><Text style={s.deleteText}>Delete</Text></Pressable></View></View>)}</ScrollView>}
+  {busy?<ActivityIndicator style={{marginTop:40}} color={colors.gold}/>:<ScrollView contentContainerStyle={s.list}>{items.map(c=><View key={c._id} style={s.card}><View style={s.cardTop}><View style={{flex:1}}><Text style={s.id}>{c.vehicleId}</Text><Text style={s.cardTitle}>{c.make} {c.model}</Text><Text style={s.muted}>{c.registrationNumber} · {c.year}</Text></View><Text style={s.status}>{c.status}</Text></View><View style={s.stats}><Spec l="KM" v={c.km}/><Spec l="Fuel" v={c.fuel}/><Spec l="Price" v={'₹'+Number(c.purchasePrice||0).toLocaleString('en-IN')}/></View><View style={s.actions}><Pressable onPress={()=>setViewItem(c)} style={s.secondary}><Text style={s.secondaryText}>View</Text></Pressable><Pressable onPress={()=>openEdit(c)} style={s.secondary}><Text style={s.secondaryText}>Edit</Text></Pressable>{isAdmin&&<Pressable onPress={()=>remove(c)} style={s.delete}><Text style={s.deleteText}>Delete</Text></Pressable>}</View></View>)}</ScrollView>}
   <Modal visible={!!viewItem} animationType="slide" transparent onRequestClose={()=>setViewItem(null)}><View style={s.overlay}><View style={s.modal}><View style={s.modalHead}><Text style={s.modalTitle}>Vehicle Details</Text><Pressable onPress={()=>setViewItem(null)}><Ionicons name="close" size={24} color={colors.ink}/></Pressable></View>{viewItem&&<ScrollView contentContainerStyle={s.form}>{[['Vehicle ID',viewItem.vehicleId],['Make',viewItem.make],['Model',viewItem.model],['Registration Number',viewItem.registrationNumber],['Year',viewItem.year],['Owners',viewItem.ownerNumber],['KM',viewItem.km],['Fuel Type',viewItem.fuel],['Purchase Price','₹'+Number(viewItem.purchasePrice||0).toLocaleString('en-IN')],['Status',viewItem.status],['Notes',viewItem.notes]].map(([k,v])=><View key={k} style={s.detailRow}><Text style={s.detailLabel}>{k}</Text><Text style={s.detailValue}>{String(v??'—')}</Text></View>)}</ScrollView>}</View></View></Modal>
   <Modal visible={modal} animationType="slide" transparent onRequestClose={()=>setModal(false)}><View style={s.overlay}><View style={s.modal}><View style={s.modalHead}><Text style={s.modalTitle}>{editing?'Edit Vehicle':'Record Purchase'}</Text><Pressable onPress={()=>setModal(false)}><Ionicons name="close" size={24} color={colors.ink}/></Pressable></View><ScrollView contentContainerStyle={s.form}>
    {!editing&&<><Field label="Seller Name" value={form.sellerName} onChangeText={v=>set('sellerName',v)}/><Field label="Seller Mobile" value={form.sellerMobile} onChangeText={v=>set('sellerMobile',v)}/></>}

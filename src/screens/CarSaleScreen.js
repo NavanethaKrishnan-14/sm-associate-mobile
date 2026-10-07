@@ -4,10 +4,12 @@ import {Alert,ActivityIndicator,Modal,Pressable,ScrollView,Text,TextInput,View} 
 import {Ionicons} from '@expo/vector-icons';
 import {api,uploadDocument} from '../api/client';
 import {colors} from '../theme/colors';
+import {useAuth} from '../context/AuthContext';
 import DocumentPickerButton from '../components/DocumentPickerButton';
 
 export default function CarSaleScreen({navigation}){
  const {top}=useSafeAreaInsets();
+ const {isAdmin}=useAuth();
  const[cars,setCars]=useState([]),[soldCars,setSoldCars]=useState([]),[customers,setCustomers]=useState([]),[customerSearch,setCustomerSearch]=useState(''),[showCustomerSearch,setShowCustomerSearch]=useState(false),[busy,setBusy]=useState(true),[modal,setModal]=useState(false),[carId,setCarId]=useState(''),[buyerId,setBuyerId]=useState(''),[newCustomer,setNewCustomer]=useState(false),[customerName,setCustomerName]=useState(''),[customerMobile,setCustomerMobile]=useState(''),[customerCity,setCustomerCity]=useState(''),[price,setPrice]=useState(''),[expenses,setExpenses]=useState('0'),[files,setFiles]=useState({}),[customName,setCustomName]=useState(''),[customDocs,setCustomDocs]=useState([]),[saving,setSaving]=useState(false);
  async function load(){
   setBusy(true);
@@ -20,7 +22,7 @@ export default function CarSaleScreen({navigation}){
   }catch(e){Alert.alert('Car Sold',e?.response?.data?.message||'Unable to load car sales.')}
   finally{setBusy(false)}
  }
- useEffect(()=>{load()},[]);
+ useEffect(()=>{if(isAdmin)load()},[isAdmin]);
  function openSale(){setCarId('');setBuyerId('');setNewCustomer(false);setCustomerName('');setCustomerMobile('');setCustomerCity('');setCustomerSearch('');setShowCustomerSearch(false);setPrice('');setExpenses('0');setFiles({});setCustomDocs([]);setCustomName('');setModal(true)}
  async function sell(){
   if(!carId||(!buyerId&&!newCustomer)||!price)return Alert.alert('Car Sale','Please select a car, select or create a customer, and enter the selling price.');
@@ -55,6 +57,11 @@ export default function CarSaleScreen({navigation}){
    load();
   }catch(e){Alert.alert('Car Sale',e?.response?.data?.message||'Unable to complete sale.')}
   finally{setSaving(false)}
+ }
+ if(!isAdmin){
+  return <View style={[s.page,{paddingTop:Math.max(22,top+22),justifyContent:'center',paddingHorizontal:24}]}>
+    <View style={s.accessCard}><Ionicons name="lock-closed-outline" size={30} color={colors.teal}/><Text style={s.accessTitle}>Admin access required</Text><Text style={s.accessText}>Vehicle sales are restricted to ADMIN accounts.</Text><Pressable onPress={()=>navigation.goBack()} style={s.accessButton}><Text style={s.accessButtonText}>Go Back</Text></Pressable></View>
+  </View>;
  }
  const normalizedSearch=customerSearch.trim().toLowerCase();
  const filteredCustomers=customers.filter(c=>(String(c.customerId||'')+' '+String(c.name||'')+' '+String(c.mobile||'')+' '+String(c.city||'')).toLowerCase().includes(normalizedSearch));
@@ -151,5 +158,5 @@ const s={
  customRow:{flexDirection:'row',gap:8,marginTop:3,marginBottom:8},
  add:{width:70,height:49,borderRadius:16,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center'},addText:{color:colors.goldLight,fontWeight:'900'},
  primary:{height:56,borderRadius:18,backgroundColor:colors.gold,alignItems:'center',justifyContent:'center',flexDirection:'row',gap:8,marginTop:10},
- primaryText:{color:colors.midnight,fontWeight:'900',fontSize:15},disabled:{opacity:.45}
+ primaryText:{color:colors.midnight,fontWeight:'900',fontSize:15},disabled:{opacity:.45},accessCard:{backgroundColor:colors.white,borderRadius:26,padding:24,alignItems:'center',borderWidth:1,borderColor:'rgba(39,168,154,.14)'},accessTitle:{fontSize:20,fontWeight:'900',color:colors.ink,marginTop:10},accessText:{fontSize:13,lineHeight:19,color:colors.muted,textAlign:'center',marginTop:6},accessButton:{marginTop:18,height:46,paddingHorizontal:24,borderRadius:15,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center'},accessButtonText:{color:colors.goldLight,fontWeight:'900'}
 };

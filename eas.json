@@ -9,15 +9,16 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_BASE_URL": "https://sm-associate-backend.vercel.app/api/v1"
+        "EXPO_PUBLIC_API_BASE_URL": "https://sm-associate-backend.onrender.com/api/v1"
       }
     },
     "production": {
+      "distribution": "internal",
       "android": {
-        "buildType": "app-bundle"
+        "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_BASE_URL": "https://sm-associate-backend.vercel.app/api/v1"
+        "EXPO_PUBLIC_API_BASE_URL": "https://sm-associate-backend.onrender.com/api/v1"
       }
     }
   }

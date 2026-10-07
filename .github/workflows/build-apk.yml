@@ -13,40 +13,32 @@ jobs:
     permissions:
       contents: read
     env:
-      EXPO_PUBLIC_API_BASE_URL: https://sm-associate-backend.vercel.app/api/v1
+      EXPO_PUBLIC_API_BASE_URL: https://sm-associate-backend.onrender.com/api/v1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-
+          node-version: 22
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
-
       - name: Install dependencies
         run: npm install --no-audit --no-fund
-
       - name: Verify Expo configuration
         run: npx expo config --type public
-
       - name: Generate Android project
         run: npx expo prebuild --platform android --non-interactive --clean
-
       - name: Build release APK
         working-directory: android
         run: ./gradlew assembleRelease --no-daemon --stacktrace
-
       - name: Verify APK
         run: |
           test -f android/app/build/outputs/apk/release/app-release.apk
           ls -lh android/app/build/outputs/apk/release/app-release.apk
-
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:

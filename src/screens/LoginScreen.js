@@ -5,12 +5,14 @@ import {colors} from '../theme/colors';
 import Logo from '../components/Logo';
 import {login} from '../api/client';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useAuth} from '../context/AuthContext';
 
 export default function LoginScreen({navigation}){
   const [email,setEmail]=useState('');
   const [password,setPassword]=useState('');
   const [showPassword,setShowPassword]=useState(false);
   const [busy,setBusy]=useState(false);
+  const {signIn}=useAuth();
   const {width}=useWindowDimensions();
   const {top,bottom}=useSafeAreaInsets();
   const horizontalPadding=Math.max(18,Math.min(28,width*0.065));
@@ -20,8 +22,7 @@ export default function LoginScreen({navigation}){
     if(!email||!password) return Alert.alert('Sign in','Enter your email and password.');
     setBusy(true);
     try{
-      await login(email.trim(),password);
-      navigation.replace('Main');
+      await signIn(email.trim(),password);
     }catch(e){
       Alert.alert('Unable to sign in',e?.message||'Check your credentials and try again.');
     }finally{setBusy(false);}

@@ -4,7 +4,7 @@ import {Pressable, ScrollView, Text, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {colors} from '../theme/colors';
 import Logo from '../components/Logo';
-import {logout} from '../api/client';
+import {useAuth} from '../context/AuthContext';
 
 const groups = [
   {
@@ -29,6 +29,8 @@ const groups = [
 
 export default function MoreScreen({navigation}) {
   const {top, bottom} = useSafeAreaInsets();
+  const {isAdmin,signOut}=useAuth();
+  const adminOnly=new Set(['Car Sold','Vehicle Expenses','User Management','Car Profit','Loan Revenue','Operational Reports']);
 
   const go = (section) => {
     if (section === 'CarSale') {
@@ -44,10 +46,7 @@ export default function MoreScreen({navigation}) {
     navigation.navigate('AdminTools', {section});
   };
 
-  const signOut = async () => {
-    await logout();
-    navigation.replace('Login');
-  };
+  const handleSignOut=async()=>{await signOut();};
 
   return (
     <View style={styles.page}>
@@ -70,7 +69,7 @@ export default function MoreScreen({navigation}) {
             </View>
 
             <View style={styles.headerCode}>
-              <Text style={styles.headerCodeTop}>06</Text>
+              <Text style={styles.headerCodeTop}>{isAdmin?'AD':'ST'}</Text>
               <Text style={styles.headerCodeBottom}>TOOLS</Text>
             </View>
           </View>
@@ -115,6 +114,7 @@ export default function MoreScreen({navigation}) {
               <View style={styles.actions}>
                 {group.items.map((item, itemIndex) => {
                   const [label, icon, section, description] = item;
+                  if(!isAdmin&&adminOnly.has(label)) return null;
 
                   return (
                     <Pressable
@@ -168,7 +168,7 @@ export default function MoreScreen({navigation}) {
 
             <Text style={styles.adminTitle}>Protected workspace</Text>
             <Text style={styles.adminDesc}>
-              Management controls are available according to your account permissions.
+              {isAdmin?'Management controls are available according to your ADMIN permissions.':'Admin-only controls are hidden for your STAFF account.'}
             </Text>
 
             <View style={styles.adminRule} />
@@ -180,7 +180,7 @@ export default function MoreScreen({navigation}) {
           </View>
 
           <Pressable
-            onPress={signOut}
+            onPress={handleSignOut}
             style={({pressed}) => [styles.logout, pressed && styles.pressed]}
           >
             <View style={styles.logoutLeft}>

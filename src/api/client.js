@@ -36,6 +36,27 @@ async function storeAccessToken(token) {
   return cleanToken;
 }
 
+async function storeUser(user) {
+  if (!user) return null;
+  await AsyncStorage.setItem('sm_user', JSON.stringify(user));
+  return user;
+}
+
+export async function getStoredUser() {
+  try {
+    const raw = await AsyncStorage.getItem('sm_user');
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    await AsyncStorage.removeItem('sm_user');
+    return null;
+  }
+}
+
+let unauthorizedHandler=null;
+export function setUnauthorizedHandler(handler) {
+  unauthorizedHandler=typeof handler==='function'?handler:null;
+}
+
 export const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 20000,
@@ -57,7 +78,8 @@ api.interceptors.response.use(
   async error => {
     const status = error?.response?.status;
     if (status === 401) {
-      await AsyncStorage.multiRemove(['sm_access_token', 'accessToken', 'token']);
+      await AsyncStorage.multiRemove(['sm_access_token', 'accessToken', 'token', 'sm_user']);
+      try { unauthorizedHandler?.(); } catch {}
     }
     return Promise.reject(error);
   }
@@ -75,10 +97,10 @@ export async function login(email, password) {
     if (!token) throw new Error('Login succeeded, but the server did not return an access token.');
 
     await storeAccessToken(token);
-    const meResponse = await api.get('/auth/me');
-    if (!meResponse.data?.success) {
-      throw new Error('Authentication succeeded, but the session could not be verified.');
-    }
+    const meResponse=await api.get('/auth/me');
+    const currentUser=meResponse.data?.data||data?.data?.user;
+    if(!currentUser)throw new Error('Authentication succeeded, but the session could not be verified.');
+    await storeUser(currentUser);
     return data;
   } catch (error) {
     const status = error?.response?.status;
@@ -196,10 +218,14 @@ export async function getApiHealth() {
 }
 
 export async function logout() {
-  await AsyncStorage.multiRemove(['sm_access_token', 'accessToken', 'token']);
+  await AsyncStorage.multiRemove(['sm_access_token', 'accessToken', 'token', 'sm_user']);
 }
 
 export async function getCurrentUser() {
-  const {data} = await api.get('/auth/me');
-  return data?.data ?? null;
+  const token=await readAccessToken();
+  if(!token)return null;
+  const {data}=await api.get('/auth/me');
+  const user=data?.data??null;
+  if(user)await storeUser(user);
+  return user;
 }

@@ -1,6 +1,6 @@
 import React,{useCallback,useState} from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {ActivityIndicator,Pressable,RefreshControl,ScrollView,StyleSheet,Text,TextInput,View} from 'react-native';
+import {ActivityIndicator,Alert,Linking,Pressable,RefreshControl,ScrollView,StyleSheet,Text,TextInput,View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {useFocusEffect} from '@react-navigation/native';
 import {api} from '../api/client';
@@ -27,6 +27,13 @@ export default function DocumentsScreen({navigation}){
   const q=search.trim().toLowerCase();
   const filtered=documents.filter(d=>[d.name,d.originalName,d.source,d.recordLabel].some(v=>String(v||'').toLowerCase().includes(q)));
   const formatDate=value=>value?new Date(value).toLocaleDateString():'—';
+  const openDocument=async(document)=>{
+    if(!document?.url)return Alert.alert('Document','This document does not have a valid file URL.');
+    try{
+      if(!(await Linking.canOpenURL(document.url)))throw new Error('No app is available to open this file.');
+      await Linking.openURL(document.url);
+    }catch(error){Alert.alert('Document','Unable to open this file: '+(error?.message||'Unknown error.'));}
+  };
   const formatSize=value=>{
     const n=Number(value||0);
     if(!n)return '';
@@ -53,7 +60,7 @@ export default function DocumentsScreen({navigation}){
     <ScrollView onScroll={event=>setCompactHeader(event.nativeEvent.contentOffset.y>35)} scrollEventThrottle={16} contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{setRefreshing(true);load()}} tintColor={colors.gold}/>}>
       {loading?<View style={styles.center}><ActivityIndicator size="large" color={colors.midnight}/></View>:
        filtered.length===0?<View style={styles.empty}><Ionicons name="folder-open-outline" size={44} color={colors.muted}/><Text style={styles.emptyTitle}>{documents.length?'No matching documents':'No uploaded documents'}</Text><Text style={styles.emptyText}>{documents.length?'Try another document name or record.':'Uploaded Car Buying, Car Sold and Loan documents will appear here.'}</Text></View>:
-       filtered.map(d=><View key={d.id} style={styles.card}>
+       filtered.map(d=><Pressable key={d.id} onPress={()=>openDocument(d)} style={styles.card} accessibilityRole="button" accessibilityLabel={'Open '+d.name}>
          <View style={styles.icon}><Ionicons name={sourceIcon[d.source]||'document-outline'} size={21} color={colors.midnight}/></View>
          <View style={{flex:1}}>
            <Text style={styles.name}>{d.name}</Text>
@@ -61,7 +68,8 @@ export default function DocumentsScreen({navigation}){
            <View style={styles.metaRow}><Text style={styles.source}>{d.source}</Text><Text style={styles.date}>{formatDate(d.uploadedAt)}</Text></View>
            <Text style={styles.record} numberOfLines={2}>{d.recordLabel}</Text>
          </View>
-       </View>)
+         <View style={styles.openButton}><Ionicons name="open-outline" size={16} color={colors.midnight}/><Text style={styles.openText}>Open</Text></View>
+       </Pressable>)
       }
     </ScrollView>
   </View>
@@ -73,7 +81,7 @@ const styles=StyleSheet.create({
   topBarCompact:{paddingTop:10,paddingBottom:10,shadowOpacity:0.08,shadowRadius:5,elevation:3},
   back:{width:40,height:40,borderRadius:13,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(255,255,255,.10)'},
   backCompact:{width:34,height:34,borderRadius:11},
-  title:{fontSize:20,fontWeight:'900',color:colors.ink},
+  title:{fontSize:20,fontWeight:'900',color:colors.white},
   titleCompact:{fontSize:16},
   subtitle:{fontSize:12,color:'rgba(255,255,255,.62)',marginTop:2},
   count:{minWidth:36,height:32,borderRadius:12,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center',paddingHorizontal:9},
@@ -88,7 +96,7 @@ const styles=StyleSheet.create({
   file:{fontSize:11,color:colors.muted,marginTop:3},
   metaRow:{flexDirection:'row',alignItems:'center',marginTop:8,gap:8},
   source:{fontSize:10,fontWeight:'900',color:colors.midnight,backgroundColor:'#EEF1EF',paddingHorizontal:8,paddingVertical:4,borderRadius:8},
-  date:{fontSize:11,color:colors.muted},
+  date:{fontSize:11,color:colors.muted},openButton:{height:34,paddingHorizontal:10,borderRadius:11,backgroundColor:colors.gold,alignItems:'center',justifyContent:'center',flexDirection:'row',gap:4,marginLeft:8,alignSelf:'center'},openText:{fontSize:9,fontWeight:'900',color:colors.midnight},
   record:{fontSize:11,color:colors.ink,marginTop:7,fontWeight:'600'},
   center:{paddingTop:80,alignItems:'center'},
   empty:{alignItems:'center',paddingTop:75,paddingHorizontal:30},

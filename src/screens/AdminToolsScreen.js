@@ -4,11 +4,14 @@ import {Alert,ActivityIndicator,Modal,Pressable,ScrollView,Text,TextInput,View} 
 import {api} from '../api/client';
 import {colors} from '../theme/colors';
 import {Ionicons} from '@expo/vector-icons';
+import {useAuth} from '../context/AuthContext';
 
 const emptyExpense={carId:'',category:'Repair',description:'',amount:'',date:''};
 export default function AdminToolsScreen({route,navigation}){
  const {top}=useSafeAreaInsets();
+ const {isAdmin}=useAuth();
  const section=route?.params?.section||'Users';
+ if(!isAdmin)return <View style={[s.adminPage,{paddingTop:Math.max(22,top+22),justifyContent:'center',paddingHorizontal:24}]}><View style={s.card}><Ionicons name="lock-closed-outline" size={30} color={colors.teal}/><Text style={s.title}>Admin access required</Text><Text style={s.subtitle}>This area is restricted to ADMIN accounts.</Text><Pressable onPress={()=>navigation.goBack()} style={s.primary}><Text style={s.primaryText}>Go Back</Text></Pressable></View></View>;
  return <View style={[s.adminPage,{paddingTop:Math.max(22,top+22)}]}>
  <View style={s.topBar}><Pressable onPress={()=>navigation.goBack()} style={s.back}><Ionicons name="arrow-back" size={22} color={colors.ink}/></Pressable><View style={{flex:1,marginLeft:10}}><Text style={s.topTitle}>{section}</Text><Text style={s.topSubtitle}>Admin management</Text></View></View>
  <View style={s.adminContent}>{section==='Users'?<Users/>:section==='Expenses'?<Expenses/>:<Reports section={section}/>}</View>

@@ -4,24 +4,36 @@ import {Alert,ActivityIndicator,Modal,Pressable,ScrollView,Text,TextInput,View} 
 import {Ionicons} from '@expo/vector-icons';
 import {api} from '../api/client';
 import {colors} from '../theme/colors';
+import {useAuth} from '../context/AuthContext';
 
 const empty={name:'',mobile:'',alternateMobile:'',email:'',address:'',city:'',occupation:'',pan:'',aadhaarLast4:'',notes:''};
 
 export default function CustomersScreen({navigation}){
  const {top}=useSafeAreaInsets();
+ const {isAdmin}=useAuth();
  const [items,setItems]=useState([]),[q,setQ]=useState(''),[busy,setBusy]=useState(true);
  const [modal,setModal]=useState(false),[editing,setEditing]=useState(null),[form,setForm]=useState(empty),[saving,setSaving]=useState(false),[history,setHistory]=useState(null),[profile,setProfile]=useState(null);
  async function load(){setBusy(true);try{const r=await api.get('/customers');setItems(r.data?.data||[])}catch(e){Alert.alert('Customers',e?.response?.data?.message||'Unable to load customers.')}finally{setBusy(false)}}
  useEffect(()=>{load()},[]);
- const filtered=items.filter(x=>(x.name||'').toLowerCase().includes(q.toLowerCase())||(x.mobile||'').includes(q));
+ const filtered=items.filter(x=>[x.customerId,x.name,x.mobile,x.email,x.city].some(v=>String(v||'').toLowerCase().includes(q.toLowerCase())));
  function openAdd(){setEditing(null);setForm({...empty});setModal(true)}
  function openProfile(item){setProfile(item)}
  function openEdit(item){setEditing(item);setForm({...empty,...item});setModal(true)}
  async function save(){
    if(!form.name.trim()||!form.mobile.trim())return Alert.alert('Customer','Name and mobile are required.');
    setSaving(true);
-   try{if(editing)await api.patch('/customers/'+editing._id,form);else await api.post('/customers',form);setModal(false);await load()}
-   catch(e){Alert.alert('Customer',e?.response?.data?.message||'Unable to save customer.')}finally{setSaving(false)}
+   try{
+     const payload={...form};
+     ['_id','createdAt','updatedAt'].forEach(key=>delete payload[key]);
+     if(editing)await api.patch('/customers/'+editing._id,payload);
+     else await api.post('/customers',payload);
+     setModal(false);
+     await load();
+   }catch(e){
+     Alert.alert('Customer',e?.response?.data?.message||'Unable to save customer.');
+   }finally{
+     setSaving(false);
+   }
  }
  async function openHistory(item){try{const r=await api.get('/customers/'+item._id+'/history');setHistory(r.data?.data||null)}catch(e){Alert.alert('History',e?.response?.data?.message||'Unable to load customer history.')}}
  function remove(item){
@@ -35,14 +47,14 @@ export default function CustomersScreen({navigation}){
    <View style={s.search}><Ionicons name="search" size={18} color={colors.muted}/><TextInput value={q} onChangeText={setQ} placeholder="Search name or mobile" placeholderTextColor="#9AA4AD" style={s.searchInput}/></View>
    {busy?<ActivityIndicator style={{marginTop:40}} color={colors.gold}/>:<ScrollView contentContainerStyle={s.list}>{filtered.map(c=><View key={c._id} style={s.card}>
      <Pressable onPress={()=>openProfile(c)} style={s.row}><View style={s.avatar}><Text style={s.avatarText}>{(c.name||'?').slice(0,1).toUpperCase()}</Text></View><View style={{flex:1,marginLeft:12}}><Text style={s.cardTitle}>{c.name}</Text><Text style={s.muted}>{c.customerId} · {c.mobile}</Text><Text style={s.muted}>{c.city||'No city'}{c.occupation?' · '+c.occupation:''}</Text></View><Ionicons name="chevron-forward" size={20} color={colors.muted}/></Pressable>
-     <View style={s.actions}><Pressable onPress={()=>openEdit(c)} style={s.secondary}><Text style={s.secondaryText}>Edit</Text></Pressable><Pressable onPress={()=>remove(c)} style={s.delete}><Text style={s.deleteText}>Delete</Text></Pressable></View>
+     <View style={s.actions}><Pressable onPress={()=>openEdit(c)} style={s.secondary}><Text style={s.secondaryText}>Edit</Text></Pressable>{isAdmin&&<Pressable onPress={()=>remove(c)} style={s.delete}><Text style={s.deleteText}>Delete</Text></Pressable>}</View>
    </View>)}</ScrollView>}
    <Modal visible={!!profile} animationType="slide" transparent onRequestClose={()=>setProfile(null)}>
     <View style={s.overlay}><View style={s.modal}><View style={s.modalHead}><View style={{flexDirection:'row',alignItems:'center',flex:1}}><Pressable onPress={()=>setProfile(null)} style={s.back}><Ionicons name="arrow-back" size={22} color={colors.ink}/></Pressable><Text style={s.modalTitle}>View Customer</Text></View><Pressable onPress={()=>setProfile(null)}><Ionicons name="close" size={24} color={colors.ink}/></Pressable></View>
       {profile&&<ScrollView contentContainerStyle={s.form}>
        <View style={s.profileHero}><View style={s.profileAvatar}><Text style={s.profileAvatarText}>{(profile.name||'?').slice(0,1).toUpperCase()}</Text></View><Text style={s.profileName}>{profile.name}</Text><Text style={s.muted}>{profile.customerId||'Customer'}</Text></View>
        {[['Mobile',profile.mobile],['Alternate Mobile',profile.alternateMobile],['Email',profile.email],['Address',profile.address],['City',profile.city],['Occupation',profile.occupation],['PAN',profile.pan],['Aadhaar Last 4',profile.aadhaarLast4],['Notes',profile.notes]].map(([k,v])=><View key={k} style={s.detailRow}><Text style={s.detailLabel}>{k}</Text><Text style={s.detailValue}>{v||'—'}</Text></View>)}
-       <View style={s.profileActions}><Pressable onPress={()=>{openEdit(profile);setProfile(null)}} style={s.secondary}><Text style={s.secondaryText}>Edit</Text></Pressable><Pressable onPress={()=>{setProfile(null);remove(profile)}} style={s.delete}><Text style={s.deleteText}>Delete</Text></Pressable></View>
+       <View style={s.profileActions}><Pressable onPress={()=>{openEdit(profile);setProfile(null)}} style={s.secondary}><Text style={s.secondaryText}>Edit</Text></Pressable>{isAdmin&&<Pressable onPress={()=>{setProfile(null);remove(profile)}} style={s.delete}><Text style={s.deleteText}>Delete</Text></Pressable>}</View>
       </ScrollView>}
     </View></View>
    </Modal>

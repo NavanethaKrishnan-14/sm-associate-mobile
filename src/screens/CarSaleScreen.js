@@ -1,6 +1,7 @@
+import {AppText,AppTextInput} from '../components/AppText';
 import React,{useEffect,useState} from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Alert,ActivityIndicator,Modal,Pressable,ScrollView,Text,TextInput,View} from 'react-native';
+import {Alert, ActivityIndicator, Modal, Pressable, ScrollView, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {api,uploadDocument} from '../api/client';
 import {colors} from '../theme/colors';
@@ -62,60 +63,60 @@ export default function CarSaleScreen({navigation}){
  return <View style={[s.page,{paddingTop:Math.max(22,top+22)}]}>
   <View style={s.header}>
    <Pressable onPress={()=>navigation.goBack()} style={s.backButton}><Ionicons name="arrow-back" size={20} color={colors.ink}/></Pressable>
-   <View style={{flex:1}}><Text style={s.eyebrow}>AUTOMOTIVE</Text><Text style={s.title}>Car Sold</Text><Text style={s.subtitle}>Track available inventory and completed vehicle sales.</Text></View>
-   <Pressable onPress={openSale} style={s.sellButton}><Ionicons name="car-outline" size={18} color={colors.goldLight}/><Text style={s.sellButtonText}>Sell Car</Text></Pressable>
+   <View style={{flex:1}}><AppText style={s.eyebrow}>AUTOMOTIVE</Text><AppText style={s.title}>Car Sold</Text><AppText style={s.subtitle}>Track available inventory and completed vehicle sales.</Text></View>
+   <Pressable onPress={openSale} style={s.sellButton}><Ionicons name="car-outline" size={18} color={colors.goldLight}/><AppText style={s.sellButtonText}>Sell Car</Text></Pressable>
   </View>
   {busy?<ActivityIndicator style={{marginTop:45}} color={colors.gold}/>:<ScrollView contentContainerStyle={s.list}>
-   <View style={s.summaryRow}><View style={s.summary}><Text style={s.summaryNumber}>{cars.length}</Text><Text style={s.summaryLabel}>Cars Remaining</Text></View><View style={s.summary}><Text style={s.summaryNumber}>{soldCars.length}</Text><Text style={s.summaryLabel}>Cars Sold</Text></View></View>
-   <Text style={s.sectionLabel}>CARS REMAINING TO SELL</Text>
+   <View style={s.summaryRow}><View style={s.summary}><AppText style={s.summaryNumber}>{cars.length}</Text><AppText style={s.summaryLabel}>Cars Remaining</Text></View><View style={s.summary}><AppText style={s.summaryNumber}>{soldCars.length}</Text><AppText style={s.summaryLabel}>Cars Sold</Text></View></View>
+   <AppText style={s.sectionLabel}>CARS REMAINING TO SELL</Text>
    {cars.length?cars.map(c=><Pressable key={c._id} onPress={()=>setViewCar(c)} style={({pressed})=>[s.carCard,pressed&&s.pressed]}>
-<View style={s.carIcon}><Ionicons name="car-sport-outline" size={22} color={colors.teal}/></View><View style={{flex:1}}><Text style={s.cardTitle}>{c.vehicleId} · {c.make} {c.model}</Text><Text style={s.muted}>{c.registrationNumber} · {c.year||'—'} · {c.fuel||'—'}</Text><Text style={s.priceText}>Purchase ₹{Number(c.purchasePrice||0).toLocaleString('en-IN')}</Text></View></Pressable>):<Empty icon="car-outline" title="No cars remaining" text="All available inventory has been sold."/>}
-   <Text style={s.sectionLabel}>CARS SOLD OUT</Text>
+<View style={s.carIcon}><Ionicons name="car-sport-outline" size={22} color={colors.teal}/></View><View style={{flex:1}}><AppText style={s.cardTitle}>{c.vehicleId} · {c.make} {c.model}</Text><AppText style={s.muted}>{c.registrationNumber} · {c.year||'—'} · {c.fuel||'—'}</Text><AppText style={s.priceText}>Purchase ₹{Number(c.purchasePrice||0).toLocaleString('en-IN')}</Text></View></Pressable>):<Empty icon="car-outline" title="No cars remaining" text="All available inventory has been sold."/>}
+   <AppText style={s.sectionLabel}>CARS SOLD OUT</Text>
    {soldCars.length?soldCars.map(c=><Pressable key={c._id} onPress={()=>setViewCar(c)} style={({pressed})=>[s.carCard,pressed&&s.pressed]}>
-<View style={s.soldIcon}><Ionicons name="checkmark-circle-outline" size={22} color={colors.teal}/></View><View style={{flex:1}}><Text style={s.cardTitle}>{c.vehicleId} · {c.make} {c.model}</Text><Text style={s.muted}>{c.registrationNumber} · SOLD</Text><Text style={s.priceText}>Purchase ₹{Number(c.purchasePrice||0).toLocaleString('en-IN')}</Text></View><Text style={s.soldBadge}>SOLD</Text></Pressable>):<Empty icon="receipt-outline" title="No sold cars yet" text="Completed vehicle sales will appear here."/>}
+<View style={s.soldIcon}><Ionicons name="checkmark-circle-outline" size={22} color={colors.teal}/></View><View style={{flex:1}}><AppText style={s.cardTitle}>{c.vehicleId} · {c.make} {c.model}</Text><AppText style={s.muted}>{c.registrationNumber} · SOLD</Text><AppText style={s.priceText}>Purchase ₹{Number(c.purchasePrice||0).toLocaleString('en-IN')}</Text></View><AppText style={s.soldBadge}>SOLD</Text></Pressable>):<Empty icon="receipt-outline" title="No sold cars yet" text="Completed vehicle sales will appear here."/>}
   </ScrollView>}
   <Modal visible={!!viewCar} animationType="slide" transparent onRequestClose={()=>setViewCar(null)}>
    <View style={s.overlay}><View style={s.modal}>
-    <View style={s.modalHead}><View><Text style={s.modalTitle}>Vehicle Details</Text><Text style={s.modalSub}>{viewCar?.status||'Vehicle'}</Text></View><Pressable onPress={()=>setViewCar(null)}><Ionicons name="close" size={24} color={colors.ink}/></Pressable></View>
+    <View style={s.modalHead}><View><AppText style={s.modalTitle}>Vehicle Details</Text><AppText style={s.modalSub}>{viewCar?.status||'Vehicle'}</Text></View><Pressable onPress={()=>setViewCar(null)}><Ionicons name="close" size={24} color={colors.ink}/></Pressable></View>
     {viewCar&&<ScrollView contentContainerStyle={s.form}>
-     {[['Vehicle ID',viewCar.vehicleId],['Car',[(viewCar.make||''),(viewCar.model||'')].filter(Boolean).join(' ')],['Registration',viewCar.registrationNumber],['Year',viewCar.year],['Fuel',viewCar.fuel],['Purchase Price','₹'+Number(viewCar.purchasePrice||0).toLocaleString('en-IN')],['Status',viewCar.status]].map(([k,v])=><View key={k} style={s.detailRow}><Text style={s.detailLabel}>{k}</Text><Text style={s.detailValue}>{String(v||'—')}</Text></View>)}
+     {[['Vehicle ID',viewCar.vehicleId],['Car',[(viewCar.make||''),(viewCar.model||'')].filter(Boolean).join(' ')],['Registration',viewCar.registrationNumber],['Year',viewCar.year],['Fuel',viewCar.fuel],['Purchase Price','₹'+Number(viewCar.purchasePrice||0).toLocaleString('en-IN')],['Status',viewCar.status]].map(([k,v])=><View key={k} style={s.detailRow}><AppText style={s.detailLabel}>{k}</Text><AppText style={s.detailValue}>{String(v||'—')}</Text></View>)}
     </ScrollView>}
    </View></View>
   </Modal>
   <Modal visible={modal} animationType="slide" transparent onRequestClose={()=>setModal(false)}>
    <View style={s.overlay}><View style={s.modal}>
-    <View style={s.modalHead}><View><Text style={s.modalTitle}>Sell Car</Text><Text style={s.modalSub}>Complete the customer purchase details.</Text></View><Pressable onPress={()=>setModal(false)}><Ionicons name="close" size={24} color={colors.ink}/></Pressable></View>
+    <View style={s.modalHead}><View><AppText style={s.modalTitle}>Sell Car</Text><AppText style={s.modalSub}>Complete the customer purchase details.</Text></View><Pressable onPress={()=>setModal(false)}><Ionicons name="close" size={24} color={colors.ink}/></Pressable></View>
     <ScrollView contentContainerStyle={s.form}>
-     <Text style={s.formSection}>1. SELECT CAR</Text>
-     {cars.length?cars.map(c=><Pressable key={c._id} onPress={()=>setCarId(carId===c._id?'':c._id)} style={[s.option,carId===c._id&&s.active]}><View style={s.carIcon}><Ionicons name="car-sport-outline" size={20} color={colors.teal}/></View><View style={{flex:1}}><Text style={s.cardTitle}>{c.vehicleId} · {c.make} {c.model}</Text><Text style={s.muted}>{c.registrationNumber} · ₹{Number(c.purchasePrice||0).toLocaleString('en-IN')}</Text></View><Ionicons name={carId===c._id?'checkmark-circle':'ellipse-outline'} size={21} color={carId===c._id?colors.teal:colors.muted}/></Pressable>):<Empty icon="car-outline" title="No cars available" text="Add a car to inventory before selling."/>}
-     <Text style={s.formSection}>2. CUSTOMER / BUYER</Text>
-     <Pressable onPress={()=>{setNewCustomer(true);setBuyerId('')}} style={s.newCustomerButton}><Ionicons name="person-add-outline" size={18} color={colors.midnight}/><Text style={s.newCustomerText}>New Customer</Text></Pressable>
+     <AppText style={s.formSection}>1. SELECT CAR</Text>
+     {cars.length?cars.map(c=><Pressable key={c._id} onPress={()=>setCarId(carId===c._id?'':c._id)} style={[s.option,carId===c._id&&s.active]}><View style={s.carIcon}><Ionicons name="car-sport-outline" size={20} color={colors.teal}/></View><View style={{flex:1}}><AppText style={s.cardTitle}>{c.vehicleId} · {c.make} {c.model}</Text><AppText style={s.muted}>{c.registrationNumber} · ₹{Number(c.purchasePrice||0).toLocaleString('en-IN')}</Text></View><Ionicons name={carId===c._id?'checkmark-circle':'ellipse-outline'} size={21} color={carId===c._id?colors.teal:colors.muted}/></Pressable>):<Empty icon="car-outline" title="No cars available" text="Add a car to inventory before selling."/>}
+     <AppText style={s.formSection}>2. CUSTOMER / BUYER</Text>
+     <Pressable onPress={()=>{setNewCustomer(true);setBuyerId('')}} style={s.newCustomerButton}><Ionicons name="person-add-outline" size={18} color={colors.midnight}/><AppText style={s.newCustomerText}>New Customer</Text></Pressable>
      {!newCustomer&&<View style={s.searchSection}>
-      <Text style={s.searchLabel}>SEARCH CUSTOMER</Text>
+      <AppText style={s.searchLabel}>SEARCH CUSTOMER</Text>
       <View style={s.customerSearchBox}>
        <Ionicons name="search-outline" size={21} color={colors.teal}/>
-       <TextInput value={customerSearch} onChangeText={setCustomerSearch} placeholder="Search by Customer ID, Name or Mobile" placeholderTextColor="#7D898F" style={s.customerSearchInput}/>
+       <AppTextInput value={customerSearch} onChangeText={setCustomerSearch} placeholder="Search by Customer ID, Name or Mobile" placeholderTextColor="#7D898F" style={s.customerSearchInput}/>
        {customerSearch?<Pressable onPress={()=>setCustomerSearch('')} style={s.clearSearch}><Ionicons name="close-circle" size={21} color={colors.muted}/></Pressable>:null}
       </View>
      </View>}
-     {!newCustomer&&visibleCustomers.length?visibleCustomers.map(c=><Pressable key={c._id} onPress={()=>setBuyerId(buyerId===c._id?'':c._id)} style={[s.option,buyerId===c._id&&s.active]}><View style={s.avatar}><Text style={s.avatarText}>{(c.name||'?').slice(0,1).toUpperCase()}</Text></View><View style={{flex:1}}><Text style={s.cardTitle}>{c.customerId} · {c.name}</Text><Text style={s.muted}>{c.mobile}{c.city?' · '+c.city:''}</Text></View><Ionicons name={buyerId===c._id?'checkmark-circle':'ellipse-outline'} size={21} color={buyerId===c._id?colors.teal:colors.muted}/></Pressable>):!newCustomer?<Empty icon="person-outline" title={normalizedSearch?'No matching customer':'No customers'} text={normalizedSearch?'Try another name, mobile number or customer ID.':'Create a customer before recording a sale.'}/>:<View/>}
-     {newCustomer&&<View style={s.customerForm}><View style={s.customerFormHeader}><Text style={s.customerFormTitle}>New Customer Details</Text><Pressable onPress={()=>{setNewCustomer(false);setCustomerName('');setCustomerMobile('');setCustomerCity('')}}><Text style={s.cancelNew}>Use Existing</Text></Pressable></View><Field label="Customer Name" value={customerName} onChangeText={setCustomerName} textInputType="default"/><Field label="Mobile Number" value={customerMobile} onChangeText={setCustomerMobile} textInputType="numeric"/><Field label="City" value={customerCity} onChangeText={setCustomerCity} textInputType="default"/></View>}
-     <Text style={s.formSection}>3. SAVE DETAILS</Text>
-     {buyerId&&!newCustomer&&<View style={s.selectedCustomer}><Text style={s.selectedLabel}>SELECTED CUSTOMER</Text><Text style={s.selectedName}>{customers.find(c=>c._id===buyerId)?.name||'Customer selected'}</Text><Text style={s.muted}>{customers.find(c=>c._id===buyerId)?.mobile||''}{customers.find(c=>c._id===buyerId)?.city?' · '+customers.find(c=>c._id===buyerId)?.city:''}</Text></View>}
+     {!newCustomer&&visibleCustomers.length?visibleCustomers.map(c=><Pressable key={c._id} onPress={()=>setBuyerId(buyerId===c._id?'':c._id)} style={[s.option,buyerId===c._id&&s.active]}><View style={s.avatar}><AppText style={s.avatarText}>{(c.name||'?').slice(0,1).toUpperCase()}</Text></View><View style={{flex:1}}><AppText style={s.cardTitle}>{c.customerId} · {c.name}</Text><AppText style={s.muted}>{c.mobile}{c.city?' · '+c.city:''}</Text></View><Ionicons name={buyerId===c._id?'checkmark-circle':'ellipse-outline'} size={21} color={buyerId===c._id?colors.teal:colors.muted}/></Pressable>):!newCustomer?<Empty icon="person-outline" title={normalizedSearch?'No matching customer':'No customers'} text={normalizedSearch?'Try another name, mobile number or customer ID.':'Create a customer before recording a sale.'}/>:<View/>}
+     {newCustomer&&<View style={s.customerForm}><View style={s.customerFormHeader}><AppText style={s.customerFormTitle}>New Customer Details</Text><Pressable onPress={()=>{setNewCustomer(false);setCustomerName('');setCustomerMobile('');setCustomerCity('')}}><AppText style={s.cancelNew}>Use Existing</Text></Pressable></View><Field label="Customer Name" value={customerName} onChangeText={setCustomerName} textInputType="default"/><Field label="Mobile Number" value={customerMobile} onChangeText={setCustomerMobile} textInputType="numeric"/><Field label="City" value={customerCity} onChangeText={setCustomerCity} textInputType="default"/></View>}
+     <AppText style={s.formSection}>3. SAVE DETAILS</Text>
+     {buyerId&&!newCustomer&&<View style={s.selectedCustomer}><AppText style={s.selectedLabel}>SELECTED CUSTOMER</Text><AppText style={s.selectedName}>{customers.find(c=>c._id===buyerId)?.name||'Customer selected'}</Text><AppText style={s.muted}>{customers.find(c=>c._id===buyerId)?.mobile||''}{customers.find(c=>c._id===buyerId)?.city?' · '+customers.find(c=>c._id===buyerId)?.city:''}</Text></View>}
      <Field label="Selling Price" value={price} onChangeText={setPrice} textInputType="numeric"/><Field label="Selling Expenses" value={expenses} onChangeText={setExpenses} textInputType="numeric"/>
-     <View style={s.net}><Text style={s.netLabel}>NET SALE VALUE</Text><Text style={s.netValue}>₹{Math.max(0,Number(price||0)-Number(expenses||0)).toLocaleString('en-IN')}</Text></View>
-     <Text style={s.formSection}>4. CUSTOMER DOCUMENTS</Text>
-     {[['idProof','ID Proof'],['agreement','Sale Agreement']].map(([key,title])=><View key={key} style={s.doc}><Text style={s.cardTitle}>{title}</Text><DocumentPickerButton file={files[key]} onPick={f=>setFiles(p=>({...p,[key]:f}))}/></View>)}
-     <View style={s.customRow}><TextInput value={customName} onChangeText={setCustomName} placeholder="Custom document name" placeholderTextColor="#9AA4AD" style={[s.input,{flex:1}]}/><Pressable onPress={()=>{const n=customName.trim();if(n&&!customDocs.some(x=>x.toLowerCase()===n.toLowerCase())){setCustomDocs(p=>[...p,n]);setCustomName('')}}} style={s.add}><Text style={s.addText}>Add</Text></Pressable></View>
-     {customDocs.map(n=><View key={n} style={s.doc}><Text style={s.cardTitle}>{n}</Text><DocumentPickerButton file={files['custom:'+n]} onPick={f=>setFiles(p=>({...p,['custom:'+n]:f}))}/></View>)}
-     <Pressable disabled={saving||!carId||(!buyerId&&!newCustomer)||!price} onPress={sell} style={[s.primary,(saving||!carId||(!buyerId&&!newCustomer)||!price)&&s.disabled]}><Ionicons name="checkmark-circle-outline" size={20} color={colors.midnight}/><Text style={s.primaryText}>{saving?'Completing...':'Complete Car Sale'}</Text></Pressable>
+     <View style={s.net}><AppText style={s.netLabel}>NET SALE VALUE</Text><AppText style={s.netValue}>₹{Math.max(0,Number(price||0)-Number(expenses||0)).toLocaleString('en-IN')}</Text></View>
+     <AppText style={s.formSection}>4. CUSTOMER DOCUMENTS</Text>
+     {[['idProof','ID Proof'],['agreement','Sale Agreement']].map(([key,title])=><View key={key} style={s.doc}><AppText style={s.cardTitle}>{title}</Text><DocumentPickerButton file={files[key]} onPick={f=>setFiles(p=>({...p,[key]:f}))}/></View>)}
+     <View style={s.customRow}><AppTextInput value={customName} onChangeText={setCustomName} placeholder="Custom document name" placeholderTextColor="#9AA4AD" style={[s.input,{flex:1}]}/><Pressable onPress={()=>{const n=customName.trim();if(n&&!customDocs.some(x=>x.toLowerCase()===n.toLowerCase())){setCustomDocs(p=>[...p,n]);setCustomName('')}}} style={s.add}><AppText style={s.addText}>Add</Text></Pressable></View>
+     {customDocs.map(n=><View key={n} style={s.doc}><AppText style={s.cardTitle}>{n}</Text><DocumentPickerButton file={files['custom:'+n]} onPick={f=>setFiles(p=>({...p,['custom:'+n]:f}))}/></View>)}
+     <Pressable disabled={saving||!carId||(!buyerId&&!newCustomer)||!price} onPress={sell} style={[s.primary,(saving||!carId||(!buyerId&&!newCustomer)||!price)&&s.disabled]}><Ionicons name="checkmark-circle-outline" size={20} color={colors.midnight}/><AppText style={s.primaryText}>{saving?'Completing...':'Complete Car Sale'}</Text></Pressable>
     </ScrollView>
    </View></View>
   </Modal>
  </View>
 }
-function Empty({icon,title,text}){return <View style={s.empty}><Ionicons name={icon} size={28} color={colors.muted}/><Text style={s.emptyTitle}>{title}</Text><Text style={s.emptyText}>{text}</Text></View>}
-function Field({label,value,onChangeText,textInputType='numeric'}){return <View style={{marginBottom:11}}><Text style={s.label}>{label}</Text><TextInput value={value} onChangeText={onChangeText} keyboardType={textInputType} placeholder={'Enter '+label.toLowerCase()} placeholderTextColor="#9AA4AD" style={s.input}/></View>}
+function Empty({icon,title,text}){return <View style={s.empty}><Ionicons name={icon} size={28} color={colors.muted}/><AppText style={s.emptyTitle}>{title}</Text><AppText style={s.emptyText}>{text}</Text></View>}
+function Field({label,value,onChangeText,textInputType='numeric'}){return <View style={{marginBottom:11}}><AppText style={s.label}>{label}</Text><AppTextInput value={value} onChangeText={onChangeText} keyboardType={textInputType} placeholder={'Enter '+label.toLowerCase()} placeholderTextColor="#9AA4AD" style={s.input}/></View>}
 const s={
  page:{flex:1,backgroundColor:'#F4F6F3',paddingTop:0},pressed:{opacity:.78,transform:[{scale:.99}]},detailRow:{backgroundColor:colors.white,borderRadius:14,padding:13,marginBottom:8,borderWidth:1,borderColor:'rgba(39,168,154,.13)'},detailLabel:{fontSize:10,fontFamily:'Manrope_800ExtraBold',color:colors.muted,textTransform:'uppercase'},detailValue:{fontSize:14,fontFamily:'Manrope_700Bold',color:colors.ink,marginTop:4},
  header:{paddingHorizontal:18,flexDirection:'row',alignItems:'center',gap:12},

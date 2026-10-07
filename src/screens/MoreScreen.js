@@ -303,7 +303,7 @@ const styles = {
     backgroundColor: colors.white,
     borderRadius: 26,
     padding: 18,
-    marginBottom: 8,
+    marginBottom: 20,
     borderWidth: 1,
     borderColor: '#E3E7E4',
     overflow: 'hidden',
@@ -393,7 +393,7 @@ const styles = {
     color: '#8A969A',
   },
   group: {
-    marginBottom: 27,
+    marginBottom: 32,
   },
   groupHead: {
     flexDirection: 'row',

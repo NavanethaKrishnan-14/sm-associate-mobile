@@ -376,6 +376,7 @@ const styles = {
   },
   actions: {
     gap: 1,
+    marginTop: 10,
   },
   action: {
     minHeight: 70,

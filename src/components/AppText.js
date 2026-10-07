@@ -1,22 +1,22 @@
 import React,{forwardRef} from 'react';
 import {StyleSheet,Text,TextInput} from 'react-native';
 
-function getManropeFamily(fontWeight){
+function getNunitoSansFamily(fontWeight){
   switch(String(fontWeight||'400')){
     case '300':
-      return 'Manrope_300Light';
+      return 'NunitoSans_300Light';
     case '500':
-      return 'Manrope_500Medium';
+      return 'NunitoSans_500Medium';
     case '600':
-      return 'Manrope_600SemiBold';
+      return 'NunitoSans_600SemiBold';
     case '700':
     case 'bold':
-      return 'Manrope_700Bold';
+      return 'NunitoSans_700Bold';
     case '800':
     case '900':
-      return 'Manrope_800ExtraBold';
+      return 'NunitoSans_800ExtraBold';
     default:
-      return 'Manrope_400Regular';
+      return 'NunitoSans_400Regular';
   }
 }
 
@@ -44,7 +44,7 @@ function getReadableTextStyle(style){
   return [
     style,
     {
-      fontFamily:getManropeFamily(flatStyle.fontWeight),
+      fontFamily:getNunitoSansFamily(flatStyle.fontWeight),
       ...(increasedFontSize!==undefined ? {fontSize:increasedFontSize} : {}),
       ...(increasedLineHeight!==undefined ? {lineHeight:increasedLineHeight} : {}),
     },
@@ -63,7 +63,7 @@ export const AppTextInput=forwardRef(function AppTextInput({style,...props},ref)
       {...props}
       style={[
         style,
-        {fontFamily:getManropeFamily(flatStyle.fontWeight)},
+        {fontFamily:getNunitoSansFamily(flatStyle.fontWeight)},
       ]}
     />
   );

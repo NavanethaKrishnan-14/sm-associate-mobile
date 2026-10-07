@@ -73,7 +73,14 @@ export async function login(email, password) {
     if (!token) throw new Error('Login succeeded, but the server did not return an access token.');
 
     await storeAccessToken(token);
-    const meResponse = await api.get('/auth/me');
+    // Verify the newly issued token explicitly. This avoids relying on the
+    // Axios interceptor during the first authenticated request on native.
+    const meResponse = await api.get('/auth/me', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'x-access-token': token
+      }
+    });
     if (!meResponse.data?.success) {
       throw new Error('Authentication succeeded, but the session could not be verified.');
     }
@@ -198,6 +205,22 @@ export async function logout() {
 }
 
 export async function getCurrentUser() {
-  const {data} = await api.get('/auth/me');
-  return data?.data ?? null;
+  const token = await readAccessToken();
+  if (!token) return null;
+  try {
+    const {data} = await api.get('/auth/me', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'x-access-token': token
+      }
+    });
+    return data?.data ?? null;
+  } catch (error) {
+    const status = error?.response?.status;
+    if (status === 401) {
+      await logout();
+      return null;
+    }
+    throw error;
+  }
 }

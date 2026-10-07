@@ -177,7 +177,8 @@ export default function MoreScreen({navigation}) {
               color={colors.white}
             />
             <Text style={styles.logoutTitle}>Sign out</Text>
-          </Pressable>     </View>
+          </Pressable>
+        </View>
       </ScrollView>
     </View>
   );

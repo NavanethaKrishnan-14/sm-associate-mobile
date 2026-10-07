@@ -1,20 +1,29 @@
 import React,{forwardRef} from 'react';
 import {Text,TextInput} from 'react-native';
 
-function getDescriptionScale(style){
+function getReadableTextStyle(style){
   const flatStyle = Array.isArray(style)
     ? Object.assign({}, ...style.filter(Boolean))
     : style || {};
 
   const fontSize = flatStyle.fontSize;
-  if (typeof fontSize !== 'number' || fontSize < 8 || fontSize > 12) {
+
+  if (typeof fontSize !== 'number') {
     return style;
   }
 
-  const increasedFontSize = fontSize + 1.5;
+  // Increase all AppText typography for better visibility while
+  // preserving the existing hierarchy and relative sizing.
+  const scale =
+    fontSize <= 7 ? 1.35 :
+    fontSize <= 10 ? 1.22 :
+    fontSize <= 14 ? 1.14 :
+    1.08;
+
+  const increasedFontSize = Math.round(fontSize * scale * 10) / 10;
   const increasedLineHeight =
     typeof flatStyle.lineHeight === 'number'
-      ? flatStyle.lineHeight + 2
+      ? Math.round(flatStyle.lineHeight * scale * 10) / 10
       : undefined;
 
   return [
@@ -27,7 +36,7 @@ function getDescriptionScale(style){
 }
 
 export const AppText=forwardRef(function AppText({style,...props},ref){
-  return <Text ref={ref} {...props} style={getDescriptionScale(style)}/>;
+  return <Text ref={ref} {...props} style={getReadableTextStyle(style)}/>;
 });
 
 export const AppTextInput=forwardRef(function AppTextInput({style,...props},ref){

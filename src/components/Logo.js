@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, View } from 'react-native';
+import {Image, View} from 'react-native';
 
 const logo = 'https://raw.githubusercontent.com/NavanethaKrishnan-14/sm-associate-web/main/public/assets/sm-associate-logo.png';
 

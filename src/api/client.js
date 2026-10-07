@@ -103,14 +103,34 @@ export async function uploadDocument(path, asset, fields = {}) {
   const token = await readAccessToken();
   if (!token) throw new Error('Your login session has expired. Please sign in again.');
 
+  // React Native 0.86 / Expo 57 can reject the legacy {uri,name,type}
+  // FormData part with "Unsupported FormDataPart implementation".
+  // Read the selected local file as a real Blob and append that Blob instead.
+  let fileResponse;
+  try {
+    fileResponse = await fetch(asset.uri);
+  } catch (error) {
+    throw new Error('Unable to read the selected document. Please choose the file again.');
+  }
+
+  if (!fileResponse.ok) {
+    throw new Error('Unable to read the selected document. Please choose the file again.');
+  }
+
+  let fileBlob;
+  try {
+    fileBlob = await fileResponse.blob();
+  } catch (error) {
+    throw new Error('Unable to prepare the selected document for upload. Please choose the file again.');
+  }
+
+  if (!fileBlob || !fileBlob.size) {
+    throw new Error('The selected document is empty or could not be read.');
+  }
+
   const form = new FormData();
-  // React Native multipart uploads are more reliable when the native file
-  // descriptor is passed directly instead of converting it to a Blob first.
-  form.append('file', {
-    uri: asset.uri,
-    name: fileName,
-    type: fileType
-  });
+  form.append('file', fileBlob, fileName);
+
   Object.entries(fields).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
       form.append(key, String(value));

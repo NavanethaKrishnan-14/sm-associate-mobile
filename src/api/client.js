@@ -2,6 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {notifyAuthExpired} from './authEvents';
 import * as FileSystem from 'expo-file-system/legacy';
+import {File, UploadType} from 'expo-file-system';
 
 const PRODUCTION_API_URL = 'https://sm-associate-backend.vercel.app/api/v1';
 
@@ -109,15 +110,37 @@ export async function uploadDocument(path, asset, fields = {}) {
   const token=await readAccessToken();
   if(!token) throw new Error('Your login session has expired. Please sign in again.');
 
+  // DocumentPicker normally copies the file into the app cache, but some
+  // Android providers still return a content:// URI whose read permission can
+  // disappear before the Save button is pressed. Create a private cache copy
+  // before uploading so the native File API always receives a stable file URI.
   let file;
   try{
     file=new File(asset.uri);
-  }catch{
+
+    if(!file.exists){
+      const cacheDirectory=FileSystem.cacheDirectory;
+      if(!cacheDirectory){
+        throw new Error('The app cache directory is unavailable.');
+      }
+
+      const safeName=fileName.replace(/[^a-zA-Z0-9._-]/g,'_').slice(-120)||'document';
+      const cachedUri=cacheDirectory+'sm-upload-'+Date.now()+'-'+safeName;
+
+      await FileSystem.copyAsync({
+        from:asset.uri,
+        to:cachedUri
+      });
+
+      file=new File(cachedUri);
+    }
+  }catch(error){
+    console.error('Document file access failed:',error);
     throw new Error('Unable to access the selected document. Please choose the file again.');
   }
 
   if(!file.exists){
-    throw new Error('The selected document is no longer available. Please choose it again.');
+    throw new Error('Unable to access the selected document. Please choose the file again.');
   }
 
   const fileSize=Number(file.size||0);

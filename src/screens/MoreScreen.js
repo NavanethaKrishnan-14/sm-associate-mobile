@@ -359,7 +359,7 @@ const styles = {
     fontSize: 6,
     fontWeight: '700',
     letterSpacing: 1.5,
-    color: '#899594',
+    color: '#657274',
   },
   heroTopRule: {
     flex: 1,
@@ -388,7 +388,7 @@ const styles = {
   heroDescription: {
     fontSize: 10,
     lineHeight: 16,
-    color: colors.muted,
+    color: '#5F6D70',
     marginTop: 13,
     maxWidth: 292,
   },
@@ -417,7 +417,7 @@ const styles = {
     fontSize: 5.5,
     fontWeight: '700',
     letterSpacing: 0.8,
-    color: '#8A9695',
+    color: '#687574',
     marginTop: 3,
   },
   heroInsightDivider: {
@@ -440,7 +440,7 @@ const styles = {
     fontSize: 5.5,
     fontWeight: '700',
     letterSpacing: 0.9,
-    color: '#8A9695',
+    color: '#687574',
     marginTop: 3,
   },
   heroBottomLine: {
@@ -462,7 +462,7 @@ const styles = {
     fontSize: 5.5,
     fontWeight: '700',
     letterSpacing: 1.1,
-    color: '#909A98',
+    color: '#687574',
   },
   group: {
     marginBottom: 32,

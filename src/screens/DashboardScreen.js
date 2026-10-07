@@ -95,7 +95,7 @@ function PipelineRow({name,value,first}){return <View style={[styles.pipelineRow
 
 const styles=StyleSheet.create({
   page:{flex:1,backgroundColor:colors.midnight},scroll:{flex:1},content:{paddingBottom:20,backgroundColor:colors.ivory},
-  commandBar:{backgroundColor:'#0E1A22',paddingHorizontal:18,paddingBottom:15,borderBottomLeftRadius:46,borderBottomRightRadius:46,borderWidth:1,borderTopWidth:0,borderColor:'rgba(255,255,255,0.08)',overflow:'hidden'},
+  commandBar:{backgroundColor:'#0E1A22',paddingLeft:10,paddingRight:18,paddingBottom:15,borderBottomLeftRadius:46,borderBottomRightRadius:46,borderWidth:1,borderTopWidth:0,borderColor:'rgba(255,255,255,0.08)',overflow:'hidden'},
   commandTop:{height:78,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},brandCluster:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0},
   logoFrame:{width:88,height:88,alignItems:'center',justifyContent:'center',overflow:'hidden'},brandCopy:{marginLeft:12,minWidth:0,flex:1,flexShrink:1,paddingRight:4},brandKicker:{color:'#53D3D1',fontSize:7,fontWeight:'700',letterSpacing:2},brandTitle:{color:colors.white,fontSize:20,lineHeight:24,fontWeight:'700',letterSpacing:0.5,marginTop:3,includeFontPadding:false},
   commandActions:{flexDirection:'row',alignItems:'center'},

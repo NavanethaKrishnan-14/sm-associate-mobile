@@ -1,22 +1,22 @@
 import React,{forwardRef} from 'react';
 import {StyleSheet,Text,TextInput} from 'react-native';
 
-function getPoppinsFamily(fontWeight){
+function getNotoSansFamily(fontWeight){
   switch(String(fontWeight||'400')){
     case '300':
-      return 'Poppins_300Light';
+      return 'NotoSans_300Light';
     case '500':
-      return 'Poppins_500Medium';
+      return 'NotoSans_500Medium';
     case '600':
-      return 'Poppins_600SemiBold';
+      return 'NotoSans_600SemiBold';
     case '700':
     case 'bold':
-      return 'Poppins_700Bold';
+      return 'NotoSans_700Bold';
     case '800':
     case '900':
-      return 'Poppins_800ExtraBold';
+      return 'NotoSans_800ExtraBold';
     default:
-      return 'Poppins_400Regular';
+      return 'NotoSans_400Regular';
   }
 }
 
@@ -44,7 +44,7 @@ function getReadableTextStyle(style){
   return [
     style,
     {
-      fontFamily:getPoppinsFamily(flatStyle.fontWeight),
+      fontFamily:getNotoSansFamily(flatStyle.fontWeight),
       ...(increasedFontSize!==undefined ? {fontSize:increasedFontSize} : {}),
       ...(increasedLineHeight!==undefined ? {lineHeight:increasedLineHeight} : {}),
     },
@@ -63,7 +63,7 @@ export const AppTextInput=forwardRef(function AppTextInput({style,...props},ref)
       {...props}
       style={[
         style,
-        {fontFamily:getPoppinsFamily(flatStyle.fontWeight)},
+        {fontFamily:getNotoSansFamily(flatStyle.fontWeight)},
       ]}
     />
   );

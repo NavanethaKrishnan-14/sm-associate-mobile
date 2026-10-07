@@ -45,26 +45,40 @@ export default function DashboardScreen({navigation}){
   return (
     <View style={styles.page}>
       <View style={[styles.commandBar,{paddingTop:Math.max(4,topInset)}]}>
+        <View style={styles.commandGlow}/>
         <View style={styles.commandTop}>
           <View style={styles.brandCluster}>
-            <View style={styles.logoFrame}><Logo width={76}/></View>
+            <View style={styles.logoFrame}>
+              <View style={styles.logoHalo}/>
+              <Logo width={66}/>
+            </View>
             <View style={styles.brandCopy}>
-              <AppText style={styles.brandKicker}>SM ASSOCIATE</AppText>
+              <View style={styles.brandEyebrowRow}>
+                <View style={styles.brandEyebrowLine}/>
+                <AppText style={styles.brandKicker}>SM ASSOCIATE</AppText>
+              </View>
               <AppText numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.72} style={styles.brandTitle}>Business Management</AppText>
+              <AppText style={styles.brandSubtitle}>Finance • Automotive • Operations</AppText>
             </View>
           </View>
           <View style={styles.commandActions}>
             <Pressable onPress={()=>navigation.navigate('More')} style={({pressed})=>[styles.iconButton,pressed&&styles.pressed]} accessibilityRole="button" accessibilityLabel="Open notifications">
-              <Ionicons name="notifications-outline" size={17} color={colors.white}/><View style={styles.notificationDot}/>
+              <Ionicons name="notifications-outline" size={18} color={colors.white}/>
+              <View style={styles.notificationDot}/>
             </Pressable>
           </View>
         </View>
         <View style={styles.commandDivider}/>
         <View style={styles.commandMeta}>
-          <View style={styles.metaLeft}><Ionicons name="pulse-outline" size={12} color={colors.teal}/><AppText style={styles.metaText}>BUSINESS OPERATIONS</AppText></View>
-          <View style={styles.metaRight}><AppText style={styles.metaHint}>SYSTEM ONLINE</AppText><View style={styles.metaIndicator}/></View>
+          <View style={styles.metaLeft}>
+            <View style={styles.metaPulse}><View style={styles.metaPulseDot}/></View>
+            <AppText style={styles.metaText}>BUSINESS OPERATIONS</AppText>
+          </View>
+          <View style={styles.metaRight}>
+            <View style={styles.metaIndicator}/>
+            <AppText style={styles.metaHint}>SYSTEM ONLINE</AppText>
+          </View>
         </View>
-        
       </View>
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}
@@ -96,12 +110,14 @@ function PipelineRow({name,value,first}){return <View style={[styles.pipelineRow
 
 const styles=StyleSheet.create({
   page:{flex:1,backgroundColor:colors.ivory},scroll:{flex:1},content:{paddingBottom:20,backgroundColor:colors.ivory},
-  commandBar:{backgroundColor:'#0E1A22',paddingLeft:10,paddingRight:12,paddingBottom:7,borderBottomLeftRadius:42,borderBottomRightRadius:42,borderWidth:1,borderTopWidth:0,borderColor:'rgba(255,255,255,0.08)',overflow:'hidden'},
-  commandTop:{height:92,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},brandCluster:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0,paddingRight:10},
-  logoFrame:{width:76,height:76,alignItems:'center',justifyContent:'center',overflow:'hidden'},brandCopy:{marginLeft:6,minWidth:0,flex:1,flexShrink:1,paddingRight:2},brandKicker:{color:'#53D3D1',fontSize:8,lineHeight:10,fontWeight:'600',letterSpacing:1.7,marginBottom:1},brandTitle:{color:colors.white,fontSize:21,lineHeight:25,fontWeight:'700',letterSpacing:-0.35,includeFontPadding:false},
+  commandBar:{backgroundColor:'#0E1A22',paddingLeft:12,paddingRight:12,paddingBottom:8,borderBottomLeftRadius:30,borderBottomRightRadius:30,borderWidth:1,borderTopWidth:0,borderColor:'rgba(39,168,154,0.14)',overflow:'hidden'},
+  commandGlow:{position:'absolute',top:-42,right:-30,width:150,height:150,borderRadius:75,backgroundColor:'rgba(39,168,154,0.08)'},
+  commandTop:{height:86,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},brandCluster:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0,paddingRight:10},
+  logoFrame:{width:68,height:68,borderRadius:19,alignItems:'center',justifyContent:'center',overflow:'hidden',backgroundColor:'rgba(255,255,255,0.045)',borderWidth:1,borderColor:'rgba(39,168,154,0.24)'},logoHalo:{position:'absolute',width:58,height:58,borderRadius:29,borderWidth:1,borderColor:'rgba(39,168,154,0.16)'},
+  brandCopy:{marginLeft:9,minWidth:0,flex:1,flexShrink:1,paddingRight:2},brandEyebrowRow:{flexDirection:'row',alignItems:'center',height:12},brandEyebrowLine:{width:16,height:2,borderRadius:1,backgroundColor:colors.teal,marginRight:6},brandKicker:{color:'#5BE0D1',fontSize:7,lineHeight:9,fontWeight:'700',letterSpacing:1.7},brandTitle:{color:colors.white,fontSize:19,lineHeight:23,fontWeight:'700',letterSpacing:-0.3,includeFontPadding:false,marginTop:1},brandSubtitle:{color:'rgba(255,255,255,0.48)',fontSize:7.5,lineHeight:10,letterSpacing:0.15,marginTop:2},
   commandActions:{flexDirection:'row',alignItems:'center',gap:8},
-  iconButton:{width:38,height:38,borderRadius:12,backgroundColor:'rgba(31,49,60,0.88)',borderWidth:1,borderColor:'rgba(120,178,190,0.18)',alignItems:'center',justifyContent:'center',position:'relative'},notificationDot:{position:'absolute',top:6,right:6,width:6,height:6,borderRadius:4,backgroundColor:'#53D3D1',borderWidth:1.5,borderColor:'#1A2A34'},commandDivider:{height:1,backgroundColor:'rgba(255,255,255,0.10)',marginTop:-2,marginBottom:3},
-  commandMeta:{minHeight:24,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},metaLeft:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0},metaText:{color:'rgba(255,255,255,0.68)',fontSize:7,letterSpacing:0.8,fontWeight:'600',marginLeft:5},metaRight:{height:23,minWidth:88,paddingHorizontal:8,borderRadius:12,backgroundColor:'rgba(39,168,154,0.16)',flexDirection:'row',alignItems:'center',justifyContent:'center'},metaHint:{color:'#5BE0D1',fontSize:7,letterSpacing:0.05,fontWeight:'600'},metaIndicator:{width:6,height:6,borderRadius:3,backgroundColor:'#53D3D1',marginLeft:5,marginRight:0},pressed:{opacity:0.72,transform:[{scale:0.97}]},
+  iconButton:{width:40,height:40,borderRadius:14,backgroundColor:'rgba(39,168,154,0.10)',borderWidth:1,borderColor:'rgba(39,168,154,0.25)',alignItems:'center',justifyContent:'center',position:'relative'},notificationDot:{position:'absolute',top:6,right:6,width:6,height:6,borderRadius:4,backgroundColor:colors.teal,borderWidth:1.5,borderColor:'#13232A'},commandDivider:{height:1,backgroundColor:'rgba(255,255,255,0.08)',marginTop:0,marginBottom:4},
+  commandMeta:{minHeight:25,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},metaLeft:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0},metaPulse:{width:18,height:18,borderRadius:9,backgroundColor:'rgba(39,168,154,0.11)',alignItems:'center',justifyContent:'center'},metaPulseDot:{width:6,height:6,borderRadius:3,backgroundColor:colors.teal},metaText:{color:'rgba(255,255,255,0.62)',fontSize:7,letterSpacing:0.8,fontWeight:'600',marginLeft:6},metaRight:{height:24,minWidth:98,paddingHorizontal:9,borderRadius:12,backgroundColor:'rgba(39,168,154,0.13)',borderWidth:1,borderColor:'rgba(39,168,154,0.18)',flexDirection:'row',alignItems:'center',justifyContent:'center'},metaHint:{color:'#5BE0D1',fontSize:7,letterSpacing:0.15,fontWeight:'700'},metaIndicator:{width:6,height:6,borderRadius:3,backgroundColor:colors.teal,marginRight:6},pressed:{opacity:0.72,transform:[{scale:0.97}]},
   editorialGreeting:{marginTop:20,padding:20,backgroundColor:'#F8F7F2',borderRadius:26,borderWidth:1,borderColor:'rgba(24,32,39,0.08)',overflow:'hidden'},editorialAccent:{position:'absolute',left:0,top:0,bottom:0,width:5,backgroundColor:colors.teal},editorialTop:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginLeft:4},editorialKicker:{color:colors.teal,fontSize:9,letterSpacing:1.8},editorialDate:{color:colors.muted,fontSize:10,marginTop:3},editorialStatus:{height:27,paddingHorizontal:9,borderRadius:9,flexDirection:'row',alignItems:'center',backgroundColor:'rgba(39,168,154,0.08)',borderWidth:1,borderColor:'rgba(39,168,154,0.16)'},editorialStatusDot:{width:6,height:6,borderRadius:3,backgroundColor:colors.teal,marginRight:5},editorialStatusText:{color:colors.teal,fontSize:7,letterSpacing:1.1},
   editorialContent:{flex:1,justifyContent:'center',marginLeft:4,paddingRight:8},editorialTitle:{color:colors.ink,fontSize:32,lineHeight:38,letterSpacing:-0.8},editorialDescription:{color:'#68747B',fontSize:12,lineHeight:18,marginTop:7,maxWidth:315},editorialBottom:{marginLeft:4,paddingTop:13,borderTopWidth:1,borderTopColor:'rgba(24,32,39,0.09)',flexDirection:'row',alignItems:'center',justifyContent:'space-between'},editorialBottomLabel:{color:colors.muted,fontSize:7,letterSpacing:1.5},editorialBottomText:{color:colors.ink,fontSize:10,marginTop:3},editorialAction:{width:35,height:35,borderRadius:11,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center'},
   loadErrorCard:{marginHorizontal:18,marginTop:16,padding:14,borderRadius:18,backgroundColor:'#FFF5F3',borderWidth:1,borderColor:'rgba(198,83,83,0.20)',flexDirection:'row',alignItems:'flex-start'},loadErrorBody:{flex:1,marginLeft:10},loadErrorTitle:{color:colors.ink,fontSize:13,},loadErrorText:{color:colors.muted,fontSize:10,lineHeight:15,marginTop:3},retryButton:{alignSelf:'flex-start',marginTop:9,paddingHorizontal:12,paddingVertical:7,borderRadius:9,backgroundColor:colors.midnight},retryText:{color:colors.white,fontSize:10,},

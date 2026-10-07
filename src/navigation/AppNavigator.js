@@ -98,6 +98,7 @@ function CustomTabBar({state,descriptors,navigation}){
 }
 function MainTabs(){
   return <Tabs.Navigator
+    initialRouteName="Dashboard"
     tabBar={(props)=><CustomTabBar {...props}/>} 
     screenOptions={{headerShown:false}}
   >

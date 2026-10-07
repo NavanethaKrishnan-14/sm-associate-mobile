@@ -28,7 +28,8 @@ export default function LoginScreen({navigation}){
     }finally{setBusy(false);}
   }
 
-  return <LinearGradient colors={[colors.midnight,colors.navy,colors.ivory]} style={{flex:1}}>
+  return (
+    <LinearGradient colors={[colors.midnight,colors.navy,colors.ivory]} style={{flex:1}}>
     <KeyboardAvoidingView style={{flex:1,paddingHorizontal:horizontalPadding,paddingTop:top+12,paddingBottom:bottom+12,justifyContent:'center'}} behavior={Platform.OS==='ios'?'padding':undefined}>
       <View style={{alignItems:'center',marginBottom:38}}>
         <View style={{marginBottom:24,alignItems:'center',justifyContent:'center'}}>
@@ -64,7 +65,8 @@ export default function LoginScreen({navigation}){
         </Pressable>
       </View>
     </KeyboardAvoidingView>
-  </LinearGradient>
+    </LinearGradient>
+  );
 }
 const styles=StyleSheet.create({
   card:{backgroundColor:'rgba(251,250,246,.98)',borderRadius:28,padding:22},

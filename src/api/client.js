@@ -151,7 +151,8 @@ export async function uploadDocument(path, asset, fields = {}) {
             api_key:String(signatureData.apiKey),
             timestamp:String(signatureData.timestamp),
             signature:String(signatureData.signature),
-            public_id:String(signatureData.publicId)
+            public_id:String(signatureData.publicId),
+            display_name:String(signatureData.displayName||fileName)
           }
         }
       );

@@ -109,7 +109,7 @@ const styles=StyleSheet.create({
   headerShell:{height:76,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},
   headerBrand:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0},
   logoFrame:{width:58,height:58,borderRadius:17,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center',overflow:'hidden',borderWidth:1,borderColor:'rgba(39,168,154,0.24)'},
-  brandCopy:{marginLeft:12,flex:1,minWidth:0,paddingRight:8},
+  brandCopy:{marginLeft:16,flex:1,minWidth:0,paddingRight:8},
   brandKicker:{color:colors.teal,fontSize:10,lineHeight:12,fontWeight:'700',letterSpacing:1.9,marginBottom:4},
   brandTitle:{color:colors.ink,fontSize:21,lineHeight:25,fontWeight:'700',letterSpacing:-0.35,includeFontPadding:false},
   profileButton:{width:42,height:42,borderRadius:21,alignItems:'center',justifyContent:'center'},

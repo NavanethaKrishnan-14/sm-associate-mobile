@@ -3,6 +3,8 @@ import {StyleSheet,Text,TextInput} from 'react-native';
 
 function getManropeFamily(fontWeight){
   switch(String(fontWeight||'400')){
+    case '300':
+      return 'Manrope_300Light';
     case '500':
       return 'Manrope_500Medium';
     case '600':

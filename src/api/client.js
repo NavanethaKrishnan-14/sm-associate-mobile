@@ -5,7 +5,16 @@ import {notifyAuthExpired} from './authEvents';
 const PRODUCTION_API_URL = 'https://sm-associate-backend.vercel.app/api/v1';
 
 function normalizeApiUrl(value) {
-  return String(value || '').trim().replace(/,+$/g, '').replace(/\/$/, '');
+  let url = String(value || '').trim().replace(/,+$/g, '').replace(/\/$/, '');
+  if (!url) return '';
+
+  // Accept both:
+  //   https://sm-associate-backend.vercel.app
+  //   https://sm-associate-backend.vercel.app/api/v1
+  // and protect against an accidental /api/v1/api/v1.
+  url = url.replace(/\/api\/v1\/api\/v1$/i, '/api/v1');
+  if (!/\/api\/v1$/i.test(url)) url += '/api/v1';
+  return url;
 }
 
 const configuredApiUrl = normalizeApiUrl(process.env.EXPO_PUBLIC_API_BASE_URL);

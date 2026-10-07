@@ -49,7 +49,7 @@ export default function DashboardScreen({navigation}){
       <View style={[styles.commandBar,{paddingTop:Math.max(4,topInset)}]}>
         <View style={styles.headerShell}>
           <View style={styles.headerBrand}>
-            <View style={styles.logoFrame}><Logo width={58}/></View>
+            <View style={styles.logoFrame}><Logo width={64}/></View>
             <View style={styles.brandCopy}>
               <AppText style={styles.brandKicker}>SM ASSOCIATE</AppText>
               <AppText numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.72} style={styles.brandTitle}>Business Management</AppText>
@@ -108,7 +108,7 @@ const styles=StyleSheet.create({
   commandBar:{backgroundColor:colors.ivory,paddingHorizontal:16,paddingBottom:12},
   headerShell:{height:76,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},
   headerBrand:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0},
-  logoFrame:{width:58,height:58,borderRadius:17,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center',overflow:'hidden',borderWidth:1,borderColor:'rgba(39,168,154,0.24)'},
+  logoFrame:{width:64,height:64,borderRadius:19,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center',overflow:'hidden',borderWidth:1,borderColor:'rgba(39,168,154,0.24)'},
   brandCopy:{marginLeft:16,flex:1,minWidth:0,paddingRight:8},
   brandKicker:{color:colors.teal,fontSize:10,lineHeight:12,fontWeight:'700',letterSpacing:1.9,marginBottom:4},
   brandTitle:{color:colors.ink,fontSize:21,lineHeight:25,fontWeight:'700',letterSpacing:-0.35,includeFontPadding:false},

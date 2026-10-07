@@ -32,7 +32,6 @@ function resolveWeight(flatStyle){
 
 function getVisibleFontSize(fontSize){
   if(typeof fontSize!=='number') return undefined;
-
   if(fontSize<=7) return fontSize+2;
   if(fontSize<=10) return fontSize+2;
   if(fontSize<=12) return fontSize+1.5;

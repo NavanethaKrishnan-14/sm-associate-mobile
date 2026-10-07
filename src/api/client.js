@@ -2,7 +2,6 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {notifyAuthExpired} from './authEvents';
 import * as FileSystem from 'expo-file-system/legacy';
-import {File, UploadType} from 'expo-file-system';
 
 const PRODUCTION_API_URL = 'https://sm-associate-backend.vercel.app/api/v1';
 
@@ -110,43 +109,11 @@ export async function uploadDocument(path, asset, fields = {}) {
   const token=await readAccessToken();
   if(!token) throw new Error('Your login session has expired. Please sign in again.');
 
-  // DocumentPicker normally copies the file into the app cache, but some
-  // Android providers still return a content:// URI whose read permission can
-  // disappear before the Save button is pressed. Create a private cache copy
-  // before uploading so the native File API always receives a stable file URI.
-  let file;
-  try{
-    file=new File(asset.uri);
-
-    if(!file.exists){
-      const cacheDirectory=FileSystem.cacheDirectory;
-      if(!cacheDirectory){
-        throw new Error('The app cache directory is unavailable.');
-      }
-
-      const safeName=fileName.replace(/[^a-zA-Z0-9._-]/g,'_').slice(-120)||'document';
-      const cachedUri=cacheDirectory+'sm-upload-'+Date.now()+'-'+safeName;
-
-      await FileSystem.copyAsync({
-        from:asset.uri,
-        to:cachedUri
-      });
-
-      file=new File(cachedUri);
-    }
-  }catch(error){
-    console.error('Document file access failed:',error);
-    throw new Error('Unable to access the selected document. Please choose the file again.');
-  }
-
-  if(!file.exists){
-    throw new Error('Unable to access the selected document. Please choose the file again.');
-  }
-
-  const fileSize=Number(file.size||0);
-  if(!fileSize){
-    throw new Error('The selected document is empty or could not be read.');
-  }
+  // Use Expo's native legacy upload API for the actual transfer.
+  // This accepts Android content/file URIs directly and avoids JS Blob/FormData
+  // conversion and the modern File API's readability check for Expo Go picker URIs.
+  const fileSize=Number(asset.size||0);
+  if(fileSize<0) throw new Error('The selected document could not be read.');
 
   const isCustomerDocument=/^\/customers\/[^/]+\/documents\/[^/]+$/i.test(path);
 
@@ -155,9 +122,7 @@ export async function uploadDocument(path, asset, fields = {}) {
 
   try{
     if(isCustomerDocument){
-      // Customer documents bypass Vercel/Express multipart parsing:
-      // backend signs the upload, the native Expo file uploads directly
-      // to Cloudinary, then the backend persists the returned metadata.
+      // 1. Ask our backend for a signed Cloudinary upload.
       const signatureResponse=await api.post(path+'/signature',{
         originalName:fileName,
         ...(fields||{})
@@ -168,21 +133,26 @@ export async function uploadDocument(path, asset, fields = {}) {
         throw new Error('The server could not prepare the Cloudinary upload.');
       }
 
-      let cloudinaryData={};
-      const uploadResult=await file.upload(signatureData.uploadUrl,{
-        httpMethod:'POST',
-        uploadType:UploadType.MULTIPART,
-        fieldName:'file',
-        mimeType,
-        parameters:{
-          api_key:String(signatureData.apiKey),
-          timestamp:String(signatureData.timestamp),
-          signature:String(signatureData.signature),
-          public_id:String(signatureData.publicId)
-        },
-        signal:controller.signal
-      });
+      // 2. Upload directly from the native Android/iOS file URI to Cloudinary.
+      // No JS Blob, Response.blob(), or FormData is used.
+      const uploadResult=await FileSystem.uploadAsync(
+        signatureData.uploadUrl,
+        asset.uri,
+        {
+          httpMethod:'POST',
+          uploadType:FileSystem.FileSystemUploadType.MULTIPART,
+          fieldName:'file',
+          mimeType,
+          parameters:{
+            api_key:String(signatureData.apiKey),
+            timestamp:String(signatureData.timestamp),
+            signature:String(signatureData.signature),
+            public_id:String(signatureData.publicId)
+          }
+        }
+      );
 
+      let cloudinaryData={};
       try{
         cloudinaryData=uploadResult?.body?JSON.parse(uploadResult.body):{};
       }catch{
@@ -191,9 +161,10 @@ export async function uploadDocument(path, asset, fields = {}) {
         };
       }
 
+      const status=Number(uploadResult?.status||0);
       if(
-        Number(uploadResult?.status||0)<200||
-        Number(uploadResult?.status||0)>=300||
+        status<200||
+        status>=300||
         !cloudinaryData?.secure_url||
         !cloudinaryData?.public_id
       ){
@@ -203,13 +174,14 @@ export async function uploadDocument(path, asset, fields = {}) {
         );
       }
 
+      // 3. Save the Cloudinary URL + metadata in MongoDB.
       const completeResponse=await api.post(path+'/complete',{
         originalName:fileName,
         publicId:String(cloudinaryData.public_id),
         secureUrl:String(cloudinaryData.secure_url),
         resourceType:String(cloudinaryData.resource_type||signatureData.resourceType||'raw'),
         format:String(cloudinaryData.format||''),
-        size:Number(cloudinaryData.bytes||fileSize),
+        size:Number(cloudinaryData.bytes||fileSize||0),
         ...(fields||{})
       });
 
@@ -224,22 +196,24 @@ export async function uploadDocument(path, asset, fields = {}) {
     }
 
     // Car/loan document endpoints also use native multipart upload.
-    // No JS FormData or Blob is created.
-    const uploadResult=await file.upload(API_BASE_URL+path,{
-      httpMethod:'POST',
-      uploadType:UploadType.MULTIPART,
-      fieldName:'file',
-      mimeType,
-      headers:{
-        Accept:'application/json',
-        Authorization:'Bearer '+token,
-        'x-access-token':token
-      },
-      parameters:Object.fromEntries(
-        Object.entries(fields||{}).map(([key,value])=>[key,String(value)])
-      ),
-      signal:controller.signal
-    });
+    const uploadResult=await FileSystem.uploadAsync(
+      API_BASE_URL+path,
+      asset.uri,
+      {
+        httpMethod:'POST',
+        uploadType:FileSystem.FileSystemUploadType.MULTIPART,
+        fieldName:'file',
+        mimeType,
+        headers:{
+          Accept:'application/json',
+          Authorization:'Bearer '+token,
+          'x-access-token':token
+        },
+        parameters:Object.fromEntries(
+          Object.entries(fields||{}).map(([key,value])=>[key,String(value)])
+        )
+      }
+    );
 
     let data={};
     try{
@@ -270,6 +244,7 @@ export async function uploadDocument(path, asset, fields = {}) {
     if(error?.name==='AbortError'){
       throw new Error('Document upload timed out. Please try again.');
     }
+    console.error('Document upload failed:',error);
     throw error;
   }finally{
     clearTimeout(timer);

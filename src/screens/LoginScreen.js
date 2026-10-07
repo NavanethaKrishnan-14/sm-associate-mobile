@@ -1,5 +1,6 @@
+import {AppText,AppTextInput} from '../components/AppText';
 import React,{useState} from 'react';
-import {Alert,KeyboardAvoidingView,Platform,Pressable,Text,TextInput,View,ActivityIndicator,StyleSheet,useWindowDimensions} from 'react-native';
+import {Alert, KeyboardAvoidingView, Platform, Pressable, View, ActivityIndicator, StyleSheet, useWindowDimensions} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import {colors} from '../theme/colors';
 import Logo from '../components/Logo';
@@ -33,15 +34,15 @@ export default function LoginScreen({navigation}){
         <View style={{marginBottom:24,alignItems:'center',justifyContent:'center'}}>
           <Logo width={logoWidth}/>
         </View>
-        <Text style={{color:colors.white,fontSize:27,fontFamily:'Manrope_800ExtraBold',textAlign:'center'}}>Welcome back</Text>
-        <Text style={{color:'rgba(255,255,255,.72)',fontSize:14,marginTop:7,textAlign:'center'}}>Manage finance, customers, loans and vehicles in one place.</Text>
+        <AppText style={{color:colors.white,fontSize:27,fontFamily:'Manrope_800ExtraBold',textAlign:'center'}}>Welcome back</Text>
+        <AppText style={{color:'rgba(255,255,255,.72)',fontSize:14,marginTop:7,textAlign:'center'}}>Manage finance, customers, loans and vehicles in one place.</Text>
       </View>
       <View style={styles.card}>
-        <Text style={styles.label}>Work email</Text>
-        <TextInput value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="you@company.com" placeholderTextColor="#98A3AD" style={styles.input}/>
-        <Text style={[styles.label,{marginTop:18}]}>Password</Text>
+        <AppText style={styles.label}>Work email</Text>
+        <AppTextInput value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="you@company.com" placeholderTextColor="#98A3AD" style={styles.input}/>
+        <AppText style={[styles.label,{marginTop:18}]}>Password</Text>
         <View style={styles.passwordWrap}>
-          <TextInput
+          <AppTextInput
             value={password}
             onChangeText={setPassword}
             secureTextEntry={!showPassword}
@@ -55,11 +56,11 @@ export default function LoginScreen({navigation}){
             accessibilityLabel={showPassword?'Hide password':'Show password'}
             style={styles.eyeButton}
           >
-            <Text style={styles.eyeText}>{showPassword?'Hide':'Show'}</Text>
+            <AppText style={styles.eyeText}>{showPassword?'Hide':'Show'}</Text>
           </Pressable>
         </View>
         <Pressable onPress={submit} disabled={busy} style={({pressed})=>[styles.button,{opacity:pressed?.82:1}]}>
-          {busy?<ActivityIndicator color={colors.midnight}/>:<Text style={styles.buttonText}>Sign in</Text>}
+          {busy?<ActivityIndicator color={colors.midnight}/>:<AppText style={styles.buttonText}>Sign in</Text>}
         </Pressable>
       </View>
     </KeyboardAvoidingView>

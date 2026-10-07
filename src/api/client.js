@@ -4,13 +4,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const PRODUCTION_API_URL = 'https://sm-associate-backend.vercel.app/api/v1';
 
 function normalizeApiUrl(value) {
-  return String(value || '')
-    .trim()
-    .replace(/,+$/g, '')
-    .replace(/\/$/, '');
+  return String(value || '').trim().replace(/,+$/g, '').replace(/\/$/, '');
 }
 
-// Expo environment variables are embedded at build time. Vercel is the only supported production API.
 const configuredApiUrl = normalizeApiUrl(process.env.EXPO_PUBLIC_API_BASE_URL);
 export const API_BASE_URL = configuredApiUrl || PRODUCTION_API_URL;
 
@@ -53,8 +49,7 @@ api.interceptors.request.use(async config => {
 api.interceptors.response.use(
   response => response,
   async error => {
-    const status = error?.response?.status;
-    if (status === 401) {
+    if (error?.response?.status === 401) {
       await AsyncStorage.multiRemove(['sm_access_token', 'accessToken', 'token']);
     }
     return Promise.reject(error);
@@ -72,10 +67,15 @@ export async function login(email, password) {
 
     if (!token) throw new Error('Login succeeded, but the server did not return an access token.');
 
-    // The login endpoint has already authenticated the credentials and issued
-    // the JWT. Persist it before allowing navigation to the protected app.
-    // /auth/me is used separately by AppNavigator to validate restored sessions.
     await storeAccessToken(token);
+
+    // Verify the newly issued JWT before allowing the user into protected screens.
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      await logout();
+      throw new Error('Login succeeded, but the authentication session could not be verified.');
+    }
+
     return data;
   } catch (error) {
     const status = error?.response?.status;
@@ -85,7 +85,7 @@ export async function login(email, password) {
     if (error?.code === 'ECONNABORTED') {
       throw new Error(`The server took too long to respond at ${API_BASE_URL}.`);
     }
-    throw new Error(`Cannot connect to SM Associate backend at ${API_BASE_URL}. Check the backend URL and your internet connection.`);
+    throw new Error(error?.message || `Cannot connect to SM Associate backend at ${API_BASE_URL}. Check the backend URL and your internet connection.`);
   }
 }
 
@@ -94,41 +94,13 @@ export async function uploadDocument(path, asset, fields = {}) {
 
   const fileName = String(asset.name || 'document');
   const lowerName = fileName.toLowerCase();
-  const mimeType = asset.mimeType ||
-    (lowerName.endsWith('.pdf') ? 'application/pdf' :
-     lowerName.endsWith('.jpg') || lowerName.endsWith('.jpeg') ? 'image/jpeg' :
-     lowerName.endsWith('.png') ? 'image/png' :
-     lowerName.endsWith('.webp') ? 'image/webp' :
-     lowerName.endsWith('.doc') ? 'application/msword' :
-     lowerName.endsWith('.docx') ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' :
-     lowerName.endsWith('.xls') ? 'application/vnd.ms-excel' :
-     lowerName.endsWith('.xlsx') ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' :
-     lowerName.endsWith('.ppt') ? 'application/vnd.ms-powerpoint' :
-     lowerName.endsWith('.pptx') ? 'application/vnd.openxmlformats-officedocument.presentationml.presentation' :
-     lowerName.endsWith('.txt') ? 'text/plain' :
-     lowerName.endsWith('.csv') ? 'text/csv' :
-     'application/octet-stream');
-
   const token = await readAccessToken();
-  if (!token) {
-    throw new Error('Your login session has expired. Please sign in again.');
-  }
+  if (!token) throw new Error('Your login session has expired. Please sign in again.');
 
-  /*
-   * React Native 0.86 / Expo 57 can reject the old
-   * { uri, name, type } FormData part with:
-   * "Unsupported FormDataPart implementation".
-   *
-   * Convert the local DocumentPicker URI to a real Blob first.
-   * Blob is a supported native FormData part and works for images,
-   * PDFs and Office documents.
-   */
   let blob;
   try {
     const fileResponse = await fetch(asset.uri);
-    if (!fileResponse.ok) {
-      throw new Error('Unable to read the selected document from device storage.');
-    }
+    if (!fileResponse.ok) throw new Error('Unable to read the selected document from device storage.');
     blob = await fileResponse.blob();
   } catch (error) {
     throw new Error(error?.message || 'Unable to prepare the selected document for upload.');
@@ -136,11 +108,8 @@ export async function uploadDocument(path, asset, fields = {}) {
 
   const form = new FormData();
   form.append('file', blob, fileName);
-
   Object.entries(fields).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
-      form.append(key, String(value));
-    }
+    if (value !== undefined && value !== null) form.append(key, String(value));
   });
 
   const controller = new AbortController();
@@ -153,8 +122,6 @@ export async function uploadDocument(path, asset, fields = {}) {
         Accept: 'application/json',
         Authorization: 'Bearer ' + token,
         'x-access-token': token
-        // Do NOT set Content-Type manually.
-        // fetch adds the multipart boundary automatically.
       },
       body: form,
       signal: controller.signal
@@ -162,25 +129,14 @@ export async function uploadDocument(path, asset, fields = {}) {
 
     const responseText = await response.text();
     let data = {};
-    try {
-      data = responseText ? JSON.parse(responseText) : {};
-    } catch {
-      data = {message: responseText || 'The server returned an invalid response.'};
-    }
+    try { data = responseText ? JSON.parse(responseText) : {}; }
+    catch { data = {message: responseText || 'The server returned an invalid response.'}; }
 
-    if (!response.ok) {
-      throw new Error(data?.message || 'Document upload failed with HTTP ' + response.status + '.');
-    }
-
-    if (data?.success !== true) {
-      throw new Error(data?.message || 'Document upload was not confirmed by the server.');
-    }
-
+    if (!response.ok) throw new Error(data?.message || 'Document upload failed with HTTP ' + response.status + '.');
+    if (data?.success !== true) throw new Error(data?.message || 'Document upload was not confirmed by the server.');
     return data;
   } catch (error) {
-    if (error?.name === 'AbortError') {
-      throw new Error('Document upload timed out. Please try again.');
-    }
+    if (error?.name === 'AbortError') throw new Error('Document upload timed out. Please try again.');
     throw error;
   } finally {
     clearTimeout(timer);
@@ -201,15 +157,11 @@ export async function getCurrentUser() {
   if (!token) return null;
   try {
     const {data} = await api.get('/auth/me', {
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'x-access-token': token
-      }
+      headers: {Authorization: 'Bearer ' + token, 'x-access-token': token}
     });
     return data?.data ?? null;
   } catch (error) {
-    const status = error?.response?.status;
-    if (status === 401) {
+    if (error?.response?.status === 401) {
       await logout();
       return null;
     }

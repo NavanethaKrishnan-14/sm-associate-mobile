@@ -1,10 +1,11 @@
+import {AppText,AppTextInput} from '../components/AppText';
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Ionicons} from '@expo/vector-icons';
 import {BlurView} from 'expo-blur';
-import {ActivityIndicator, StyleSheet, Pressable, Text, View, Platform} from 'react-native';
+import {ActivityIndicator, StyleSheet, Pressable, View, Platform} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getCurrentUser} from '../api/client';
 import {onAuthExpired} from '../api/authEvents';
@@ -47,7 +48,7 @@ function CustomTabBar({state,descriptors,navigation}){
     const tabContent=(
       <>
         <Ionicons name={icons[route.name]} size={20} color={color}/>
-        <Text allowFontScaling={false} maxFontSizeMultiplier={1} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.82} style={[styles.tabLabel,{color}]}>{label}</Text>
+        <AppText allowFontScaling={false} maxFontSizeMultiplier={1} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.82} style={[styles.tabLabel,{color}]}>{label}</Text>
       </>
     );
 

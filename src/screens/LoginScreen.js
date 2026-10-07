@@ -35,13 +35,13 @@ export default function LoginScreen({navigation}){
         <View style={{marginBottom:24,alignItems:'center',justifyContent:'center'}}>
           <Logo width={logoWidth}/>
         </View>
-        <AppText style={{color:colors.white,fontSize:27,textAlign:'center'}}>Welcome back</Text>
-        <AppText style={{color:'rgba(255,255,255,.72)',fontSize:14,marginTop:7,textAlign:'center'}}>Manage finance, customers, loans and vehicles in one place.</Text>
+        <AppText style={{color:colors.white,fontSize:27,textAlign:'center'}}>Welcome back</AppText>
+        <AppText style={{color:'rgba(255,255,255,.72)',fontSize:14,marginTop:7,textAlign:'center'}}>Manage finance, customers, loans and vehicles in one place.</AppText>
       </View>
       <View style={styles.card}>
-        <AppText style={styles.label}>Work email</Text>
+        <AppText style={styles.label}>Work email</AppText>
         <AppTextInput value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="you@company.com" placeholderTextColor="#98A3AD" style={styles.input}/>
-        <AppText style={[styles.label,{marginTop:18}]}>Password</Text>
+        <AppText style={[styles.label,{marginTop:18}]}>Password</AppText>
         <View style={styles.passwordWrap}>
           <AppTextInput
             value={password}
@@ -57,11 +57,11 @@ export default function LoginScreen({navigation}){
             accessibilityLabel={showPassword?'Hide password':'Show password'}
             style={styles.eyeButton}
           >
-            <AppText style={styles.eyeText}>{showPassword?'Hide':'Show'}</Text>
+            <AppText style={styles.eyeText}>{showPassword?'Hide':'Show'}</AppText>
           </Pressable>
         </View>
         <Pressable onPress={submit} disabled={busy} style={({pressed})=>[styles.button,{opacity:pressed?.82:1}]}>
-          {busy?<ActivityIndicator color={colors.midnight}/>:<AppText style={styles.buttonText}>Sign in</Text>}
+          {busy?<ActivityIndicator color={colors.midnight}/>:<AppText style={styles.buttonText}>Sign in</AppText>}
         </Pressable>
       </View>
     </KeyboardAvoidingView>

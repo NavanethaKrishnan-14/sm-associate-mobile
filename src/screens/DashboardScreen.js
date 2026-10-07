@@ -1,5 +1,6 @@
+import {AppText,AppTextInput} from '../components/AppText';
 import React,{useEffect,useState} from 'react';
-import {Pressable,RefreshControl,ScrollView,Text,View,StyleSheet,useWindowDimensions} from 'react-native';
+import {Pressable, RefreshControl, ScrollView, View, StyleSheet, useWindowDimensions} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {api} from '../api/client';
 import {colors} from '../theme/colors';
@@ -48,8 +49,8 @@ export default function DashboardScreen({navigation}){
           <View style={styles.brandCluster}>
             <View style={styles.logoFrame}><Logo width={82}/></View>
             <View style={styles.brandCopy}>
-              <Text style={styles.brandKicker}>SM ASSOCIATE</Text>
-              <Text style={styles.brandTitle}>BUSINESS MANAGEMENT</Text>
+              <AppText style={styles.brandKicker}>SM ASSOCIATE</Text>
+              <AppText style={styles.brandTitle}>BUSINESS MANAGEMENT</Text>
             </View>
           </View>
           <View style={styles.commandActions}>
@@ -60,8 +61,8 @@ export default function DashboardScreen({navigation}){
         </View>
         <View style={styles.commandDivider}/>
         <View style={styles.commandMeta}>
-          <View style={styles.metaLeft}><Ionicons name="pulse-outline" size={14} color={colors.teal}/><Text style={styles.metaText}>BUSINESS OPERATIONS</Text></View>
-          <View style={styles.metaRight}><Text style={styles.metaHint}>SYSTEM ONLINE</Text><View style={styles.metaIndicator}/></View>
+          <View style={styles.metaLeft}><Ionicons name="pulse-outline" size={14} color={colors.teal}/><AppText style={styles.metaText}>BUSINESS OPERATIONS</Text></View>
+          <View style={styles.metaRight}><AppText style={styles.metaHint}>SYSTEM ONLINE</Text><View style={styles.metaIndicator}/></View>
         </View>
       </View>
 
@@ -69,20 +70,20 @@ export default function DashboardScreen({navigation}){
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{setRefreshing(true);load();}} tintColor={colors.gold}/>}
       >
         <View style={[styles.editorialGreeting,{marginHorizontal:horizontalPadding,minHeight:isCompact?205:218}]}>
-          <View style={styles.editorialAccent}/><View style={styles.editorialTop}><View><Text style={styles.editorialKicker}>GOOD MORNING</Text><Text style={styles.editorialDate}>Your business at a glance</Text></View><View style={styles.editorialStatus}><View style={styles.editorialStatusDot}/><Text style={styles.editorialStatusText}>ONLINE</Text></View></View>
-          <View style={styles.editorialContent}><Text style={[styles.editorialTitle,{fontSize:isCompact?28:32,lineHeight:isCompact?34:38}]}>Welcome back.</Text><Text style={styles.editorialDescription}>Keep track of your customers, loans and vehicle operations from one dashboard.</Text></View>
-          <View style={styles.editorialBottom}><View><Text style={styles.editorialBottomLabel}>TODAY'S FOCUS</Text><Text style={styles.editorialBottomText}>Manage your daily operations</Text></View><Pressable onPress={()=>navigation.navigate('More')} style={({pressed})=>[styles.editorialAction,pressed&&styles.pressed]} accessibilityRole="button" accessibilityLabel="Open more management options"><Ionicons name="arrow-forward" size={17} color={colors.white}/></Pressable></View>
+          <View style={styles.editorialAccent}/><View style={styles.editorialTop}><View><AppText style={styles.editorialKicker}>GOOD MORNING</Text><AppText style={styles.editorialDate}>Your business at a glance</Text></View><View style={styles.editorialStatus}><View style={styles.editorialStatusDot}/><AppText style={styles.editorialStatusText}>ONLINE</Text></View></View>
+          <View style={styles.editorialContent}><AppText style={[styles.editorialTitle,{fontSize:isCompact?28:32,lineHeight:isCompact?34:38}]}>Welcome back.</Text><AppText style={styles.editorialDescription}>Keep track of your customers, loans and vehicle operations from one dashboard.</Text></View>
+          <View style={styles.editorialBottom}><View><AppText style={styles.editorialBottomLabel}>TODAY'S FOCUS</Text><AppText style={styles.editorialBottomText}>Manage your daily operations</Text></View><Pressable onPress={()=>navigation.navigate('More')} style={({pressed})=>[styles.editorialAction,pressed&&styles.pressed]} accessibilityRole="button" accessibilityLabel="Open more management options"><Ionicons name="arrow-forward" size={17} color={colors.white}/></Pressable></View>
         </View>
 
-        {loadError ? <View style={styles.loadErrorCard}><Ionicons name="cloud-offline-outline" size={20} color={colors.danger}/><View style={styles.loadErrorBody}><Text style={styles.loadErrorTitle}>Unable to load dashboard</Text><Text style={styles.loadErrorText}>{loadError}</Text><Pressable onPress={load} style={styles.retryButton}><Text style={styles.retryText}>Retry</Text></Pressable></View></View> : null}
+        {loadError ? <View style={styles.loadErrorCard}><Ionicons name="cloud-offline-outline" size={20} color={colors.danger}/><View style={styles.loadErrorBody}><AppText style={styles.loadErrorTitle}>Unable to load dashboard</Text><AppText style={styles.loadErrorText}>{loadError}</Text><Pressable onPress={load} style={styles.retryButton}><AppText style={styles.retryText}>Retry</Text></Pressable></View></View> : null}
 
-        <View style={styles.sectionHeader}><View><Text style={styles.sectionTitle}>Overview</Text><Text style={styles.sectionCaption}>Today's business snapshot</Text></View></View>
-        <View style={[styles.metricsGrid,{marginHorizontal:horizontalPadding}]}>{metrics.map(([label,value,icon,accent])=><View key={label} style={styles.metric}><View style={[styles.metricIcon,{backgroundColor:accent}]}><Ionicons name={icon} size={19} color={colors.white}/></View><Text style={styles.metricValue}>{value}</Text><Text style={styles.metricLabel}>{label}</Text></View>)}</View>
+        <View style={styles.sectionHeader}><View><AppText style={styles.sectionTitle}>Overview</Text><AppText style={styles.sectionCaption}>Today's business snapshot</Text></View></View>
+        <View style={[styles.metricsGrid,{marginHorizontal:horizontalPadding}]}>{metrics.map(([label,value,icon,accent])=><View key={label} style={styles.metric}><View style={[styles.metricIcon,{backgroundColor:accent}]}><Ionicons name={icon} size={19} color={colors.white}/></View><AppText style={styles.metricValue}>{value}</Text><AppText style={styles.metricLabel}>{label}</Text></View>)}</View>
 
-        <View style={styles.sectionHeader}><View><Text style={styles.sectionTitle}>Quick actions</Text><Text style={styles.sectionCaption}>Jump into your daily tasks</Text></View><View style={styles.sectionBadge}><Ionicons name="flash-outline" size={15} color={colors.midnight}/></View></View>
-        <View style={[styles.actionsGrid,{marginHorizontal:horizontalPadding}]}>{actions.map(([label,icon,screen])=><Pressable key={label} onPress={()=>navigation.navigate(screen)} style={styles.action}><View style={styles.actionIcon}><Ionicons name={icon} size={20} color={colors.midnight}/></View><View style={styles.actionBody}><Text style={styles.actionText}>{label}</Text><Text style={styles.actionHint}>Open</Text></View><Ionicons name="chevron-forward" size={17} color={colors.muted}/></Pressable>)}</View>
+        <View style={styles.sectionHeader}><View><AppText style={styles.sectionTitle}>Quick actions</Text><AppText style={styles.sectionCaption}>Jump into your daily tasks</Text></View><View style={styles.sectionBadge}><Ionicons name="flash-outline" size={15} color={colors.midnight}/></View></View>
+        <View style={[styles.actionsGrid,{marginHorizontal:horizontalPadding}]}>{actions.map(([label,icon,screen])=><Pressable key={label} onPress={()=>navigation.navigate(screen)} style={styles.action}><View style={styles.actionIcon}><Ionicons name={icon} size={20} color={colors.midnight}/></View><View style={styles.actionBody}><AppText style={styles.actionText}>{label}</Text><AppText style={styles.actionHint}>Open</Text></View><Ionicons name="chevron-forward" size={17} color={colors.muted}/></Pressable>)}</View>
 
-        <View style={styles.sectionHeader}><View><Text style={styles.sectionTitle}>Loan pipeline</Text><Text style={styles.sectionCaption}>Current application movement</Text></View><View style={styles.pipelineBadge}><Ionicons name="trending-up-outline" size={16} color={colors.teal}/></View></View>
+        <View style={styles.sectionHeader}><View><AppText style={styles.sectionTitle}>Loan pipeline</Text><AppText style={styles.sectionCaption}>Current application movement</Text></View><View style={styles.pipelineBadge}><Ionicons name="trending-up-outline" size={16} color={colors.teal}/></View></View>
         <View style={styles.pipelineCard}><PipelineRow name="Entered" value={loanPipeline.ENTERED} first/><PipelineRow name="Documents pending" value={loanPipeline.DOCUMENTS_PENDING}/><PipelineRow name="Submitted" value={loanPipeline.SUBMITTED}/><PipelineRow name="Under review" value={loanPipeline.UNDER_REVIEW}/><PipelineRow name="Approved" value={loanPipeline.APPROVED} last/></View>
         <View style={styles.bottomSpace}/>
       </ScrollView>
@@ -90,7 +91,7 @@ export default function DashboardScreen({navigation}){
   );
 }
 
-function PipelineRow({name,value,first}){return <View style={[styles.pipelineRow,first?null:styles.pipelineBorder]}><View style={styles.pipelineDot}/><Text style={styles.pipelineName}>{name}</Text><View style={styles.pipelineValueBox}><Text style={styles.pipelineValue}>{value??0}</Text></View></View>;}
+function PipelineRow({name,value,first}){return <View style={[styles.pipelineRow,first?null:styles.pipelineBorder]}><View style={styles.pipelineDot}/><AppText style={styles.pipelineName}>{name}</Text><View style={styles.pipelineValueBox}><AppText style={styles.pipelineValue}>{value??0}</Text></View></View>;}
 
 const styles=StyleSheet.create({
   page:{flex:1,backgroundColor:colors.midnight},scroll:{flex:1},content:{paddingBottom:20,backgroundColor:colors.ivory},

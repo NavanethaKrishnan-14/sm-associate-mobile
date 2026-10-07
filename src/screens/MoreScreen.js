@@ -388,8 +388,9 @@ const styles = {
   action: {
     minHeight: 70,
     backgroundColor: colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E1E5E3',
+    borderRadius: 16,
+    marginVertical: 4,
+    overflow: 'hidden',
     paddingHorizontal: 7,
     flexDirection: 'row',
     alignItems: 'center',

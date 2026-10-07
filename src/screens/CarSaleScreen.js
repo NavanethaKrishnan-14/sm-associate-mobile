@@ -8,7 +8,7 @@ import DocumentPickerButton from '../components/DocumentPickerButton';
 
 export default function CarSaleScreen({navigation}){
  const {top}=useSafeAreaInsets();
- const[cars,setCars]=useState([]),[soldCars,setSoldCars]=useState([]),[customers,setCustomers]=useState([]),[customerSearch,setCustomerSearch]=useState(''),[showCustomerSearch,setShowCustomerSearch]=useState(false),[busy,setBusy]=useState(true),[modal,setModal]=useState(false),[carId,setCarId]=useState(''),[buyerId,setBuyerId]=useState(''),[newCustomer,setNewCustomer]=useState(false),[customerName,setCustomerName]=useState(''),[customerMobile,setCustomerMobile]=useState(''),[customerCity,setCustomerCity]=useState(''),[price,setPrice]=useState(''),[expenses,setExpenses]=useState('0'),[files,setFiles]=useState({}),[customName,setCustomName]=useState(''),[customDocs,setCustomDocs]=useState([]),[saving,setSaving]=useState(false);
+ const[cars,setCars]=useState([]),[soldCars,setSoldCars]=useState([]),[customers,setCustomers]=useState([]),[customerSearch,setCustomerSearch]=useState(''),[showCustomerSearch,setShowCustomerSearch]=useState(false),[busy,setBusy]=useState(true),[modal,setModal]=useState(false),[carId,setCarId]=useState(''),[buyerId,setBuyerId]=useState(''),[newCustomer,setNewCustomer]=useState(false),[customerName,setCustomerName]=useState(''),[customerMobile,setCustomerMobile]=useState(''),[customerCity,setCustomerCity]=useState(''),[price,setPrice]=useState(''),[expenses,setExpenses]=useState('0'),[files,setFiles]=useState({}),[customName,setCustomName]=useState(''),[viewCar,setViewCar]=useState(null),[customDocs,setCustomDocs]=useState([]),[saving,setSaving]=useState(false);
  async function load(){
   setBusy(true);
   try{
@@ -68,10 +68,20 @@ export default function CarSaleScreen({navigation}){
   {busy?<ActivityIndicator style={{marginTop:45}} color={colors.gold}/>:<ScrollView contentContainerStyle={s.list}>
    <View style={s.summaryRow}><View style={s.summary}><Text style={s.summaryNumber}>{cars.length}</Text><Text style={s.summaryLabel}>Cars Remaining</Text></View><View style={s.summary}><Text style={s.summaryNumber}>{soldCars.length}</Text><Text style={s.summaryLabel}>Cars Sold</Text></View></View>
    <Text style={s.sectionLabel}>CARS REMAINING TO SELL</Text>
-   {cars.length?cars.map(c=><View key={c._id} style={s.carCard}><View style={s.carIcon}><Ionicons name="car-sport-outline" size={22} color={colors.teal}/></View><View style={{flex:1}}><Text style={s.cardTitle}>{c.vehicleId} · {c.make} {c.model}</Text><Text style={s.muted}>{c.registrationNumber} · {c.year||'—'} · {c.fuel||'—'}</Text><Text style={s.priceText}>Purchase ₹{Number(c.purchasePrice||0).toLocaleString('en-IN')}</Text></View></View>):<Empty icon="car-outline" title="No cars remaining" text="All available inventory has been sold."/>}
+   {cars.length?cars.map(c=><Pressable key={c._id} onPress={()=>setViewCar(c)} style={({pressed})=>[s.carCard,pressed&&s.pressed]}>
+<View style={s.carIcon}><Ionicons name="car-sport-outline" size={22} color={colors.teal}/></View><View style={{flex:1}}><Text style={s.cardTitle}>{c.vehicleId} · {c.make} {c.model}</Text><Text style={s.muted}>{c.registrationNumber} · {c.year||'—'} · {c.fuel||'—'}</Text><Text style={s.priceText}>Purchase ₹{Number(c.purchasePrice||0).toLocaleString('en-IN')}</Text></View></Pressable>):<Empty icon="car-outline" title="No cars remaining" text="All available inventory has been sold."/>}
    <Text style={s.sectionLabel}>CARS SOLD OUT</Text>
-   {soldCars.length?soldCars.map(c=><View key={c._id} style={s.carCard}><View style={s.soldIcon}><Ionicons name="checkmark-circle-outline" size={22} color={colors.teal}/></View><View style={{flex:1}}><Text style={s.cardTitle}>{c.vehicleId} · {c.make} {c.model}</Text><Text style={s.muted}>{c.registrationNumber} · SOLD</Text><Text style={s.priceText}>Purchase ₹{Number(c.purchasePrice||0).toLocaleString('en-IN')}</Text></View><Text style={s.soldBadge}>SOLD</Text></View>):<Empty icon="receipt-outline" title="No sold cars yet" text="Completed vehicle sales will appear here."/>}
+   {soldCars.length?soldCars.map(c=><Pressable key={c._id} onPress={()=>setViewCar(c)} style={({pressed})=>[s.carCard,pressed&&s.pressed]}>
+<View style={s.soldIcon}><Ionicons name="checkmark-circle-outline" size={22} color={colors.teal}/></View><View style={{flex:1}}><Text style={s.cardTitle}>{c.vehicleId} · {c.make} {c.model}</Text><Text style={s.muted}>{c.registrationNumber} · SOLD</Text><Text style={s.priceText}>Purchase ₹{Number(c.purchasePrice||0).toLocaleString('en-IN')}</Text></View><Text style={s.soldBadge}>SOLD</Text></Pressable>):<Empty icon="receipt-outline" title="No sold cars yet" text="Completed vehicle sales will appear here."/>}
   </ScrollView>}
+  <Modal visible={!!viewCar} animationType="slide" transparent onRequestClose={()=>setViewCar(null)}>
+   <View style={s.overlay}><View style={s.modal}>
+    <View style={s.modalHead}><View><Text style={s.modalTitle}>Vehicle Details</Text><Text style={s.modalSub}>{viewCar?.status||'Vehicle'}</Text></View><Pressable onPress={()=>setViewCar(null)}><Ionicons name="close" size={24} color={colors.ink}/></Pressable></View>
+    {viewCar&&<ScrollView contentContainerStyle={s.form}>
+     {[['Vehicle ID',viewCar.vehicleId],['Car',[(viewCar.make||''),(viewCar.model||'')].filter(Boolean).join(' ')],['Registration',viewCar.registrationNumber],['Year',viewCar.year],['Fuel',viewCar.fuel],['Purchase Price','₹'+Number(viewCar.purchasePrice||0).toLocaleString('en-IN')],['Status',viewCar.status]].map(([k,v])=><View key={k} style={s.detailRow}><Text style={s.detailLabel}>{k}</Text><Text style={s.detailValue}>{String(v||'—')}</Text></View>)}
+    </ScrollView>}
+   </View></View>
+  </Modal>
   <Modal visible={modal} animationType="slide" transparent onRequestClose={()=>setModal(false)}>
    <View style={s.overlay}><View style={s.modal}>
     <View style={s.modalHead}><View><Text style={s.modalTitle}>Sell Car</Text><Text style={s.modalSub}>Complete the customer purchase details.</Text></View><Pressable onPress={()=>setModal(false)}><Ionicons name="close" size={24} color={colors.ink}/></Pressable></View>
@@ -107,7 +117,7 @@ export default function CarSaleScreen({navigation}){
 function Empty({icon,title,text}){return <View style={s.empty}><Ionicons name={icon} size={28} color={colors.muted}/><Text style={s.emptyTitle}>{title}</Text><Text style={s.emptyText}>{text}</Text></View>}
 function Field({label,value,onChangeText,textInputType='numeric'}){return <View style={{marginBottom:11}}><Text style={s.label}>{label}</Text><TextInput value={value} onChangeText={onChangeText} keyboardType={textInputType} placeholder={'Enter '+label.toLowerCase()} placeholderTextColor="#9AA4AD" style={s.input}/></View>}
 const s={
- page:{flex:1,backgroundColor:'#F4F6F3',paddingTop:0},
+ page:{flex:1,backgroundColor:'#F4F6F3',paddingTop:0},pressed:{opacity:.78,transform:[{scale:.99}]},detailRow:{backgroundColor:colors.white,borderRadius:14,padding:13,marginBottom:8,borderWidth:1,borderColor:'rgba(39,168,154,.13)'},detailLabel:{fontSize:10,fontWeight:'900',color:colors.muted,textTransform:'uppercase'},detailValue:{fontSize:14,fontWeight:'700',color:colors.ink,marginTop:4},
  header:{paddingHorizontal:18,flexDirection:'row',alignItems:'center',gap:12},
  backButton:{width:42,height:42,borderRadius:14,backgroundColor:colors.white,borderWidth:1,borderColor:'rgba(39,168,154,.16)',alignItems:'center',justifyContent:'center'},
  eyebrow:{fontSize:9,fontWeight:'900',letterSpacing:1.5,color:colors.teal,marginBottom:2},

@@ -45,27 +45,31 @@ export default function DashboardScreen({navigation}){
   return (
     <View style={styles.page}>
       <View style={[styles.commandBar,{paddingTop:Math.max(4,topInset)}]}>
-        <View style={styles.headerTopLine}/>
-        <View style={styles.headerMain}>
-          <View style={styles.brandCluster}>
-            <View style={styles.logoFrame}><Logo width={62}/></View>
+        <View style={styles.headerShell}>
+          <View style={styles.headerBrand}>
+            <View style={styles.logoFrame}><Logo width={58}/></View>
             <View style={styles.brandCopy}>
               <AppText style={styles.brandKicker}>SM ASSOCIATE</AppText>
               <AppText numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.72} style={styles.brandTitle}>Business Management</AppText>
             </View>
           </View>
-          <Pressable onPress={()=>navigation.navigate('More')} style={({pressed})=>[styles.profileButton,pressed&&styles.pressed]} accessibilityRole="button" accessibilityLabel="Open more options">
-            <View style={styles.profileIcon}><Ionicons name="grid-outline" size={18} color={colors.teal}/></View>
+          <Pressable onPress={()=>navigation.navigate('More')} style={({pressed})=>[styles.utilityButton,pressed&&styles.pressed]} accessibilityRole="button" accessibilityLabel="Open more options">
+            <Ionicons name="notifications-outline" size={19} color={colors.midnight}/>
+            <View style={styles.utilityDot}/>
           </Pressable>
         </View>
-        <View style={styles.headerBottom}>
-          <View style={styles.operationChip}>
-            <View style={styles.liveDot}/>
-            <AppText style={styles.operationText}>BUSINESS OPERATIONS</AppText>
+        <View style={styles.headerRule}/>
+        <View style={styles.statusRow}>
+          <View style={styles.statusIdentity}>
+            <View style={styles.statusMark}><Ionicons name="pulse-outline" size={12} color={colors.teal}/></View>
+            <View>
+              <AppText style={styles.statusLabel}>BUSINESS OPERATIONS</AppText>
+              <AppText style={styles.statusSub}>Management dashboard</AppText>
+            </View>
           </View>
-          <View style={styles.onlineState}>
+          <View style={styles.onlineBadge}>
+            <View style={styles.onlineDot}/>
             <AppText style={styles.onlineText}>ONLINE</AppText>
-            <View style={styles.onlineLine}/>
           </View>
         </View>
       </View>
@@ -98,23 +102,24 @@ function PipelineRow({name,value,first}){return <View style={[styles.pipelineRow
 
 const styles=StyleSheet.create({
   page:{flex:1,backgroundColor:colors.ivory},scroll:{flex:1},content:{paddingBottom:20,backgroundColor:colors.ivory},
-  commandBar:{backgroundColor:colors.midnight,paddingHorizontal:16,paddingBottom:13,borderBottomLeftRadius:24,borderBottomRightRadius:24,borderBottomWidth:1,borderBottomColor:'rgba(39,168,154,0.22)',overflow:'hidden'},
-  headerTopLine:{position:'absolute',top:0,left:24,right:24,height:2,borderRadius:2,backgroundColor:colors.teal},
-  headerMain:{height:82,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},
-  brandCluster:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0},
-  logoFrame:{width:64,height:64,borderRadius:18,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(255,255,255,0.045)',borderWidth:1,borderColor:'rgba(255,255,255,0.09)',overflow:'hidden'},
+  commandBar:{backgroundColor:colors.ivory,paddingHorizontal:16,paddingBottom:12},
+  headerShell:{height:76,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},
+  headerBrand:{flex:1,flexDirection:'row',alignItems:'center',minWidth:0},
+  logoFrame:{width:58,height:58,borderRadius:17,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center',overflow:'hidden',borderWidth:1,borderColor:'rgba(39,168,154,0.24)'},
   brandCopy:{marginLeft:12,flex:1,minWidth:0,paddingRight:8},
-  brandKicker:{color:colors.teal,fontSize:8,lineHeight:10,fontWeight:'700',letterSpacing:2,marginBottom:4},
-  brandTitle:{color:colors.white,fontSize:19,lineHeight:23,fontWeight:'700',letterSpacing:-0.35,includeFontPadding:false},
-  profileButton:{width:44,height:44,borderRadius:15,backgroundColor:'rgba(39,168,154,0.10)',borderWidth:1,borderColor:'rgba(39,168,154,0.24)',alignItems:'center',justifyContent:'center'},
-  profileIcon:{width:32,height:32,borderRadius:11,backgroundColor:'rgba(39,168,154,0.10)',alignItems:'center',justifyContent:'center'},
-  headerBottom:{height:32,flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingTop:5,borderTopWidth:1,borderTopColor:'rgba(255,255,255,0.07)'},
-  operationChip:{height:25,paddingHorizontal:9,borderRadius:9,backgroundColor:'rgba(255,255,255,0.045)',flexDirection:'row',alignItems:'center'},
-  liveDot:{width:6,height:6,borderRadius:3,backgroundColor:colors.teal,marginRight:7},
-  operationText:{color:'rgba(255,255,255,0.64)',fontSize:7,letterSpacing:1.05,fontWeight:'700'},
-  onlineState:{height:25,paddingHorizontal:9,borderRadius:9,flexDirection:'row',alignItems:'center',backgroundColor:'rgba(39,168,154,0.11)',borderWidth:1,borderColor:'rgba(39,168,154,0.17)'},
-  onlineText:{color:'#5BE0D1',fontSize:7,letterSpacing:1.1,fontWeight:'700'},
-  onlineLine:{width:5,height:5,borderRadius:3,backgroundColor:colors.teal,marginLeft:6},
+  brandKicker:{color:colors.teal,fontSize:8,lineHeight:10,fontWeight:'700',letterSpacing:1.9,marginBottom:4},
+  brandTitle:{color:colors.ink,fontSize:19,lineHeight:23,fontWeight:'700',letterSpacing:-0.35,includeFontPadding:false},
+  utilityButton:{width:42,height:42,borderRadius:14,backgroundColor:colors.white,borderWidth:1,borderColor:'rgba(23,32,39,0.08)',alignItems:'center',justifyContent:'center',position:'relative',shadowColor:'#172027',shadowOpacity:0.08,shadowRadius:8,shadowOffset:{width:0,height:3},elevation:2},
+  utilityDot:{position:'absolute',top:8,right:8,width:6,height:6,borderRadius:3,backgroundColor:colors.teal,borderWidth:1.5,borderColor:colors.white},
+  headerRule:{height:1,backgroundColor:'rgba(23,32,39,0.08)'},
+  statusRow:{minHeight:49,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},
+  statusIdentity:{flexDirection:'row',alignItems:'center',flex:1},
+  statusMark:{width:28,height:28,borderRadius:10,backgroundColor:colors.goldLight,alignItems:'center',justifyContent:'center'},
+  statusLabel:{color:colors.ink,fontSize:8,fontWeight:'700',letterSpacing:0.8,marginLeft:9},
+  statusSub:{color:colors.muted,fontSize:9,marginLeft:9,marginTop:2},
+  onlineBadge:{height:27,paddingHorizontal:10,borderRadius:10,backgroundColor:colors.white,borderWidth:1,borderColor:'rgba(39,168,154,0.24)',flexDirection:'row',alignItems:'center'},
+  onlineDot:{width:6,height:6,borderRadius:3,backgroundColor:colors.teal,marginRight:6},
+  onlineText:{color:colors.teal,fontSize:7,fontWeight:'700',letterSpacing:1.1},
   pressed:{opacity:0.72,transform:[{scale:0.97}]},
   editorialGreeting:{marginTop:20,padding:20,backgroundColor:'#F8F7F2',borderRadius:26,borderWidth:1,borderColor:'rgba(24,32,39,0.08)',overflow:'hidden'},editorialAccent:{position:'absolute',left:0,top:0,bottom:0,width:5,backgroundColor:colors.teal},editorialTop:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginLeft:4},editorialKicker:{color:colors.teal,fontSize:9,letterSpacing:1.8},editorialDate:{color:colors.muted,fontSize:10,marginTop:3},editorialStatus:{height:27,paddingHorizontal:9,borderRadius:9,flexDirection:'row',alignItems:'center',backgroundColor:'rgba(39,168,154,0.08)',borderWidth:1,borderColor:'rgba(39,168,154,0.16)'},editorialStatusDot:{width:6,height:6,borderRadius:3,backgroundColor:colors.teal,marginRight:5},editorialStatusText:{color:colors.teal,fontSize:7,letterSpacing:1.1},
   editorialContent:{flex:1,justifyContent:'center',marginLeft:4,paddingRight:8},editorialTitle:{color:colors.ink,fontSize:32,lineHeight:38,letterSpacing:-0.8},editorialDescription:{color:'#68747B',fontSize:12,lineHeight:18,marginTop:7,maxWidth:315},editorialBottom:{marginLeft:4,paddingTop:13,borderTopWidth:1,borderTopColor:'rgba(24,32,39,0.09)',flexDirection:'row',alignItems:'center',justifyContent:'space-between'},editorialBottomLabel:{color:colors.muted,fontSize:7,letterSpacing:1.5},editorialBottomText:{color:colors.ink,fontSize:10,marginTop:3},editorialAction:{width:35,height:35,borderRadius:11,backgroundColor:colors.midnight,alignItems:'center',justifyContent:'center'},

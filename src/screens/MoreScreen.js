@@ -414,10 +414,8 @@ const styles = {
     marginTop: 2,
   },
   actionArrow: {
-    width: 31,
+    width: 24,
     height: 31,
-    borderRadius: 11,
-    backgroundColor: '#F0F2F0',
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -1,18 +1,28 @@
 import {AppText,AppTextInput} from './AppText';
 import React from 'react';
 import {Alert, Pressable, View} from 'react-native';
-import * as DocumentPicker from 'expo-document-picker';
+import {File} from 'expo-file-system';
 import {Ionicons} from '@expo/vector-icons';
 import {colors} from '../theme/colors';
 
 export async function pickDocument(){
-  const result=await DocumentPicker.getDocumentAsync({
-    type:['application/pdf','image/jpeg','image/png','image/webp','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.presentationml.presentation','text/plain','text/csv','application/octet-stream'],
-    copyToCacheDirectory:true,
-    multiple:false
+  const picked=await File.pickFileAsync({
+    multipleFiles:false,
+    mimeTypes:['*/*']
   });
-  if(result.canceled)return null;
-  return result.assets?.[0]||null;
+
+  if(picked?.canceled)return null;
+
+  const file=picked?.result;
+  if(!file)return null;
+
+  return {
+    uri:file.uri,
+    name:file.name,
+    mimeType:file.type||'application/octet-stream',
+    size:Number(file.size||0),
+    _expoFile:file
+  };
 }
 
 export default function DocumentPickerButton({label='Upload Document',file,uploaded,onPick}){

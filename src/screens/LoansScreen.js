@@ -1,6 +1,7 @@
 import {AppText,AppTextInput} from '../components/AppText';
 import React,{useEffect,useState} from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useFocusEffect} from '@react-navigation/native';
 import {Alert, ActivityIndicator, Modal, Pressable, ScrollView, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {api,uploadDocument} from '../api/client';
@@ -14,7 +15,7 @@ export default function LoansScreen({navigation}){
  const {top}=useSafeAreaInsets();
  const[items,setItems]=useState([]),[customers,setCustomers]=useState([]),[busy,setBusy]=useState(true),[modal,setModal]=useState(false),[editing,setEditing]=useState(null),[form,setForm]=useState(blank),[files,setFiles]=useState({}),[customDocs,setCustomDocs]=useState([]),[customName,setCustomName]=useState(''),[saving,setSaving]=useState(false),[viewItem,setViewItem]=useState(null),[customerPicker,setCustomerPicker]=useState(false),[followLoan,setFollowLoan]=useState(null),[followUps,setFollowUps]=useState([]),[followDate,setFollowDate]=useState(''),[followNote,setFollowNote]=useState('');
  async function load(){setBusy(true);try{const[r,c]=await Promise.all([api.get('/loans'),api.get('/customers')]);setItems(r.data?.data||[]);setCustomers(c.data?.data||[])}catch(e){Alert.alert('Loans',e?.response?.data?.message||'Unable to load loans.')}finally{setBusy(false)}}
- useEffect(()=>{load()},[]);
+ useFocusEffect(React.useCallback(()=>{load();},[]));
  function openAdd(){setEditing(null);setForm({...blank});setFiles({});setCustomDocs([]);setCustomName('');setModal(true)}
  function openEdit(l){setEditing(l);setCustomDocs(Array.isArray(l.documents?.customDocuments)?l.documents.customDocuments:[]);setCustomName('');setForm({customerId:l.customerId?._id||l.customerId||'',loanType:l.loanType||'Home Loan',requiredAmount:String(l.requiredAmount||''),approvedAmount:String(l.approvedAmount||''),financeCompany:l.financeCompany||'',commission:String(l.commission||0),applicationDate:l.applicationDate?String(l.applicationDate).slice(0,10):'',expectedDisbursementDate:l.expectedDisbursementDate?String(l.expectedDisbursementDate).slice(0,10):'',disbursementDate:l.disbursementDate?String(l.disbursementDate).slice(0,10):'',rejectionReason:l.rejectionReason||'',notes:l.notes||'',status:l.status||'ENTERED'});setFiles({});setModal(true)}
  function set(key,value){setForm(p=>({...p,[key]:value}))}

@@ -109,9 +109,6 @@ export async function uploadDocument(path, asset, fields = {}) {
   const token=await readAccessToken();
   if(!token) throw new Error('Your login session has expired. Please sign in again.');
 
-  // Use Expo's native legacy upload API for the actual transfer.
-  // This accepts Android content/file URIs directly and avoids JS Blob/FormData
-  // conversion and the modern File API's readability check for Expo Go picker URIs.
   const fileSize=Number(asset.size||0);
   const MAX_DOCUMENT_SIZE=10*1024*1024;
   if(fileSize<0) throw new Error('The selected document could not be read.');
@@ -119,121 +116,84 @@ export async function uploadDocument(path, asset, fields = {}) {
     throw new Error('Document is too large. Maximum allowed size is 10 MB.');
   }
 
-  const isCustomerDocument=/^\/customers\/[^/]+\/documents\/[^/]+$/i.test(path);
-
-  const controller=new AbortController();
-  const timer=setTimeout(()=>controller.abort(),60000);
-
   try{
-    if(isCustomerDocument){
-      // Customer documents are stored directly in PostgreSQL.
-      // Do NOT call the legacy Cloudinary /signature or /complete endpoints.
-      const uploadResult=await FileSystem.uploadAsync(
-        API_BASE_URL+path,
-        asset.uri,
-        {
-          httpMethod:'POST',
-          uploadType:FileSystem.FileSystemUploadType.MULTIPART,
-          fieldName:'file',
-          mimeType,
-          headers:{
-            Accept:'application/json',
-            Authorization:'Bearer '+token,
-            'x-access-token':token
-          },
-          parameters:Object.fromEntries(
-            Object.entries({
-              originalName:fileName,
-              ...(fields||{})
-            }).map(([key,value])=>[key,String(value)])
-          )
-        }
-      );
-
-      let data={};
-      try{
-        data=uploadResult?.body?JSON.parse(uploadResult.body):{};
-      }catch{
-        data={message:uploadResult?.body||'The server returned an invalid response.'};
-      }
-
-      const status=Number(uploadResult?.status||0);
-      if(status===401){
-        await logout();
-        notifyAuthExpired();
-        throw new Error('Your login session has expired. Please sign in again.');
-      }
-
-      if(status<200||status>=300){
-        throw new Error(
-          data?.message||
-          'Customer document upload failed with HTTP '+String(status)+'.'
-        );
-      }
-
-      if(data?.success!==true){
-        throw new Error(
-          data?.message||
-          'Customer document upload was not confirmed by the server.'
-        );
-      }
-
-      return data;
+    // Expo DocumentPicker can return Android cache/file URIs that the legacy
+    // FileSystem.uploadAsync native module rejects as "isn't readable".
+    // Fetching the local URI and putting the resulting Blob into FormData
+    // avoids that native uploadAsync readability problem.
+    let blob;
+    try{
+      const localResponse=await fetch(asset.uri);
+      if(!localResponse.ok) throw new Error('Unable to read the selected document.');
+      blob=await localResponse.blob();
+    }catch(readError){
+      console.error('Selected document read failed:',readError);
+      throw new Error('The selected document could not be read. Please select the file again.');
     }
 
-    // Car/loan document endpoints also use native multipart upload.
-    const uploadResult=await FileSystem.uploadAsync(
-      API_BASE_URL+path,
-      asset.uri,
-      {
-        httpMethod:'POST',
-        uploadType:FileSystem.FileSystemUploadType.MULTIPART,
-        fieldName:'file',
-        mimeType,
+    const formData=new FormData();
+    formData.append('file',blob,fileName);
+    formData.append('originalName',fileName);
+
+    Object.entries(fields||{}).forEach(([key,value])=>{
+      if(value!==undefined&&value!==null) formData.append(key,String(value));
+    });
+
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),60000);
+
+    let response;
+    try{
+      response=await fetch(API_BASE_URL+path,{
+        method:'POST',
         headers:{
           Accept:'application/json',
           Authorization:'Bearer '+token,
           'x-access-token':token
+          // Do not set Content-Type manually. React Native adds the multipart boundary.
         },
-        parameters:Object.fromEntries(
-          Object.entries(fields||{}).map(([key,value])=>[key,String(value)])
-        )
-      }
-    );
+        body:formData,
+        signal:controller.signal
+      });
+    }catch(error){
+      if(error?.name==='AbortError') throw new Error('Document upload timed out. Please try again.');
+      throw new Error(error?.message||'Unable to connect to the document upload server.');
+    }finally{
+      clearTimeout(timer);
+    }
 
     let data={};
     try{
-      data=uploadResult?.body?JSON.parse(uploadResult.body):{};
+      const responseText=await response.text();
+      data=responseText?JSON.parse(responseText):{};
     }catch{
-      data={message:uploadResult?.body||'The server returned an invalid response.'};
+      data={message:'The server returned an invalid response.'};
     }
 
-    if(Number(uploadResult?.status||0)===401){
+    if(response.status===401){
       await logout();
       notifyAuthExpired();
       throw new Error('Your login session has expired. Please sign in again.');
     }
 
-    if(Number(uploadResult?.status||0)<200||Number(uploadResult?.status||0)>=300){
+    if(!response.ok){
       throw new Error(
         data?.message||
-        'Document upload failed with HTTP '+String(uploadResult?.status||0)+'.'
+        'Document upload failed with HTTP '+String(response.status)+'.'
       );
     }
 
     if(data?.success!==true){
-      throw new Error(data?.message||'Document upload was not confirmed by the server.');
+      throw new Error(
+        data?.message||
+        'Document upload was not confirmed by the server.'
+      );
     }
 
     return data;
   }catch(error){
-    if(error?.name==='AbortError'){
-      throw new Error('Document upload timed out. Please try again.');
-    }
     console.error('Document upload failed:',error);
     throw error;
-  }finally{
-    clearTimeout(timer);
   }
 }
 

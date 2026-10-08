@@ -6,6 +6,7 @@ import {api} from '../api/client';
 import {colors} from '../theme/colors';
 import Logo from '../components/Logo';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function DashboardScreen({navigation}){
   const [data,setData]=useState(null);
@@ -29,7 +30,7 @@ export default function DashboardScreen({navigation}){
     }finally{setRefreshing(false);}
   }
 
-  useEffect(()=>{load();},[]);
+  useFocusEffect(React.useCallback(()=>{load();},[]));
 
   const loanPipeline=data?.loanPipeline||{};
   const actions=[

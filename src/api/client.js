@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {notifyAuthExpired} from './authEvents';
 import * as FileSystem from 'expo-file-system/legacy';
 
-const PRODUCTION_API_URL = 'https://sm-associate-backend.vercel.app/api/v1';
+const PRODUCTION_API_URL = 'https://sm-associate-backend.onrender.com/api/v1';
 
 function normalizeApiUrl(value) {
   let url = String(value || '').trim().replace(/,+$/g, '').replace(/\/$/, '');

@@ -103,88 +103,78 @@ export async function login(email, password) {
 }
 
 export async function uploadDocument(path, asset, fields = {}) {
-  if (!asset?.uri) throw new Error('Please select a document first.');
+  if (!asset?.uri && !asset?._expoFile) {
+    throw new Error('Please select a document first.');
+  }
 
-  const fileName=String(asset.name||asset.fileName||'document');
-  const mimeType=String(asset.mimeType||asset.type||'application/octet-stream');
+  const fileName=String(asset.name||asset.fileName||asset?._expoFile?.name||'document');
+  const mimeType=String(asset.mimeType||asset.type||asset?._expoFile?.type||'application/octet-stream');
   const token=await readAccessToken();
   if(!token) throw new Error('Your login session has expired. Please sign in again.');
 
-  const fileSize=Number(asset.size||0);
+  const file=asset._expoFile || new File(asset.uri);
+  const fileSize=Number(asset.size||file.size||0);
   const MAX_DOCUMENT_SIZE=10*1024*1024;
-  if(fileSize<0) throw new Error('The selected document could not be read.');
+
   if(fileSize>MAX_DOCUMENT_SIZE){
     throw new Error('Document is too large. Maximum allowed size is 10 MB.');
   }
 
   try{
-    // Use Expo's native File + expo/fetch multipart implementation.
-    // React Native's plain {uri,name,type} FormData parts can throw
-    // "Unsupported FormDataPart implementation" with this runtime.
-    // File is a native Blob-compatible object, so this avoids Response.blob(),
-    // base64 conversion, and the related performance warning.
-    const file=new File(asset.uri);
-    if(!file.exists){
-      throw new Error('The selected document is no longer available. Please select it again.');
-    }
-
-    const formData=new FormData();
-    formData.append('file',file);
-    formData.append('originalName',fileName);
-
+    const parameters={originalName:fileName};
     Object.entries(fields||{}).forEach(([key,value])=>{
-      if(value!==undefined&&value!==null) formData.append(key,String(value));
+      if(value!==undefined&&value!==null) parameters[key]=String(value);
     });
 
     const controller=new AbortController();
     const timer=setTimeout(()=>controller.abort(),60000);
 
-    let response;
+    let result;
     try{
-      response=await expoFetch(API_BASE_URL+path,{
-        method:'POST',
+      // Native Expo multipart upload. This bypasses React Native FormData
+      // completely and works directly with DocumentPicker File instances.
+      result=await file.upload(API_BASE_URL+path,{
+        httpMethod:'POST',
+        uploadType:UploadType.MULTIPART,
+        fieldName:'file',
+        mimeType,
+        parameters,
         headers:{
           Accept:'application/json',
           Authorization:'Bearer '+token,
           'x-access-token':token
-          // Do not set Content-Type manually. React Native adds the multipart boundary.
         },
-        body:formData,
         signal:controller.signal
       });
     }catch(error){
       if(error?.name==='AbortError') throw new Error('Document upload timed out. Please try again.');
-      throw new Error(error?.message||'Unable to connect to the document upload server.');
+      throw new Error(error?.message||'Unable to upload the selected document.');
     }finally{
       clearTimeout(timer);
     }
 
     let data={};
     try{
-      const responseText=await response.text();
-      data=responseText?JSON.parse(responseText):{};
+      data=result?.body?JSON.parse(result.body):{};
     }catch{
       data={message:'The server returned an invalid response.'};
     }
 
-    if(response.status===401){
+    if(result?.status===401){
       await logout();
       notifyAuthExpired();
       throw new Error('Your login session has expired. Please sign in again.');
     }
 
-    if(!response.ok){
+    if(!result || result.status<200 || result.status>=300){
       throw new Error(
         data?.message||
-        'Document upload failed with HTTP '+String(response.status)+'.'
+        'Document upload failed with HTTP '+String(result?.status||0)+'.'
       );
     }
 
     if(data?.success!==true){
-      throw new Error(
-        data?.message||
-        'Document upload was not confirmed by the server.'
-      );
+      throw new Error(data?.message||'Document upload was not confirmed by the server.');
     }
 
     return data;

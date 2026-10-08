@@ -1,6 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {notifyAuthExpired} from './authEvents';
+import {fetch as expoFetch} from 'expo/fetch';
+import {File} from 'expo-file-system';
 
 const PRODUCTION_API_URL = 'https://sm-associate-backend.onrender.com/api/v1';
 
@@ -116,15 +118,18 @@ export async function uploadDocument(path, asset, fields = {}) {
   }
 
   try{
-    // Send the native DocumentPicker URI directly as a React Native
-    // multipart file. This avoids Response.blob(), base64 conversion,
-    // and the Expo Blob performance warning.
+    // Use Expo's native File + expo/fetch multipart implementation.
+    // React Native's plain {uri,name,type} FormData parts can throw
+    // "Unsupported FormDataPart implementation" with this runtime.
+    // File is a native Blob-compatible object, so this avoids Response.blob(),
+    // base64 conversion, and the related performance warning.
+    const file=new File(asset.uri);
+    if(!file.exists){
+      throw new Error('The selected document is no longer available. Please select it again.');
+    }
+
     const formData=new FormData();
-    formData.append('file',{
-      uri:asset.uri,
-      name:fileName,
-      type:mimeType
-    });
+    formData.append('file',file);
     formData.append('originalName',fileName);
 
     Object.entries(fields||{}).forEach(([key,value])=>{
@@ -136,7 +141,7 @@ export async function uploadDocument(path, asset, fields = {}) {
 
     let response;
     try{
-      response=await fetch(API_BASE_URL+path,{
+      response=await expoFetch(API_BASE_URL+path,{
         method:'POST',
         headers:{
           Accept:'application/json',

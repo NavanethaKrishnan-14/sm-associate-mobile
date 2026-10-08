@@ -1,6 +1,7 @@
 import {AppText,AppTextInput} from '../components/AppText';
 import React,{useEffect,useState} from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useFocusEffect} from '@react-navigation/native';
 import {Alert, ActivityIndicator, Linking, Modal, Pressable, ScrollView, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {api,uploadDocument} from '../api/client';
@@ -14,7 +15,7 @@ export default function CarsScreen({navigation}){
  const {top}=useSafeAreaInsets();
  const[items,setItems]=useState([]),[busy,setBusy]=useState(true),[modal,setModal]=useState(false),[editing,setEditing]=useState(null),[form,setForm]=useState(blank),[saving,setSaving]=useState(false),[files,setFiles]=useState({}),[viewItem,setViewItem]=useState(null),[customName,setCustomName]=useState(''),[customDocs,setCustomDocs]=useState([]),[notice,setNotice]=useState(null);
  async function load(){setBusy(true);try{const r=await api.get('/cars');setItems(r.data?.data||[])}catch(e){Alert.alert('Cars',e?.response?.data?.message||'Unable to load cars.')}finally{setBusy(false)}}
- useEffect(()=>{load()},[]);
+ useFocusEffect(React.useCallback(()=>{load();},[]));
  function openAdd(){setEditing(null);setForm({...blank});setFiles({});setCustomDocs([]);setCustomName('');setModal(true)}
  function openEdit(c){setEditing(c);setForm({sellerName:c.sellerId?.name||'',sellerMobile:c.sellerId?.mobile||'',registrationNumber:c.registrationNumber||'',make:c.make||'',model:c.model||'',year:String(c.year||''),ownerNumber:String(c.ownerNumber||1),km:String(c.km||''),fuel:c.fuel||'Petrol',purchasePrice:String(c.purchasePrice||''),notes:c.notes||''});setFiles({});setCustomDocs(c.documents?.customDocuments||[]);setCustomName('');setModal(true)}
  function set(key,value){setForm(p=>({...p,[key]:value}))}

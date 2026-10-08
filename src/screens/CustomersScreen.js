@@ -1,6 +1,7 @@
 import {AppText,AppTextInput} from '../components/AppText';
 import React,{useEffect,useState} from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useFocusEffect} from '@react-navigation/native';
 import {Alert, ActivityIndicator, Linking, Modal, Pressable, ScrollView, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {api,uploadDocument} from '../api/client';
@@ -15,7 +16,7 @@ export default function CustomersScreen({navigation}){
  const [items,setItems]=useState([]),[q,setQ]=useState(''),[busy,setBusy]=useState(true);
  const [modal,setModal]=useState(false),[editing,setEditing]=useState(null),[form,setForm]=useState(empty),[files,setFiles]=useState({}),[customDocs,setCustomDocs]=useState([]),[customName,setCustomName]=useState(''),[saving,setSaving]=useState(false),[history,setHistory]=useState(null),[profile,setProfile]=useState(null);
  async function load(){setBusy(true);try{const r=await api.get('/customers');setItems(r.data?.data||[])}catch(e){Alert.alert('Customers',e?.response?.data?.message||'Unable to load customers.')}finally{setBusy(false)}}
- useEffect(()=>{load()},[]);
+ useFocusEffect(React.useCallback(()=>{load();},[]));
  const filtered=items.filter(x=>(x.name||'').toLowerCase().includes(q.toLowerCase())||(x.mobile||'').includes(q));
  function openAdd(){setEditing(null);setForm({...empty});setFiles({});setCustomDocs([]);setCustomName('');setModal(true)}
  function openProfile(item){setProfile(item)}

@@ -1,6 +1,6 @@
 import {AppText,AppTextInput} from '../components/AppText';
 import React,{useEffect,useState} from 'react';
-import {Alert, Pressable, RefreshControl, ScrollView, View, StyleSheet, useWindowDimensions} from 'react-native';
+import {Alert, Pressable, RefreshControl, ScrollView, View, StyleSheet, useWindowDimensions, TextInput, ActivityIndicator, KeyboardAvoidingView, Platform} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {api} from '../api/client';
 import {colors} from '../theme/colors';
@@ -12,6 +12,11 @@ export default function DashboardScreen({navigation}){
   const [data,setData]=useState(null);
   const [refreshing,setRefreshing]=useState(false);
   const [loadError,setLoadError]=useState('');
+  const [notes,setNotes]=useState([]);
+  const [noteText,setNoteText]=useState('');
+  const [noteId,setNoteId]=useState(null);
+  const [notesBusy,setNotesBusy]=useState(false);
+  const [notesSaving,setNotesSaving]=useState(false);
   const {width}=useWindowDimensions();
   const {top:topInset}=useSafeAreaInsets();
   const isCompact=width<380;
@@ -30,7 +35,46 @@ export default function DashboardScreen({navigation}){
     }finally{setRefreshing(false);}
   }
 
-  useFocusEffect(React.useCallback(()=>{load();},[]));
+  async function loadNotes(){
+    setNotesBusy(true);
+    try{
+      const response=await api.get('/dashboard/notes');
+      setNotes(Array.isArray(response.data?.data)?response.data.data:[]);
+    }catch(error){
+      Alert.alert('Notes',error?.response?.data?.message||error?.message||'Unable to load notes.');
+    }finally{setNotesBusy(false);}
+  }
+
+  useFocusEffect(React.useCallback(()=>{load();loadNotes();},[]));
+
+  function beginNewNote(){setNoteId(null);setNoteText('');}
+  function editNote(note){setNoteId(note.id);setNoteText(note.text||'');}
+  async function saveNote(){
+    const text=noteText.trim();
+    if(!text)return Alert.alert('Notes','Enter a note before saving.');
+    setNotesSaving(true);
+    try{
+      const response=noteId
+        ? await api.patch('/dashboard/notes/'+encodeURIComponent(noteId),{text})
+        : await api.post('/dashboard/notes',{text});
+      const saved=response.data?.data;
+      if(saved){
+        setNotes(current=>{
+          const next=noteId?current.map(item=>item.id===saved.id?saved:item):[saved,...current];
+          return next.sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt));
+        });
+      }
+      beginNewNote();
+    }catch(error){
+      Alert.alert('Notes',error?.response?.data?.message||error?.message||'Unable to save note.');
+    }finally{setNotesSaving(false);}
+  }
+  async function deleteNote(note){
+    Alert.alert('Delete note','Delete this note?',[{text:'Cancel',style:'cancel'},{text:'Delete',style:'destructive',onPress:async()=>{
+      try{await api.delete('/dashboard/notes/'+encodeURIComponent(note.id));setNotes(current=>current.filter(item=>item.id!==note.id));if(noteId===note.id)beginNewNote();}
+      catch(error){Alert.alert('Notes',error?.response?.data?.message||error?.message||'Unable to delete note.');}
+    }}]);
+  }
 
   const loanPipeline=data?.loanPipeline||{};
   const actions=[
@@ -94,6 +138,57 @@ export default function DashboardScreen({navigation}){
         <View style={styles.sectionHeader}><View><AppText style={styles.sectionTitle}>Quick actions</AppText><AppText style={styles.sectionCaption}>Jump into your daily tasks</AppText></View><View style={styles.sectionBadge}><Ionicons name="flash-outline" size={15} color={colors.midnight}/></View></View>
         <View style={[styles.actionsGrid,{marginHorizontal:horizontalPadding}]}>{actions.map(([label,icon,screen])=><Pressable key={label} onPress={()=>navigation.navigate(screen)} style={styles.action}><View style={styles.actionIcon}><Ionicons name={icon} size={20} color={colors.midnight}/></View><View style={styles.actionBody}><AppText style={styles.actionText}>{label}</AppText><AppText style={styles.actionHint}>Open</AppText></View><Ionicons name="chevron-forward" size={17} color={colors.muted}/></Pressable>)}</View>
 
+
+        <View style={styles.notesSection}>
+          <View style={styles.sectionHeader}>
+            <View>
+              <AppText style={styles.sectionTitle}>Notes</AppText>
+              <AppText style={styles.sectionCaption}>Save urgent information and update it later</AppText>
+            </View>
+            <View style={styles.notesBadge}><Ionicons name="create-outline" size={16} color={colors.midnight}/></View>
+          </View>
+          <View style={styles.noteEditorCard}>
+            <View style={styles.noteEditorTop}>
+              <View style={styles.noteEditorTitleWrap}>
+                <Ionicons name="flash-outline" size={17} color={colors.burgundy}/>
+                <AppText style={styles.noteEditorTitle}>{noteId?'Update note':'New note'}</AppText>
+              </View>
+              {noteId?<Pressable onPress={beginNewNote} style={styles.cancelNoteButton}><AppText style={styles.cancelNoteText}>Cancel</AppText></Pressable>:null}
+            </View>
+            <TextInput
+              value={noteText}
+              onChangeText={setNoteText}
+              multiline
+              textAlignVertical="top"
+              maxLength={5000}
+              placeholder="Type an urgent note here..."
+              placeholderTextColor="#9AA4AD"
+              style={styles.noteInput}
+            />
+            <View style={styles.noteEditorBottom}>
+              <AppText style={styles.noteCount}>{noteText.length}/5000</AppText>
+              <Pressable disabled={notesSaving||!noteText.trim()} onPress={saveNote} style={({pressed})=>[styles.saveNoteButton,(notesSaving||!noteText.trim())&&styles.disabledButton,pressed&&styles.pressed]}>
+                {notesSaving?<ActivityIndicator size="small" color={colors.white}/>:<><Ionicons name="save-outline" size={16} color={colors.white}/><AppText style={styles.saveNoteText}>{noteId?'Update & Save':'Save Note'}</AppText></>}
+              </Pressable>
+            </View>
+          </View>
+          <View style={styles.savedNotesHeader}>
+            <AppText style={styles.savedNotesTitle}>Saved notes</AppText>
+            {notesBusy?<ActivityIndicator size="small" color={colors.teal}/>:<AppText style={styles.savedNotesCount}>{notes.length}</AppText>}
+          </View>
+          {notes.length===0&&!notesBusy?<View style={styles.emptyNotes}><Ionicons name="document-text-outline" size={22} color={colors.muted}/><AppText style={styles.emptyNotesText}>No saved notes yet.</AppText></View>:null}
+          {notes.map(note=><View key={note.id} style={styles.noteCard}>
+            <View style={styles.noteCardIcon}><Ionicons name="alert-circle-outline" size={19} color={colors.burgundy}/></View>
+            <View style={styles.noteCardBody}>
+              <AppText style={styles.noteCardText}>{note.text}</AppText>
+              <AppText style={styles.noteCardMeta}>Updated {new Date(note.updatedAt||note.createdAt).toLocaleString()}</AppText>
+            </View>
+            <View style={styles.noteCardActions}>
+              <Pressable onPress={()=>editNote(note)} style={styles.noteIconButton}><Ionicons name="create-outline" size={17} color={colors.midnight}/></Pressable>
+              <Pressable onPress={()=>deleteNote(note)} style={styles.noteIconButton}><Ionicons name="trash-outline" size={17} color={colors.danger}/></Pressable>
+            </View>
+          </View>)}
+        </View>
         <View style={styles.sectionHeader}><View><AppText style={styles.sectionTitle}>Loan pipeline</AppText><AppText style={styles.sectionCaption}>Current application movement</AppText></View><View style={styles.pipelineBadge}><Ionicons name="trending-up-outline" size={16} color={colors.teal}/></View></View>
         <View style={styles.pipelineCard}><PipelineRow name="Entered" value={loanPipeline.ENTERED} first/><PipelineRow name="Documents pending" value={loanPipeline.DOCUMENTS_PENDING}/><PipelineRow name="Submitted" value={loanPipeline.SUBMITTED}/><PipelineRow name="Under review" value={loanPipeline.UNDER_REVIEW}/><PipelineRow name="Approved" value={loanPipeline.APPROVED} last/></View>
         <View style={styles.bottomSpace}/>
@@ -131,5 +226,5 @@ const styles=StyleSheet.create({
   sectionHeader:{marginHorizontal:18,marginTop:24,marginBottom:12,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},sectionTitle:{color:colors.ink,fontSize:19,},sectionCaption:{color:colors.muted,fontSize:11,marginTop:3},sectionBadge:{width:34,height:34,borderRadius:12,backgroundColor:colors.goldLight,alignItems:'center',justifyContent:'center'},pipelineBadge:{width:34,height:34,borderRadius:12,backgroundColor:'rgba(38,166,154,0.12)',alignItems:'center',justifyContent:'center'},
   metricsGrid:{flexDirection:'row',flexWrap:'wrap',justifyContent:'space-between'},metric:{width:'48%',minHeight:132,backgroundColor:colors.white,borderRadius:22,padding:15,marginBottom:10,borderWidth:1,borderColor:'rgba(17,26,35,0.06)',justifyContent:'space-between'},metricIcon:{width:38,height:38,borderRadius:13,alignItems:'center',justifyContent:'center'},metricValue:{color:colors.ink,fontSize:27,marginTop:10},metricLabel:{color:colors.muted,fontSize:12,},
   actionsGrid:{flexDirection:'row',flexWrap:'wrap',justifyContent:'space-between'},action:{width:'48%',minHeight:76,backgroundColor:colors.white,borderRadius:19,padding:11,marginBottom:10,flexDirection:'row',alignItems:'center',borderWidth:1,borderColor:'rgba(17,26,35,0.06)'},actionIcon:{width:38,height:38,borderRadius:13,backgroundColor:colors.goldLight,alignItems:'center',justifyContent:'center'},actionBody:{flex:1,marginLeft:9},actionText:{color:colors.ink,fontSize:12,},actionHint:{color:colors.muted,fontSize:9,marginTop:2},
-  pipelineCard:{marginHorizontal:18,backgroundColor:colors.white,borderRadius:22,paddingHorizontal:15,borderWidth:1,borderColor:'rgba(17,26,35,0.06)'},pipelineRow:{minHeight:58,flexDirection:'row',alignItems:'center'},pipelineBorder:{borderTopWidth:1,borderTopColor:'#EFF0EE'},pipelineDot:{width:9,height:9,borderRadius:5,backgroundColor:colors.gold},pipelineName:{flex:1,color:colors.ink,fontSize:13,marginLeft:10},pipelineValueBox:{minWidth:36,height:30,paddingHorizontal:9,borderRadius:10,backgroundColor:colors.ivory,alignItems:'center',justifyContent:'center'},pipelineValue:{color:colors.midnight,fontSize:13,},bottomSpace:{height:110}
+  notesSection:{marginTop:2},notesBadge:{width:34,height:34,borderRadius:12,backgroundColor:colors.goldLight,alignItems:'center',justifyContent:'center'},noteEditorCard:{marginHorizontal:18,backgroundColor:colors.white,borderRadius:22,padding:15,borderWidth:1,borderColor:'rgba(17,26,35,0.06)'},noteEditorTop:{flexDirection:'row',alignItems:'center',justifyContent:'space-between'},noteEditorTitleWrap:{flexDirection:'row',alignItems:'center',gap:8},noteEditorTitle:{color:colors.ink,fontSize:13},cancelNoteButton:{paddingHorizontal:9,paddingVertical:5,borderRadius:8,backgroundColor:colors.ivory},cancelNoteText:{color:colors.muted,fontSize:10},noteInput:{minHeight:120,maxHeight:220,marginTop:12,borderRadius:15,borderWidth:1,borderColor:'rgba(17,26,35,0.10)',backgroundColor:'#FBFCFB',padding:13,color:colors.ink,fontSize:13,lineHeight:19},noteEditorBottom:{marginTop:10,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},noteCount:{color:colors.muted,fontSize:9},saveNoteButton:{minHeight:40,paddingHorizontal:13,borderRadius:12,backgroundColor:colors.midnight,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:6},disabledButton:{opacity:0.45},saveNoteText:{color:colors.white,fontSize:10,fontWeight:'700'},savedNotesHeader:{marginHorizontal:18,marginTop:14,marginBottom:8,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},savedNotesTitle:{color:colors.ink,fontSize:12,fontWeight:'700'},savedNotesCount:{minWidth:24,height:24,borderRadius:12,backgroundColor:colors.goldLight,color:colors.midnight,textAlign:'center',textAlignVertical:'center',fontSize:10},emptyNotes:{marginHorizontal:18,paddingVertical:22,alignItems:'center',justifyContent:'center',backgroundColor:'#F8F7F2',borderRadius:16,borderWidth:1,borderColor:'rgba(17,26,35,0.05)'},emptyNotesText:{color:colors.muted,fontSize:10,marginTop:5},noteCard:{marginHorizontal:18,marginBottom:9,padding:12,backgroundColor:colors.white,borderRadius:18,borderWidth:1,borderColor:'rgba(17,26,35,0.06)',flexDirection:'row',alignItems:'flex-start'},noteCardIcon:{width:34,height:34,borderRadius:11,backgroundColor:'rgba(198,83,83,0.10)',alignItems:'center',justifyContent:'center'},noteCardBody:{flex:1,marginLeft:10,paddingRight:6},noteCardText:{color:colors.ink,fontSize:12,lineHeight:18},noteCardMeta:{color:colors.muted,fontSize:8,marginTop:5},noteCardActions:{alignItems:'center',gap:7},noteIconButton:{width:30,height:30,borderRadius:9,backgroundColor:colors.ivory,alignItems:'center',justifyContent:'center'},pipelineCard:{marginHorizontal:18,backgroundColor:colors.white,borderRadius:22,paddingHorizontal:15,borderWidth:1,borderColor:'rgba(17,26,35,0.06)'},pipelineRow:{minHeight:58,flexDirection:'row',alignItems:'center'},pipelineBorder:{borderTopWidth:1,borderTopColor:'#EFF0EE'},pipelineDot:{width:9,height:9,borderRadius:5,backgroundColor:colors.gold},pipelineName:{flex:1,color:colors.ink,fontSize:13,marginLeft:10},pipelineValueBox:{minWidth:36,height:30,paddingHorizontal:9,borderRadius:10,backgroundColor:colors.ivory,alignItems:'center',justifyContent:'center'},pipelineValue:{color:colors.midnight,fontSize:13,},bottomSpace:{height:110}
 });

@@ -1,8 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {notifyAuthExpired} from './authEvents';
-import {fetch as expoFetch} from 'expo/fetch';
-import {File} from 'expo-file-system';
+import {File, UploadType} from 'expo-file-system';
 
 const PRODUCTION_API_URL = 'https://sm-associate-backend.onrender.com/api/v1';
 

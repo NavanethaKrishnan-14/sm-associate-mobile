@@ -116,22 +116,15 @@ export async function uploadDocument(path, asset, fields = {}) {
   }
 
   try{
-    // Expo DocumentPicker can return Android cache/file URIs that the legacy
-    // FileSystem.uploadAsync native module rejects as "isn't readable".
-    // Fetching the local URI and putting the resulting Blob into FormData
-    // avoids that native uploadAsync readability problem.
-    let blob;
-    try{
-      const localResponse=await fetch(asset.uri);
-      if(!localResponse.ok) throw new Error('Unable to read the selected document.');
-      blob=await localResponse.blob();
-    }catch(readError){
-      console.error('Selected document read failed:',readError);
-      throw new Error('The selected document could not be read. Please select the file again.');
-    }
-
+    // Send the native DocumentPicker URI directly as a React Native
+    // multipart file. This avoids Response.blob(), base64 conversion,
+    // and the Expo Blob performance warning.
     const formData=new FormData();
-    formData.append('file',blob,fileName);
+    formData.append('file',{
+      uri:asset.uri,
+      name:fileName,
+      type:mimeType
+    });
     formData.append('originalName',fileName);
 
     Object.entries(fields||{}).forEach(([key,value])=>{

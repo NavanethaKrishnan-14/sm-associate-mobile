@@ -126,78 +126,59 @@ export async function uploadDocument(path, asset, fields = {}) {
 
   try{
     if(isCustomerDocument){
-      // 1. Ask our backend for a signed Cloudinary upload.
-      const signatureResponse=await api.post(path+'/signature',{
-        originalName:fileName,
-        ...(fields||{})
-      });
-
-      const signatureData=signatureResponse?.data?.data;
-      if(!signatureData?.signature||!signatureData?.uploadUrl||!signatureData?.publicId){
-        throw new Error('The server could not prepare the Cloudinary upload.');
-      }
-
-      // 2. Upload directly from the native Android/iOS file URI to Cloudinary.
-      // No JS Blob, Response.blob(), or FormData is used.
+      // Customer documents are stored directly in PostgreSQL.
+      // Do NOT call the legacy Cloudinary /signature or /complete endpoints.
       const uploadResult=await FileSystem.uploadAsync(
-        signatureData.uploadUrl,
+        API_BASE_URL+path,
         asset.uri,
         {
           httpMethod:'POST',
           uploadType:FileSystem.FileSystemUploadType.MULTIPART,
           fieldName:'file',
           mimeType,
-          parameters:{
-            api_key:String(signatureData.apiKey),
-            timestamp:String(signatureData.timestamp),
-            signature:String(signatureData.signature),
-            public_id:String(signatureData.publicId),
-            display_name:String(signatureData.displayName||fileName)
-          }
+          headers:{
+            Accept:'application/json',
+            Authorization:'Bearer '+token,
+            'x-access-token':token
+          },
+          parameters:Object.fromEntries(
+            Object.entries({
+              originalName:fileName,
+              ...(fields||{})
+            }).map(([key,value])=>[key,String(value)])
+          )
         }
       );
 
-      let cloudinaryData={};
+      let data={};
       try{
-        cloudinaryData=uploadResult?.body?JSON.parse(uploadResult.body):{};
+        data=uploadResult?.body?JSON.parse(uploadResult.body):{};
       }catch{
-        cloudinaryData={
-          error:{message:uploadResult?.body||'Cloudinary returned an invalid response.'}
-        };
+        data={message:uploadResult?.body||'The server returned an invalid response.'};
       }
 
       const status=Number(uploadResult?.status||0);
-      if(
-        status<200||
-        status>=300||
-        !cloudinaryData?.secure_url||
-        !cloudinaryData?.public_id
-      ){
+      if(status===401){
+        await logout();
+        notifyAuthExpired();
+        throw new Error('Your login session has expired. Please sign in again.');
+      }
+
+      if(status<200||status>=300){
         throw new Error(
-          cloudinaryData?.error?.message||
-          'Cloudinary could not upload the selected document.'
+          data?.message||
+          'Customer document upload failed with HTTP '+String(status)+'.'
         );
       }
 
-      // 3. Save the Cloudinary URL + metadata in MongoDB.
-      const completeResponse=await api.post(path+'/complete',{
-        originalName:fileName,
-        publicId:String(cloudinaryData.public_id),
-        secureUrl:String(cloudinaryData.secure_url),
-        resourceType:String(cloudinaryData.resource_type||signatureData.resourceType||'raw'),
-        format:String(cloudinaryData.format||''),
-        size:Number(cloudinaryData.bytes||fileSize||0),
-        ...(fields||{})
-      });
-
-      if(completeResponse?.data?.success!==true){
+      if(data?.success!==true){
         throw new Error(
-          completeResponse?.data?.message||
-          'The document uploaded to Cloudinary but could not be saved to the customer.'
+          data?.message||
+          'Customer document upload was not confirmed by the server.'
         );
       }
 
-      return completeResponse.data;
+      return data;
     }
 
     // Car/loan document endpoints also use native multipart upload.

@@ -5,13 +5,14 @@ import {Alert, ActivityIndicator, Modal, Pressable, ScrollView, View} from 'reac
 import {api} from '../api/client';
 import {colors} from '../theme/colors';
 import {Ionicons} from '@expo/vector-icons';
+import ServiceHeader from '../components/ServiceHeader';
 
 const emptyExpense={carId:'',category:'Repair',description:'',amount:'',date:''};
 export default function AdminToolsScreen({route,navigation}){
  const {top}=useSafeAreaInsets();
  const section=route?.params?.section||'Users';
  return <View style={[s.adminPage,{paddingTop:Math.max(22,top+22)}]}>
- <View style={s.topBar}><Pressable onPress={()=>navigation.goBack()} style={s.back}><Ionicons name="arrow-back" size={22} color={colors.ink}/></Pressable><View style={{flex:1,marginLeft:10}}><AppText style={s.topTitle}>{section}</AppText><AppText style={s.topSubtitle}>Admin management</AppText></View></View>
+ <ServiceHeader title={section} subtitle="Manage business access, expenses and administrative records." navigation={navigation} kicker="SM ASSOCIATE / ADMIN"/>
  <View style={s.adminContent}>{section==='Users'?<Users/>:section==='Expenses'?<Expenses/>:<Reports section={section}/>}</View>
  </View>;
 }

@@ -46,6 +46,7 @@ export default function CarSaleScreen({navigation}) {
   const [editModal, setEditModal] = useState(false);
   const [editingCar, setEditingCar] = useState(null);
   const [editForm, setEditForm] = useState({buyerId: '', sellingPrice: '', sellingExpenses: '0', saleDate: '', notes: ''});
+  const [editFiles, setEditFiles] = useState({});
   const [actionBusy, setActionBusy] = useState(false);
   const [form, setForm] = useState(emptyForm);
 
@@ -93,6 +94,7 @@ export default function CarSaleScreen({navigation}) {
   const openEditSale = car => {
     const sale = car.sale || car.saleDetails || {};
     setEditingCar(car);
+    setEditFiles({});
     setEditForm({
       buyerId: idOf(sale.buyerId || sale.buyer || ''),
       sellingPrice: String(sale.sellingPrice ?? car.sellingPrice ?? car.salePrice ?? ''),
@@ -121,14 +123,26 @@ export default function CarSaleScreen({navigation}) {
     }
     setActionBusy(true);
     try {
-      await api.patch('/cars/' + encodeURIComponent(idOf(editingCar)) + '/sale', {
+      const carId = encodeURIComponent(idOf(editingCar));
+      await api.patch('/cars/' + carId + '/sale', {
         buyerId: editForm.buyerId,
         sellingPrice: price,
         sellingExpenses: expenses,
         ...(editForm.saleDate ? {saleDate: editForm.saleDate} : {}),
         notes: editForm.notes
       });
+
+      // Upload replacement files selected in Edit Sale after saving the sale details.
+      for (const [key] of saleDocs) {
+        if (!editFiles[key]) continue;
+        await uploadDocument('/cars/' + carId + '/sale/documents/' + key, editFiles[key]);
+      }
+      for (const [key, file] of Object.entries(editFiles)) {
+        if (!key.startsWith('custom:') || !file) continue;
+        await uploadDocument('/cars/' + carId + '/sale/documents/custom', file, {documentName: key.slice('custom:'.length)});
+      }
       setEditModal(false);
+      setEditFiles({});
       setEditingCar(null);
       await load();
       Alert.alert('Sale Updated Successfully', 'The completed sale details have been updated.');
@@ -447,6 +461,52 @@ export default function CarSaleScreen({navigation}) {
               <Field label="Selling Expenses (₹)" value={editForm.sellingExpenses} onChangeText={value => setEditForm(previous => ({...previous, sellingExpenses: value.replace(/[^0-9.]/g, '')}))} keyboardType="decimal-pad" />
               <Field label="Sale Date (YYYY-MM-DD, optional)" value={editForm.saleDate} onChangeText={value => setEditForm(previous => ({...previous, saleDate: value}))} />
               <Field label="Notes (optional)" value={editForm.notes} onChangeText={value => setEditForm(previous => ({...previous, notes: value}))} />
+
+              <AppText style={s.formSection}>SALE DOCUMENTS</AppText>
+              <AppText style={s.documentHint}>Existing files are shown below. Choose Replace to upload a new version, or leave the file unchanged.</AppText>
+              {saleDocs.map(([key, label]) => {
+                const sale = editingCar?.sale || editingCar?.saleDetails || {};
+                const uploaded = sale.documents?.uploads?.[key] || editingCar?.saleDocuments?.uploads?.[key] || sale.documents?.[key];
+                return (
+                  <View key={key} style={s.doc}>
+                    <AppText style={s.cardTitle}>{label}</AppText>
+                    {uploaded?.url ? (
+                      <Pressable onPress={() => Linking.openURL(resolveDocumentUrl(uploaded.url))} style={s.openDoc}>
+                        <AppText style={s.openDocText}>View current document</AppText>
+                      </Pressable>
+                    ) : (
+                      <AppText style={s.muted}>No document uploaded yet</AppText>
+                    )}
+                    {uploaded?.originalName ? <AppText style={s.fileMeta} numberOfLines={1}>Current file: {uploaded.originalName}</AppText> : null}
+                    <DocumentPickerButton
+                      label={uploaded?.url ? 'Replace document' : 'Upload document'}
+                      file={editFiles[key]}
+                      uploaded={uploaded}
+                      onPick={file => setEditFiles(previous => ({...previous, [key]: file}))}
+                    />
+                  </View>
+                );
+              })}
+              {((editingCar?.sale || editingCar?.saleDetails || {}).documents?.customUploads || []).map(doc => {
+                const key = 'custom:' + doc.name;
+                return (
+                  <View key={key} style={s.doc}>
+                    <AppText style={s.cardTitle}>{doc.name || 'Custom document'}</AppText>
+                    {doc.url ? (
+                      <Pressable onPress={() => Linking.openURL(resolveDocumentUrl(doc.url))} style={s.openDoc}>
+                        <AppText style={s.openDocText}>View current document</AppText>
+                      </Pressable>
+                    ) : <AppText style={s.muted}>No document uploaded yet</AppText>}
+                    {doc.originalName ? <AppText style={s.fileMeta} numberOfLines={1}>Current file: {doc.originalName}</AppText> : null}
+                    <DocumentPickerButton
+                      label="Replace document"
+                      file={editFiles[key]}
+                      uploaded={doc}
+                      onPick={file => setEditFiles(previous => ({...previous, [key]: file}))}
+                    />
+                  </View>
+                );
+              })}
               <View style={s.net}>
                 <View><AppText style={s.netLabel}>ESTIMATED NET SALE VALUE</AppText><AppText style={s.netHint}>Selling price minus selling expenses</AppText></View>
                 <AppText style={s.netValue}>₹{money(Math.max(0, Number(editForm.sellingPrice || 0) - Number(editForm.sellingExpenses || 0)))}</AppText>
@@ -609,6 +669,8 @@ const s = {
   closeButton: {width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.white},
   form: {paddingBottom: 28},
   formSection: {fontSize: 11, letterSpacing: 0.8, color: colors.ink, marginTop: 15, marginBottom: 9, fontWeight: '700'},
+  documentHint: {fontSize: 11, color: colors.muted, lineHeight: 17, marginBottom: 8},
+  fileMeta: {fontSize: 10, color: colors.muted, marginTop: 5},
   option: {backgroundColor: colors.white, borderRadius: 16, padding: 12, marginBottom: 8, borderWidth: 1, borderColor: 'rgba(39,168,154,.13)', flexDirection: 'row', alignItems: 'center'},
   active: {borderColor: colors.gold, backgroundColor: '#FFF9E8'},
   avatar: {width: 42, height: 42, borderRadius: 14, backgroundColor: colors.navy, alignItems: 'center', justifyContent: 'center', marginRight: 11},

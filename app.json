@@ -13,7 +13,7 @@
     "ios": {
       "supportsTablet": true,
       "requireFullScreen": false,
-      "icon": "./assets/icon.png"
+      "icon": "./assets/sm-associate-exact-app-icon.png"
     },
     "android": {
       "package": "com.smassociate.management",

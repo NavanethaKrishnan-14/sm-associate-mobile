@@ -9,7 +9,7 @@
       "ios"
     ],
     "userInterfaceStyle": "light",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/sm-associate-exact-app-icon.png",
     "ios": {
       "supportsTablet": true,
       "requireFullScreen": false,
@@ -19,7 +19,7 @@
       "package": "com.smassociate.management",
       "usesCleartextTraffic": true,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/sm-associate-exact-app-icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },

@@ -54,7 +54,7 @@ export default function CustomersScreen({navigation}){
     {text:'Delete',style:'destructive',onPress:async()=>{try{await api.delete('/customers/'+item._id);load()}catch(e){Alert.alert('Delete',e?.response?.data?.message||'Unable to delete customer.')}}}
    ]);
  }
- return <View style={[s.page,{paddingTop:Math.max(22,top+22)}]}>
+ return <View style={[s.page,{paddingTop:top+12}]}>
    <ServiceHeader title="Customers" subtitle="Manage customer profiles, contact details and documents." showBack={false} actionLabel="Add" onAction={openAdd}/>
    <View style={s.search}><Ionicons name="search" size={18} color={colors.muted}/><AppTextInput value={q} onChangeText={setQ} placeholder="Search name or mobile" placeholderTextColor="#9AA4AD" style={s.searchInput}/></View>
    {busy?<ActivityIndicator style={{marginTop:40}} color={colors.gold}/>:filtered.length===0?<View style={s.empty}><View style={s.emptyIcon}><Ionicons name="people-outline" size={26} color={colors.teal}/></View><AppText style={s.emptyTitle}>{q?'No customers found':'No customers yet'}</AppText><AppText style={s.emptyText}>{q?'Try a different name or mobile number.':'Customer records will appear here after they are created.'}</AppText>{q?<Pressable onPress={()=>setQ('')} style={s.emptyButton}><AppText style={s.emptyButtonText}>Clear Search</AppText></Pressable>:<Pressable onPress={openAdd} style={s.emptyButton}><AppText style={s.emptyButtonText}>Add Customer</AppText></Pressable>}</View>:<ScrollView contentContainerStyle={s.list}>{filtered.map(c=><Pressable key={c._id} onPress={()=>openProfile(c)} style={s.card}>

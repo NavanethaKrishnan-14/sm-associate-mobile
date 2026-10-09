@@ -77,7 +77,7 @@ export default function MoreScreen({navigation}) {
             </View>
 
             <View style={styles.headerCode}>
-              <AppText style={styles.headerCodeTop}>06</AppText>
+              <AppText style={styles.headerCodeTop}>07</AppText>
               <AppText style={styles.headerCodeBottom}>TOOLS</AppText>
             </View>
           </View>
@@ -112,7 +112,7 @@ export default function MoreScreen({navigation}) {
 
             <View style={styles.heroInsights}>
               <View style={styles.heroInsightPrimary}>
-                <AppText style={styles.heroInsightNumber}>06</AppText>
+                <AppText style={styles.heroInsightNumber}>07</AppText>
                 <AppText style={styles.heroInsightLabel}>TOOLS AT HAND</AppText>
               </View>
 

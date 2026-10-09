@@ -396,16 +396,16 @@ export default function CarSaleScreen({navigation}) {
                   </View>
                 </View>
                 <AppText style={{fontSize: 14, color: colors.ink, marginTop: 12}}>
-                  Selling price: ₹{money(sellingPrice)}
+                  ₹{money(sellingPrice)}
                 </AppText>
                 {car.registrationNumber ? (
                   <AppText style={{fontSize: 12, color: colors.muted, marginTop: 6}}>
-                    Registration: {car.registrationNumber}
+                    {car.registrationNumber}
                   </AppText>
                 ) : null}
                 {saleDate ? (
                   <AppText style={{fontSize: 12, color: colors.muted, marginTop: 6}}>
-                    Sale date: {saleDate}
+                    {saleDate}
                   </AppText>
                 ) : null}
                 {sale.notes ? (

@@ -124,7 +124,10 @@ export async function login(email, password) {
       console.error('Login response did not include a token.', {
         status: response.status,
         responseKeys: data && typeof data === 'object' ? Object.keys(data) : [],
-        dataKeys: data?.data && typeof data.data === 'object' ? Object.keys(data.data) : []
+        dataKeys: data?.data && typeof data.data === 'object' ? Object.keys(data.data) : [],
+        responseType: typeof response.data,
+        contentType: response.headers?.['content-type'] || null,
+        bodyPreview: typeof response.data === 'string' ? response.data.slice(0, 160) : null
       });
       throw new Error('The server confirmed login but returned no access token. Please update the backend deployment and try again.');
     }

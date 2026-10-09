@@ -35,7 +35,7 @@ export default function LoansScreen({navigation}){
 }
  useFocusEffect(React.useCallback(()=>{load();},[]));
  function openAdd(){setEditing(null);setForm({...blank});setModal(true)}
- function openEdit(l){setEditing(l);setForm({customerId:l.customerId?._id||l.customerId||'',loanType:l.loanType||'Home Loan',requiredAmount:String(l.requiredAmount||''),approvedAmount:String(l.approvedAmount||''),financeCompany:l.financeCompany||'',commission:String(l.commission||0),applicationDate:l.applicationDate?String(l.applicationDate).slice(0,10):'',expectedDisbursementDate:l.expectedDisbursementDate?String(l.expectedDisbursementDate).slice(0,10):'',disbursementDate:l.disbursementDate?String(l.disbursementDate).slice(0,10):'',rejectionReason:l.rejectionReason||'',notes:l.notes||'',status:l.status||'ENTERED'});setFiles({});setModal(true)}
+ function openEdit(l){setEditing(l);setForm({customerId:l.customerId?._id||l.customerId||'',loanType:l.loanType||'Home Loan',requiredAmount:String(l.requiredAmount||''),approvedAmount:String(l.approvedAmount||''),financeCompany:l.financeCompany||'',commission:String(l.commission||0),applicationDate:l.applicationDate?String(l.applicationDate).slice(0,10):'',expectedDisbursementDate:l.expectedDisbursementDate?String(l.expectedDisbursementDate).slice(0,10):'',disbursementDate:l.disbursementDate?String(l.disbursementDate).slice(0,10):'',rejectionReason:l.rejectionReason||'',notes:l.notes||'',status:l.status||'ENTERED'});setModal(true)}
  function set(key,value){setForm(p=>({...p,[key]:value}))}
  async function save(){
   if(!form.customerId||!form.loanType||!form.requiredAmount)return Alert.alert('Loan','Customer, loan type and required amount are required.');

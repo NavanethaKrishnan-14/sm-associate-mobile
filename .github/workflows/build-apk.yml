@@ -36,22 +36,23 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Generate custom SM Associate app icons
+      - name: Use exact uploaded SM Associate PNG as app icon
         run: |
+          test -f assets/sm-associate-exact-app-icon.png
           python3 -m venv /tmp/icon-venv
-          /tmp/icon-venv/bin/pip install --quiet CairoSVG Pillow
+          /tmp/icon-venv/bin/pip install --quiet Pillow
           /tmp/icon-venv/bin/python - <<'PY'
-          import cairosvg
           from PIL import Image
-          cairosvg.svg2png(url="assets/sm-associate-app-icon.svg", write_to="/tmp/sm-icon-source.png", output_width=1024, output_height=1024)
-          icon = Image.open("/tmp/sm-icon-source.png").convert("RGBA")
+          source = Image.open("assets/sm-associate-exact-app-icon.png").convert("RGBA")
+          # Use the exact uploaded artwork for the standard launcher and iOS icon.
+          icon = source.resize((1024, 1024), Image.Resampling.LANCZOS)
           icon.save("assets/icon.png", format="PNG", optimize=True)
-          # Adaptive foreground with transparent outer area; preserve the full tile inside Android's safe zone.
+          # Keep the same exact artwork centered within Android's adaptive icon safe zone.
           foreground = Image.new("RGBA", (1024, 1024), (0, 0, 0, 0))
           tile = icon.resize((720, 720), Image.Resampling.LANCZOS)
-          foreground.alpha_composite(tile, ((1024-720)//2, (1024-720)//2))
+          foreground.alpha_composite(tile, ((1024 - 720) // 2, (1024 - 720) // 2))
           foreground.save("assets/adaptive-icon.png", format="PNG", optimize=True)
-          print("Generated custom SM Associate launcher icon and Android adaptive foreground.")
+          print("Configured uploaded exact PNG for standard and Android adaptive app icons.")
           PY
 
       - name: Verify Expo configuration

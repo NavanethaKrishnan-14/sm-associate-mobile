@@ -361,23 +361,60 @@ export default function CarSaleScreen({navigation}) {
           )) : <Empty icon="car-outline" title="No available vehicles" text="Add a vehicle in Car Inventory before recording a sale." />}
 
           <AppText style={s.sectionLabel}>COMPLETED SALES</AppText>
-          {soldCars.length ? soldCars.map(car => {
+          {soldCars.length ? soldCars.map((car,index) => {
             const sale = car.sale || car.saleDetails || {};
             const buyer = sale.buyer || (sale.buyerId && typeof sale.buyerId === 'object' ? sale.buyerId : null);
+            const buyerName = buyer?.name || 'Buyer not set';
+            const vehicleName = [car.make, car.model].filter(Boolean).join(' ') || 'Vehicle';
+            const saleDate = sale.saleDate ? String(sale.saleDate).slice(0, 10) : '';
+            const sellingPrice = sale.sellingPrice ?? car.sellingPrice ?? car.salePrice;
             return (
-              <View key={idOf(car)} style={[s.carCard, s.saleCard]}>
-                <View style={s.saleTopRow}>
-                  <Pressable onPress={() => setViewCar(car)} style={s.saleInfo}>
-                    <View style={s.soldIcon}><Ionicons name="checkmark-circle-outline" size={22} color={colors.teal} /></View>
-                    <View style={{flex: 1}}>
-                      <AppText style={s.cardTitle}>{car.vehicleId || car.id || 'Vehicle'} · {[car.make, car.model].filter(Boolean).join(' ')}</AppText>
-                      <AppText style={s.muted}>{car.registrationNumber || 'No registration'} · {buyer?.name || 'Buyer not set'}</AppText>
-                      <AppText style={s.priceText}>Selling price ₹{money(sale.sellingPrice ?? car.sellingPrice ?? car.salePrice)}</AppText>
-                    </View>
-                  </Pressable>
-                  <View style={s.soldBadge}><AppText style={s.soldBadgeText}>SOLD</AppText></View>
+              <Pressable
+                key={idOf(car) || String(index)}
+                onPress={() => setViewCar(car)}
+                style={({pressed}) => [{
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: 16,
+                  padding: 16,
+                  marginBottom: 11,
+                  borderWidth: 1,
+                  borderColor: '#E4E8E7',
+                  opacity: pressed ? 0.82 : 1
+                }]}
+                accessibilityRole="button"
+                accessibilityLabel={'View completed sale for ' + vehicleName}
+              >
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10}}>
+                  <View style={{flex: 1}}>
+                    <AppText style={{fontSize: 15, color: colors.ink}}>{buyerName}</AppText>
+                    <AppText style={{fontSize: 12, color: colors.muted, marginTop: 4}}>
+                      {(car.vehicleId || car.id || 'Vehicle') + ' · ' + vehicleName}
+                    </AppText>
+                  </View>
+                  <View style={{backgroundColor: '#E2F4EC', paddingHorizontal: 9, paddingVertical: 6, borderRadius: 9, alignSelf: 'flex-start'}}>
+                    <AppText style={{fontSize: 10, color: colors.ink}}>SOLD</AppText>
+                  </View>
                 </View>
-              </View>
+                <AppText style={{fontSize: 14, color: colors.ink, marginTop: 12}}>
+                  Selling price: ₹{money(sellingPrice)}
+                </AppText>
+                {car.registrationNumber ? (
+                  <AppText style={{fontSize: 12, color: colors.muted, marginTop: 6}}>
+                    Registration: {car.registrationNumber}
+                  </AppText>
+                ) : null}
+                {saleDate ? (
+                  <AppText style={{fontSize: 12, color: colors.muted, marginTop: 6}}>
+                    Sale date: {saleDate}
+                  </AppText>
+                ) : null}
+                {sale.notes ? (
+                  <AppText style={{fontSize: 12, color: colors.muted, marginTop: 7}} numberOfLines={2}>
+                    {sale.notes}
+                  </AppText>
+                ) : null}
+                <AppText style={{fontSize: 11, color: colors.teal, marginTop: 12}}>Tap to view or update →</AppText>
+              </Pressable>
             );
           }) : <Empty icon="receipt-outline" title="No completed sales" text="Successfully recorded vehicle sales will appear here." />}
         </ScrollView>

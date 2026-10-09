@@ -363,14 +363,6 @@ export default function CarSaleScreen({navigation}) {
                   </Pressable>
                   <View style={s.soldBadge}><AppText style={s.soldBadgeText}>SOLD</AppText></View>
                 </View>
-                <View style={s.saleActions}>
-                  <Pressable disabled={actionBusy} onPress={() => openEditSale(car)} style={[s.secondaryAction, actionBusy && s.disabled]} accessibilityRole="button" accessibilityLabel="Edit completed sale">
-                    <AppText style={s.secondaryActionText}>Edit</AppText>
-                  </Pressable>
-                  <Pressable disabled={actionBusy} onPress={() => deleteSale(car)} style={[s.deleteSaleAction, actionBusy && s.disabled]} accessibilityRole="button" accessibilityLabel="Delete completed sale">
-                    <AppText style={s.deleteSaleActionText}>Delete</AppText>
-                  </Pressable>
-                </View>
               </View>
             );
           }) : <Empty icon="receipt-outline" title="No completed sales" text="Successfully recorded vehicle sales will appear here." />}
@@ -412,6 +404,16 @@ export default function CarSaleScreen({navigation}) {
                     </View>
                   );
                 })}
+                {String(viewCar.status || '').toUpperCase() === 'SOLD' || viewCar.sale || viewCar.saleDetails ? (
+                  <View style={s.viewSaleActions}>
+                    <Pressable disabled={actionBusy} onPress={() => { const carToEdit = viewCar; setViewCar(null); openEditSale(carToEdit); }} style={[s.viewEditAction, actionBusy && s.disabled]} accessibilityRole="button" accessibilityLabel="Edit completed sale">
+                      <AppText style={s.viewEditText}>Edit Sale</AppText>
+                    </Pressable>
+                    <Pressable disabled={actionBusy} onPress={() => deleteSale(viewCar)} style={[s.viewDeleteAction, actionBusy && s.disabled]} accessibilityRole="button" accessibilityLabel="Delete completed sale">
+                      <AppText style={s.viewDeleteText}>Delete Sale</AppText>
+                    </Pressable>
+                  </View>
+                ) : null}
               </ScrollView>
             ) : null}
           </View>
@@ -580,11 +582,11 @@ const s = {
   saleCard: {flexDirection: 'column', alignItems: 'stretch'},
   saleTopRow: {flexDirection: 'row', alignItems: 'flex-start', width: '100%', gap: 8},
   saleInfo: {flexDirection: 'row', alignItems: 'center', flex: 1, minWidth: 0},
-  saleActions: {flexDirection: 'row', gap: 8, marginTop: 14, width: '100%'},
-  secondaryAction: {flex: 1, height: 44, borderRadius: 15, borderWidth: 1, borderColor: 'rgba(39,168,154,0.20)', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.white},
-  secondaryActionText: {color: colors.midnight},
-  deleteSaleAction: {flex: 1, height: 44, borderRadius: 13, backgroundColor: '#FFF2F2', borderWidth: 1, borderColor: '#E8CACA', alignItems: 'center', justifyContent: 'center'},
-  deleteSaleActionText: {color: colors.danger},
+  viewSaleActions: {flexDirection: 'row', gap: 10, marginTop: 16, marginBottom: 8},
+  viewEditAction: {flex: 1, height: 48, borderRadius: 15, borderWidth: 1, borderColor: 'rgba(39,168,154,0.20)', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.white},
+  viewEditText: {color: colors.midnight, fontSize: 13, fontWeight: '600'},
+  viewDeleteAction: {flex: 1, height: 48, borderRadius: 13, backgroundColor: '#FFF2F2', borderWidth: 1, borderColor: '#E8CACA', alignItems: 'center', justifyContent: 'center'},
+  viewDeleteText: {color: colors.danger, fontSize: 13, fontWeight: '600'},
   carIcon: {width: 44, height: 44, borderRadius: 14, backgroundColor: colors.goldLight, alignItems: 'center', justifyContent: 'center', marginRight: 11},
   soldIcon: {width: 44, height: 44, borderRadius: 14, backgroundColor: '#EAF6F1', alignItems: 'center', justifyContent: 'center', marginRight: 11},
   cardTitle: {fontSize: 14, color: colors.ink, fontWeight: '600'},

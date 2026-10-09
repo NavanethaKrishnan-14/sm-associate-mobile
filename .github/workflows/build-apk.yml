@@ -36,33 +36,22 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Prepare official SM Associate app icon
+      - name: Generate custom SM Associate app icons
         run: |
-          mkdir -p assets
-          curl --fail --location --retry 3 \
-            https://raw.githubusercontent.com/NavanethaKrishnan-14/sm-associate-web/main/public/assets/sm-associate-logo.png \
-            --output /tmp/sm-associate-logo.png
           python3 -m venv /tmp/icon-venv
-          /tmp/icon-venv/bin/pip install --quiet Pillow
+          /tmp/icon-venv/bin/pip install --quiet CairoSVG Pillow
           /tmp/icon-venv/bin/python - <<'PY'
+          import cairosvg
           from PIL import Image
-          logo = Image.open("/tmp/sm-associate-logo.png").convert("RGBA")
-          # The source is a wide wordmark. Keep it within Android's adaptive-icon safe zone.
-          logo.thumbnail((600, 600), Image.Resampling.LANCZOS)
-          x = (1024 - logo.width) // 2
-          y = (1024 - logo.height) // 2
-
-          # Standard launcher/iOS icon: white square with the full official wordmark.
-          standard = Image.new("RGBA", (1024, 1024), (255, 255, 255, 255))
-          standard.alpha_composite(logo, (x, y))
-          standard.convert("RGB").save("assets/icon.png", format="PNG", optimize=True)
-
-          # Android adaptive foreground: transparent outside the logo so Android's icon mask
-          # cannot cover the logo with an opaque square.
-          adaptive = Image.new("RGBA", (1024, 1024), (0, 0, 0, 0))
-          adaptive.alpha_composite(logo, (x, y))
-          adaptive.save("assets/adaptive-icon.png", format="PNG", optimize=True)
-          print(f"Created standard and adaptive icons from official logo: {logo.size}")
+          cairosvg.svg2png(url="assets/sm-associate-app-icon.svg", write_to="/tmp/sm-icon-source.png", output_width=1024, output_height=1024)
+          icon = Image.open("/tmp/sm-icon-source.png").convert("RGBA")
+          icon.save("assets/icon.png", format="PNG", optimize=True)
+          # Adaptive foreground with transparent outer area; preserve the full tile inside Android's safe zone.
+          foreground = Image.new("RGBA", (1024, 1024), (0, 0, 0, 0))
+          tile = icon.resize((720, 720), Image.Resampling.LANCZOS)
+          foreground.alpha_composite(tile, ((1024-720)//2, (1024-720)//2))
+          foreground.save("assets/adaptive-icon.png", format="PNG", optimize=True)
+          print("Generated custom SM Associate launcher icon and Android adaptive foreground.")
           PY
 
       - name: Verify Expo configuration

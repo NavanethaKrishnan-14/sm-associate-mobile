@@ -391,13 +391,15 @@ export default function CarSaleScreen({navigation}) {
                       {(car.vehicleId || car.id || 'Vehicle') + ' · ' + vehicleName}
                     </AppText>
                   </View>
-                  <View style={{backgroundColor: '#E2F4EC', paddingHorizontal: 9, paddingVertical: 6, borderRadius: 9, alignSelf: 'flex-start'}}>
-                    <AppText style={{fontSize: 10, color: colors.ink}}>SOLD</AppText>
+                  <View style={{alignItems: 'flex-end', gap: 8}}>
+                    <View style={{backgroundColor: '#E2F4EC', paddingHorizontal: 9, paddingVertical: 6, borderRadius: 9, alignSelf: 'flex-end'}}>
+                      <AppText style={{fontSize: 10, color: colors.ink}}>SOLD</AppText>
+                    </View>
+                    <AppText style={{fontSize: 14, color: colors.ink, fontWeight: '700'}}>
+                      ₹{money(sellingPrice)}
+                    </AppText>
                   </View>
                 </View>
-                <AppText style={{fontSize: 14, color: colors.ink, marginTop: 12}}>
-                  ₹{money(sellingPrice)}
-                </AppText>
                 {sale.notes ? (
                   <AppText style={{fontSize: 12, color: colors.muted, marginTop: 7}} numberOfLines={2}>
                     {sale.notes}

@@ -21,7 +21,7 @@ export default function CustomersScreen({navigation}){
  const filtered=items.filter(x=>(x.name||'').toLowerCase().includes(q.toLowerCase())||(x.mobile||'').includes(q));
  function openAdd(){setEditing(null);setForm({...empty});setFiles({});setCustomDocs([]);setCustomName('');setModal(true)}
  function openProfile(item){setProfile(item)}
- function openEdit(item){setEditing(item);const { _id, documents, ...editable }=item||{};setForm({...empty,...editable});setFiles({});setCustomDocs(Array.isArray(documents?.customDocuments)?documents.customDocuments:[]);setCustomName('');setModal(true)}
+ function openEdit(item){setEditing(item);const { _id, id, customerId, createdAt, updatedAt, documents, ...editable }=item||{};setForm({...empty,...editable});setFiles({});setCustomDocs(Array.isArray(documents?.customDocuments)?documents.customDocuments:[]);setCustomName('');setModal(true)}
  function existingCustomDoc(name){return (editing?.documents?.customUploads||[]).find(item=>String(item?.name||'').toLowerCase()===String(name).toLowerCase())||null}
  function addCustom(){const n=customName.trim();if(!n)return Alert.alert('Document','Enter a document name.');if(docs.some(([,title])=>title.toLowerCase()===n.toLowerCase())||customDocs.some(x=>String(x).toLowerCase()===n.toLowerCase()))return Alert.alert('Document','This document already exists.');setCustomDocs(p=>[...p,n]);setCustomName('')}
  async function save(){

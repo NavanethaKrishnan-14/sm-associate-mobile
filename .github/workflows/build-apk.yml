@@ -42,8 +42,9 @@ jobs:
           curl --fail --location --retry 3 \
             https://raw.githubusercontent.com/NavanethaKrishnan-14/sm-associate-web/main/public/assets/sm-associate-logo.png \
             --output /tmp/sm-associate-logo.png
-          python3 -m pip install --quiet Pillow
-          python3 - <<'PY'
+          python3 -m venv /tmp/icon-venv
+          /tmp/icon-venv/bin/pip install --quiet Pillow
+          /tmp/icon-venv/bin/python - <<'PY'
           from PIL import Image
           logo = Image.open("/tmp/sm-associate-logo.png").convert("RGBA")
           logo.thumbnail((900, 900), Image.Resampling.LANCZOS)

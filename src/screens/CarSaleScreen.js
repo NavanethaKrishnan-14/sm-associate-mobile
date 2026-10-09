@@ -391,13 +391,8 @@ export default function CarSaleScreen({navigation}) {
                       {(car.vehicleId || car.id || 'Vehicle') + ' · ' + vehicleName}
                     </AppText>
                   </View>
-                  <View style={{alignItems: 'flex-end', gap: 8}}>
-                    <View style={{backgroundColor: '#E2F4EC', paddingHorizontal: 9, paddingVertical: 6, borderRadius: 9, alignSelf: 'flex-end'}}>
-                      <AppText style={{fontSize: 10, color: colors.ink}}>SOLD</AppText>
-                    </View>
-                    <AppText style={{fontSize: 14, color: colors.ink, fontWeight: '700'}}>
-                      ₹{money(sellingPrice)}
-                    </AppText>
+                  <View style={{backgroundColor: '#E2F4EC', paddingHorizontal: 9, paddingVertical: 6, borderRadius: 9, alignSelf: 'flex-start'}}>
+                    <AppText style={{fontSize: 10, color: colors.ink}}>SOLD</AppText>
                   </View>
                 </View>
                 {sale.notes ? (
@@ -405,7 +400,10 @@ export default function CarSaleScreen({navigation}) {
                     {sale.notes}
                   </AppText>
                 ) : null}
-                <AppText style={{fontSize: 11, color: colors.teal, marginTop: 12}}>Tap to view or update →</AppText>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 12, gap: 10}}>
+                  <AppText style={{fontSize: 11, color: colors.teal, flex: 1}}>Tap to view or update →</AppText>
+                  <AppText style={{fontSize: 14, color: colors.ink, fontWeight: '700'}}>₹{money(sellingPrice)}</AppText>
+                </View>
               </Pressable>
             );
           }) : <Empty icon="receipt-outline" title="No completed sales" text="Successfully recorded vehicle sales will appear here." />}

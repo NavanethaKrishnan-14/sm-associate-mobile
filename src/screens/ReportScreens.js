@@ -64,5 +64,5 @@ const s={
  name:{fontSize:13,color:'#26343A',flex:1,flexShrink:1},
  muted:{fontSize:11,color:'#71808A',marginTop:4,lineHeight:15},
  profit:{fontSize:13,color:'#147F74',fontWeight:'700',marginLeft:8,flexShrink:0},
- badge:{fontSize:12,color:'#182027',backgroundColor:'#D9F1ED',paddingHorizontal:10,paddingVertical:6,borderRadius:9,overflow:'hidden',marginLeft:8,minWidth:42,textAlign:'right'}
+ badge:{fontSize:12,color:'#182027',backgroundColor:'#D9F1ED',paddingHorizontal:7,paddingVertical:4,borderRadius:8,overflow:'hidden',marginLeft:8,minWidth:30,textAlign:'right'}
 };

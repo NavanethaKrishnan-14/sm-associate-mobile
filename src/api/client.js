@@ -19,7 +19,12 @@ function normalizeApiUrl(value) {
 }
 
 const configuredApiUrl = normalizeApiUrl(process.env.EXPO_PUBLIC_API_BASE_URL);
-export const API_BASE_URL = configuredApiUrl || PRODUCTION_API_URL;
+// Older Expo environments may still inject the retired Vercel URL. Route that
+// known stale value to the PostgreSQL-backed Render deployment instead.
+const isRetiredVercelUrl = /sm-associate-backend\.vercel\.app/i.test(configuredApiUrl);
+export const API_BASE_URL = !configuredApiUrl || isRetiredVercelUrl
+  ? PRODUCTION_API_URL
+  : configuredApiUrl;
 
 async function readAccessToken() {
   const keys = ['sm_access_token', 'accessToken', 'token'];
@@ -43,7 +48,7 @@ async function storeAccessToken(token) {
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 45000,
+  timeout: 90000,
   headers: {'Content-Type': 'application/json', Accept: 'application/json'}
 });
 

@@ -11,10 +11,10 @@ export default function ServiceHeader({title,subtitle,navigation,showBack=true,k
    <AppText style={{fontSize:13,color:colors.ink}}>Back</AppText>
   </Pressable>:null}
   <View style={{backgroundColor:colors.midnight,borderRadius:22,padding:20}}>
-   <View style={{alignItems:'flex-end'}}>
-    <AppText style={{fontSize:11,color:colors.teal,letterSpacing:2,textAlign:'right'}}>{kicker}</AppText>
-    <AppText style={{fontSize:25,color:colors.white,marginTop:8,textAlign:'right',width:'100%'}}>{title}</AppText>
-    <AppText style={{fontSize:12,color:'#C5CED1',marginTop:7,lineHeight:19,textAlign:'right',width:'100%'}}>{subtitle}</AppText>
+   <View style={{alignItems:'flex-start'}}>
+    <AppText style={{fontSize:11,color:colors.teal,letterSpacing:2,textAlign:'left'}}>{kicker}</AppText>
+    <AppText style={{fontSize:25,color:colors.white,marginTop:8,textAlign:'left',width:'100%'}}>{title}</AppText>
+    <AppText style={{fontSize:12,color:'#C5CED1',marginTop:7,lineHeight:19,textAlign:'left',width:'100%'}}>{subtitle}</AppText>
    </View>
    {(typeof count==='number'||(actionLabel&&onAction))?<View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:10,marginTop:16}}>
     {typeof count==='number'?<View style={{minWidth:42,paddingHorizontal:12,paddingVertical:9,borderRadius:12,backgroundColor:'#29343C',alignItems:'center'}}><AppText style={{fontSize:18,color:colors.white}}>{count}</AppText></View>:<View style={{flex:1}}/>}

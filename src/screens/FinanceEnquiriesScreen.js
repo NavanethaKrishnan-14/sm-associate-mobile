@@ -92,10 +92,26 @@ export default function FinanceEnquiriesScreen({navigation}){
   try{
    let customerId=form.customerId;
    if(!editing&&customerMode==='new'){
-    const customerResponse=await api.post('/customers',{name:newCustomer.name.trim(),mobile:newCustomer.mobile.trim(),city:newCustomer.city.trim()});
-    const createdCustomer=customerResponse?.data?.data??customerResponse?.data?.result??customerResponse?.data?.customer??customerResponse?.data;
-    customerId=createdCustomer?._id||createdCustomer?.id||createdCustomer?.customer?._id||createdCustomer?.customer?.id||'';
-    if(!customerId||typeof customerId!=='string')throw new Error('Customer was created, but the server did not return a valid customer ID. Please refresh customers and try again.');
+    const customerNameInput=newCustomer.name.trim();
+    const customerMobileInput=newCustomer.mobile.trim();
+    const customerResponse=await api.post('/customers',{name:customerNameInput,mobile:customerMobileInput,city:newCustomer.city.trim()});
+    const responseData=customerResponse?.data;
+    const createdCustomer=responseData?.data??responseData?.result??responseData?.customer??responseData;
+    const nestedCustomer=createdCustomer?.customer??createdCustomer?.data??createdCustomer?.result;
+    customerId=createdCustomer?._id||createdCustomer?.id||nestedCustomer?._id||nestedCustomer?.id||responseData?._id||responseData?.id||'';
+    if(!customerId){
+     // Some API responses confirm creation without returning the MongoDB document ID.
+     // Reload customers and resolve the new record using its mobile number and name.
+     const refreshedCustomers=await api.get('/customers');
+     const customerRows=refreshedCustomers?.data?.data;
+     if(Array.isArray(customerRows)){
+      const normalizedMobile=customerMobileInput.replace(/\\D/g,'');
+      const matchingCustomer=customerRows.find(item=>(item?.mobile||'').replace(/\\D/g,'')===normalizedMobile&&(item?.name||'').trim().toLowerCase()===customerNameInput.toLowerCase());
+      customerId=matchingCustomer?._id||matchingCustomer?.id||'';
+      if(matchingCustomer)setCustomers(customerRows);
+     }
+    }
+    if(!customerId||typeof customerId!=='string')throw new Error('Customer was created, but its ID could not be retrieved. Refresh the Customers screen and try again.');
    }
    const payload={
     customerId,

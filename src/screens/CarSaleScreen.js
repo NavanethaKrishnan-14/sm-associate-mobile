@@ -398,16 +398,6 @@ export default function CarSaleScreen({navigation}) {
                 <AppText style={{fontSize: 14, color: colors.ink, marginTop: 12}}>
                   ₹{money(sellingPrice)}
                 </AppText>
-                {car.registrationNumber ? (
-                  <AppText style={{fontSize: 12, color: colors.muted, marginTop: 6}}>
-                    {car.registrationNumber}
-                  </AppText>
-                ) : null}
-                {saleDate ? (
-                  <AppText style={{fontSize: 12, color: colors.muted, marginTop: 6}}>
-                    {saleDate}
-                  </AppText>
-                ) : null}
                 {sale.notes ? (
                   <AppText style={{fontSize: 12, color: colors.muted, marginTop: 7}} numberOfLines={2}>
                     {sale.notes}
@@ -433,6 +423,7 @@ export default function CarSaleScreen({navigation}) {
                   ['Vehicle ID', viewCar.vehicleId ?? viewCar.id],
                   ['Vehicle', [viewCar.make, viewCar.model].filter(Boolean).join(' ')],
                   ['Registration', viewCar.registrationNumber],
+                  ['Sale Date', (viewCar.sale || viewCar.saleDetails)?.saleDate ? String((viewCar.sale || viewCar.saleDetails).saleDate).slice(0, 10) : '—'],
                   ['Year', viewCar.year],
                   ['Fuel', viewCar.fuel],
                   ['Purchase Price', '₹' + money(viewCar.purchasePrice)],

@@ -76,7 +76,8 @@ export default function FinanceEnquiriesScreen(){
   if(!form.customerId)return Alert.alert('Finance enquiry','Select a customer first.');
   if(!form.serviceCode)return Alert.alert('Finance enquiry','Select a service.');
   if(form.requiredAmount.trim()&&( !Number.isFinite(Number(form.requiredAmount))||Number(form.requiredAmount)<0))return Alert.alert('Amount','Enter a valid non-negative amount.');
-  if(form.followUpDate.trim()&&!/^\\d{4}-\\d{2}-\\d{2}$/.test(form.followUpDate.trim()))return Alert.alert('Follow-up date','Use YYYY-MM-DD format.');
+  const dateParts=form.followUpDate.trim()?form.followUpDate.trim().split('-'):[];
+  if(form.followUpDate.trim()&&(dateParts.length!==3||dateParts[0].length!==4||dateParts[1].length!==2||dateParts[2].length!==2||dateParts.some(part=>!Number.isInteger(Number(part)))))return Alert.alert('Follow-up date','Use YYYY-MM-DD format.');
   setSaving(true);
   try{
    const payload={

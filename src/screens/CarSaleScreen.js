@@ -426,7 +426,7 @@ export default function CarSaleScreen({navigation}) {
                   ['Sale Date', (viewCar.sale || viewCar.saleDetails)?.saleDate ? String((viewCar.sale || viewCar.saleDetails).saleDate).slice(0, 10) : '—'],
                   ['Year', viewCar.year],
                   ['Fuel', viewCar.fuel],
-                  ['Purchase Price', '₹' + money(viewCar.purchasePrice)],
+                  ['Total Investment', '₹' + money(viewCar.totalInvestment ?? (Number(viewCar.purchasePrice || 0) + Number(viewCar.expenseTotal || 0)))],
                   ['Selling Price', '₹' + money(viewCar.sale?.sellingPrice ?? viewCar.sellingPrice ?? viewCar.salePrice)],
                   ['Status', viewCar.status]
                 ].map(([label, value]) => (

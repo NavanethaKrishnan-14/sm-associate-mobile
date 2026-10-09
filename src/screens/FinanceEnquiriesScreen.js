@@ -8,6 +8,7 @@ import {colors} from '../theme/colors';
 import DatePickerField from '../components/DatePickerField';
 
 const blank={customerId:'',serviceCode:'HOME_LOAN',financeCompany:'',requiredAmount:'',followUpDate:'',notes:'',status:'NEW'};
+const blankNewCustomer={name:'',mobile:'',city:''};
 const statuses=['NEW','IN_PROGRESS','COMPLETED','CANCELLED'];
 
 export default function FinanceEnquiriesScreen({navigation}){
@@ -24,6 +25,8 @@ export default function FinanceEnquiriesScreen({navigation}){
  const [servicePicker,setServicePicker]=useState(false);
  const [editing,setEditing]=useState(null);
  const [form,setForm]=useState(blank);
+ const [customerMode,setCustomerMode]=useState('existing');
+ const [newCustomer,setNewCustomer]=useState(blankNewCustomer);
 
  const set=(key,value)=>setForm(current=>({...current,[key]:value}));
  const load=useCallback(async()=>{
@@ -57,11 +60,15 @@ export default function FinanceEnquiriesScreen({navigation}){
  function openAdd(){
   setEditing(null);
   setForm({...blank,customerId:customers[0]?._id||customers[0]?.id||''});
+  setCustomerMode('existing');
+  setNewCustomer({...blankNewCustomer});
   setModal(true);
  }
  function openEdit(item){
   const customer=item.customerId;
   setEditing(item);
+  setCustomerMode('existing');
+  setNewCustomer({...blankNewCustomer});
   setForm({
    customerId:typeof customer==='object'?(customer._id||customer.id||''):(customer||''),
    serviceCode:item.serviceCode||'HOME_LOAN',
@@ -74,15 +81,24 @@ export default function FinanceEnquiriesScreen({navigation}){
   setModal(true);
  }
  async function save(){
-  if(!form.customerId)return Alert.alert('Finance enquiry','Select a customer first.');
+  if(editing&&!form.customerId)return Alert.alert('Finance enquiry','Select a customer first.');
+  if(!editing&&customerMode==='existing'&&!form.customerId)return Alert.alert('Finance enquiry','Select an existing customer first.');
+  if(!editing&&customerMode==='new'&&(!newCustomer.name.trim()||!newCustomer.mobile.trim()))return Alert.alert('Customer details','Enter the new customer name and mobile number.');
   if(!form.serviceCode)return Alert.alert('Finance enquiry','Select a service.');
   if(form.requiredAmount.trim()&&( !Number.isFinite(Number(form.requiredAmount))||Number(form.requiredAmount)<0))return Alert.alert('Amount','Enter a valid non-negative amount.');
   const dateParts=form.followUpDate.trim()?form.followUpDate.trim().split('-'):[];
   if(form.followUpDate.trim()&&(dateParts.length!==3||dateParts[0].length!==4||dateParts[1].length!==2||dateParts[2].length!==2||dateParts.some(part=>!Number.isInteger(Number(part)))))return Alert.alert('Follow-up date','Use YYYY-MM-DD format.');
   setSaving(true);
   try{
+   let customerId=form.customerId;
+   if(!editing&&customerMode==='new'){
+    const customerResponse=await api.post('/customers',{name:newCustomer.name.trim(),mobile:newCustomer.mobile.trim(),city:newCustomer.city.trim()});
+    const createdCustomer=customerResponse?.data?.data??customerResponse?.data?.result??customerResponse?.data?.customer??customerResponse?.data;
+    customerId=createdCustomer?._id||createdCustomer?.id||createdCustomer?.customer?._id||createdCustomer?.customer?.id||'';
+    if(!customerId||typeof customerId!=='string')throw new Error('Customer was created, but the server did not return a valid customer ID. Please refresh customers and try again.');
+   }
    const payload={
-    customerId:form.customerId,
+    customerId,
     serviceCode:form.serviceCode,
     financeCompany:form.financeCompany.trim(),
     requiredAmount:form.requiredAmount.trim()?Number(form.requiredAmount):undefined,
@@ -167,7 +183,8 @@ export default function FinanceEnquiriesScreen({navigation}){
      </View>
      <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
       <AppText style={label}>Customer *</AppText>
-      <Pressable disabled={Boolean(editing)} onPress={()=>setCustomerPicker(true)} style={selectStyle}><AppText style={{color:form.customerId?colors.ink:colors.muted}}>{customerName(form.customerId)}</AppText><AppText style={{color:colors.teal}}>Choose</AppText></Pressable>
+      {!editing?<View style={{flexDirection:'row',gap:8,marginBottom:10}}><Pressable onPress={()=>setCustomerMode('existing')} style={{flex:1,paddingVertical:11,borderRadius:11,alignItems:'center',backgroundColor:customerMode==='existing'?colors.teal:'#E6EAE8'}}><AppText style={{fontSize:12,color:customerMode==='existing'?'#FFFFFF':colors.ink}}>Existing Customer</AppText></Pressable><Pressable onPress={()=>setCustomerMode('new')} style={{flex:1,paddingVertical:11,borderRadius:11,alignItems:'center',backgroundColor:customerMode==='new'?colors.teal:'#E6EAE8'}}><AppText style={{fontSize:12,color:customerMode==='new'?'#FFFFFF':colors.ink}}>New Customer</AppText></Pressable></View>:null}
+      {(!editing&&customerMode==='new')?<><AppText style={label}>Customer name *</AppText><AppTextInput value={newCustomer.name} onChangeText={v=>setNewCustomer(p=>({...p,name:v}))} placeholder="Enter full name" style={inputStyle} placeholderTextColor={colors.muted}/><AppText style={label}>Mobile number *</AppText><AppTextInput value={newCustomer.mobile} onChangeText={v=>setNewCustomer(p=>({...p,mobile:v}))} keyboardType="phone-pad" placeholder="Enter mobile number" style={inputStyle} placeholderTextColor={colors.muted}/><AppText style={label}>City (optional)</AppText><AppTextInput value={newCustomer.city} onChangeText={v=>setNewCustomer(p=>({...p,city:v}))} placeholder="Enter city" style={inputStyle} placeholderTextColor={colors.muted}/></>:<Pressable disabled={Boolean(editing)} onPress={()=>setCustomerPicker(true)} style={selectStyle}><AppText style={{color:form.customerId?colors.ink:colors.muted}}>{customerName(form.customerId)}</AppText><AppText style={{color:colors.teal}}>Choose</AppText></Pressable>}
       <AppText style={label}>Service *</AppText>
       <Pressable onPress={()=>setServicePicker(true)} style={selectStyle}><AppText style={{color:colors.ink}}>{serviceName(form.serviceCode)}</AppText><AppText style={{color:colors.teal}}>Change</AppText></Pressable>
       <AppText style={label}>Finance company</AppText><AppTextInput value={form.financeCompany} onChangeText={v=>set('financeCompany',v)} placeholder="Company / bank name" style={inputStyle} placeholderTextColor={colors.muted}/>

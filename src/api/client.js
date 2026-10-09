@@ -79,7 +79,23 @@ export async function login(email, password) {
 
   try {
     const response = await api.post('/auth/login', {email: cleanEmail, password: cleanPassword});
-    const data = response.data;
+    let data = response.data;
+    // Some local/dev servers or proxies send JSON with a text/plain content type,
+    // causing Axios to leave response.data as a string instead of an object.
+    if (typeof data === 'string') {
+      const bodyText = data.trim();
+      if (bodyText) {
+        try {
+          data = JSON.parse(bodyText);
+        } catch {
+          console.error('Login returned HTTP 200 with a non-JSON response body.', {
+            responseType: typeof response.data,
+            contentType: response.headers?.['content-type'] || null,
+            bodyPreview: bodyText.slice(0, 160)
+          });
+        }
+      }
+    }
 
     // Support the current API envelope and older deployments/proxies that
     // wrap the response in data/result/payload/session objects.

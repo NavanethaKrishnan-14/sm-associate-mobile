@@ -36,6 +36,25 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund
 
+      - name: Prepare official SM Associate app icon
+        run: |
+          mkdir -p assets
+          curl --fail --location --retry 3 \
+            https://raw.githubusercontent.com/NavanethaKrishnan-14/sm-associate-web/main/public/assets/sm-associate-logo.png \
+            --output /tmp/sm-associate-logo.png
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          from PIL import Image
+          logo = Image.open("/tmp/sm-associate-logo.png").convert("RGBA")
+          logo.thumbnail((900, 900), Image.Resampling.LANCZOS)
+          icon = Image.new("RGBA", (1024, 1024), (255, 255, 255, 255))
+          x = (1024 - logo.width) // 2
+          y = (1024 - logo.height) // 2
+          icon.alpha_composite(logo, (x, y))
+          icon.convert("RGB").save("assets/icon.png", format="PNG", optimize=True)
+          print(f"Created app icon from official logo: {logo.size}")
+          PY
+
       - name: Verify Expo configuration
         run: npx expo config --type public
 

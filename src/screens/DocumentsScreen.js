@@ -41,7 +41,7 @@ export default function DocumentsScreen({navigation}){
   };
 
   return <View style={styles.page}>
-    <View style={{paddingTop:top+12,paddingHorizontal:18}}><ServiceHeader title="Documents" subtitle="Browse uploaded customer, vehicle sale and loan documents." navigation={navigation} count={documents.length}/></View>
+    <View style={{paddingTop:top+12,paddingHorizontal:0}}><ServiceHeader title="Documents" subtitle="Browse uploaded customer, vehicle sale and loan documents." navigation={navigation} count={documents.length}/></View>
 
     <View style={styles.searchBox}>
       <Ionicons name="search-outline" size={19} color={colors.muted}/>

@@ -1,7 +1,8 @@
 import {AppText,AppTextInput} from '../components/AppText';
 import React,{useCallback,useState} from 'react';
 import {ActivityIndicator,Alert,Modal,Pressable,ScrollView,View} from 'react-native';
-import {useFocusEffect,useSafeAreaInsets} from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {api} from '../api/client';
 import {colors} from '../theme/colors';
 
@@ -83,7 +84,7 @@ export default function FinanceEnquiriesScreen(){
     serviceCode:form.serviceCode,
     financeCompany:form.financeCompany.trim(),
     requiredAmount:form.requiredAmount.trim()?Number(form.requiredAmount):undefined,
-    followUpDate:form.followUpDate.trim()||null,
+    followUpDate:form.followUpDate.trim()||undefined,
     notes:form.notes.trim()
    };
    if(editing){
@@ -160,7 +161,7 @@ export default function FinanceEnquiriesScreen(){
      </View>
      <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
       <AppText style={label}>Customer *</AppText>
-      <Pressable onPress={()=>setCustomerPicker(true)} style={selectStyle}><AppText style={{color:form.customerId?colors.ink:colors.muted}}>{customerName(form.customerId)}</AppText><AppText style={{color:colors.teal}}>Choose</AppText></Pressable>
+      <Pressable disabled={Boolean(editing)} onPress={()=>setCustomerPicker(true)} style={selectStyle}><AppText style={{color:form.customerId?colors.ink:colors.muted}}>{customerName(form.customerId)}</AppText><AppText style={{color:colors.teal}}>Choose</AppText></Pressable>
       <AppText style={label}>Service *</AppText>
       <Pressable onPress={()=>setServicePicker(true)} style={selectStyle}><AppText style={{color:colors.ink}}>{serviceName(form.serviceCode)}</AppText><AppText style={{color:colors.teal}}>Change</AppText></Pressable>
       <AppText style={label}>Finance company</AppText><AppTextInput value={form.financeCompany} onChangeText={v=>set('financeCompany',v)} placeholder="Company / bank name" style={inputStyle} placeholderTextColor={colors.muted}/>

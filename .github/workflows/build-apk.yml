@@ -47,13 +47,22 @@ jobs:
           /tmp/icon-venv/bin/python - <<'PY'
           from PIL import Image
           logo = Image.open("/tmp/sm-associate-logo.png").convert("RGBA")
-          logo.thumbnail((900, 900), Image.Resampling.LANCZOS)
-          icon = Image.new("RGBA", (1024, 1024), (255, 255, 255, 255))
+          # The source is a wide wordmark. Keep it within Android's adaptive-icon safe zone.
+          logo.thumbnail((600, 600), Image.Resampling.LANCZOS)
           x = (1024 - logo.width) // 2
           y = (1024 - logo.height) // 2
-          icon.alpha_composite(logo, (x, y))
-          icon.convert("RGB").save("assets/icon.png", format="PNG", optimize=True)
-          print(f"Created app icon from official logo: {logo.size}")
+
+          # Standard launcher/iOS icon: white square with the full official wordmark.
+          standard = Image.new("RGBA", (1024, 1024), (255, 255, 255, 255))
+          standard.alpha_composite(logo, (x, y))
+          standard.convert("RGB").save("assets/icon.png", format="PNG", optimize=True)
+
+          # Android adaptive foreground: transparent outside the logo so Android's icon mask
+          # cannot cover the logo with an opaque square.
+          adaptive = Image.new("RGBA", (1024, 1024), (0, 0, 0, 0))
+          adaptive.alpha_composite(logo, (x, y))
+          adaptive.save("assets/adaptive-icon.png", format="PNG", optimize=True)
+          print(f"Created standard and adaptive icons from official logo: {logo.size}")
           PY
 
       - name: Verify Expo configuration

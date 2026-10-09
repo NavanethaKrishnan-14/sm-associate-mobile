@@ -61,7 +61,7 @@ export default function CarSaleScreen({navigation}){
  const normalizedSearch=customerSearch.trim().toLowerCase();
  const filteredCustomers=customers.filter(c=>(String(c.customerId||'')+' '+String(c.name||'')+' '+String(c.mobile||'')+' '+String(c.city||'')).toLowerCase().includes(normalizedSearch));
  const visibleCustomers=normalizedSearch?filteredCustomers:customers.slice(-5).reverse();
- return <View style={[s.page,{paddingTop:Math.max(22,top+22)}]}>
+ return <View style={[s.page,{paddingTop:top+12}]}>
   <ServiceHeader title="Car Sold" subtitle="Track available inventory and completed vehicle sales." navigation={navigation} kicker="SM ASSOCIATE / AUTOMOTIVE" actionLabel="Sell Car" actionIcon="car-outline" onAction={openSale}/>
   {busy?<ActivityIndicator style={{marginTop:45}} color={colors.gold}/>:<ScrollView contentContainerStyle={s.list}>
    <View style={s.summaryRow}><View style={s.summary}><AppText style={s.summaryNumber}>{cars.length}</AppText><AppText style={s.summaryLabel}>Cars Remaining</AppText></View><View style={s.summary}><AppText style={s.summaryNumber}>{soldCars.length}</AppText><AppText style={s.summaryLabel}>Cars Sold</AppText></View></View>

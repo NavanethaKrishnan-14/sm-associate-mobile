@@ -354,7 +354,7 @@ export default function CarSaleScreen({navigation}) {
               <View style={{flex: 1}}>
                 <AppText style={s.cardTitle}>{car.vehicleId || car.id || 'Vehicle'} · {[car.make, car.model].filter(Boolean).join(' ')}</AppText>
                 <AppText style={s.muted}>{car.registrationNumber || 'No registration'} · {car.year || '—'} · {car.fuel || '—'}</AppText>
-                <AppText style={s.priceText}>Purchase ₹{money(car.purchasePrice)}</AppText>
+                <AppText style={s.priceText}>Total Investment ₹{money(car.totalInvestment ?? (Number(car.purchasePrice || 0) + Number(car.expenseTotal || 0)))}</AppText>
               </View>
               <Ionicons name="chevron-forward" size={18} color={colors.muted} />
             </Pressable>
@@ -562,7 +562,7 @@ export default function CarSaleScreen({navigation}) {
                   <View style={s.carIcon}><Ionicons name="car-sport-outline" size={20} color={colors.teal} /></View>
                   <View style={{flex: 1}}>
                     <AppText style={s.cardTitle}>{car.vehicleId || car.id || 'Vehicle'} · {[car.make, car.model].filter(Boolean).join(' ')}</AppText>
-                    <AppText style={s.muted}>{car.registrationNumber || 'No registration'} · Purchase ₹{money(car.purchasePrice)}</AppText>
+                    <AppText style={s.muted}>{car.registrationNumber || 'No registration'} · Total Investment ₹{money(car.totalInvestment ?? (Number(car.purchasePrice || 0) + Number(car.expenseTotal || 0)))}</AppText>
                   </View>
                   <Ionicons name={form.carId === idOf(car) ? 'checkmark-circle' : 'ellipse-outline'} size={21} color={form.carId === idOf(car) ? colors.teal : colors.muted} />
                 </Pressable>

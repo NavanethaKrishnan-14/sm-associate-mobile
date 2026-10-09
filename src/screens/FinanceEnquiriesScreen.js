@@ -5,6 +5,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {api} from '../api/client';
 import {colors} from '../theme/colors';
+import DatePickerField from '../components/DatePickerField';
 
 const blank={customerId:'',serviceCode:'HOME_LOAN',financeCompany:'',requiredAmount:'',followUpDate:'',notes:'',status:'NEW'};
 const statuses=['NEW','IN_PROGRESS','COMPLETED','CANCELLED'];
@@ -171,7 +172,7 @@ export default function FinanceEnquiriesScreen({navigation}){
       <Pressable onPress={()=>setServicePicker(true)} style={selectStyle}><AppText style={{color:colors.ink}}>{serviceName(form.serviceCode)}</AppText><AppText style={{color:colors.teal}}>Change</AppText></Pressable>
       <AppText style={label}>Finance company</AppText><AppTextInput value={form.financeCompany} onChangeText={v=>set('financeCompany',v)} placeholder="Company / bank name" style={inputStyle} placeholderTextColor={colors.muted}/>
       <AppText style={label}>Required amount (₹)</AppText><AppTextInput value={form.requiredAmount} onChangeText={v=>set('requiredAmount',v)} keyboardType="decimal-pad" placeholder="Optional" style={inputStyle} placeholderTextColor={colors.muted}/>
-      <AppText style={label}>Follow-up date (YYYY-MM-DD)</AppText><AppTextInput value={form.followUpDate} onChangeText={v=>set('followUpDate',v)} placeholder="2026-10-15" style={inputStyle} placeholderTextColor={colors.muted} autoCapitalize="none"/>
+      <DatePickerField label="Follow-up date" value={form.followUpDate} onChange={v=>set('followUpDate',v)} placeholder="Choose follow-up date"/>
       <AppText style={label}>Notes</AppText><AppTextInput value={form.notes} onChangeText={v=>set('notes',v)} placeholder="Customer requirement or next step" multiline style={[inputStyle,{minHeight:90,textAlignVertical:'top'}]} placeholderTextColor={colors.muted}/>
       {editing&&isAdmin?<><AppText style={label}>Status</AppText><View style={{flexDirection:'row',flexWrap:'wrap',gap:8}}>{statuses.map(status=><Pressable key={status} onPress={()=>set('status',status)} style={{paddingHorizontal:12,paddingVertical:9,borderRadius:10,backgroundColor:form.status===status?colors.teal:'#E6EAE8'}}><AppText style={{fontSize:11,color:form.status===status?'#FFFFFF':colors.ink}}>{status.replace('_',' ')}</AppText></Pressable>)}</View></>:null}
       <Pressable disabled={saving} onPress={save} style={{backgroundColor:colors.midnight,padding:15,borderRadius:13,alignItems:'center',marginTop:22,marginBottom:15,opacity:saving?0.65:1}}>{saving?<ActivityIndicator color="#FFFFFF"/>:<AppText style={{color:'#FFFFFF',fontSize:14}}>{editing?'Save changes':'Save enquiry'}</AppText>}</Pressable>

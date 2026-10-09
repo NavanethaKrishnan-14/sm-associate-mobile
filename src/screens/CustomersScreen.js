@@ -7,6 +7,7 @@ import {Ionicons} from '@expo/vector-icons';
 import {api,uploadDocument} from '../api/client';
 import DocumentPickerButton from '../components/DocumentPickerButton';
 import {colors} from '../theme/colors';
+import ServiceHeader from '../components/ServiceHeader';
 
 const empty={name:'',mobile:'',alternateMobile:'',email:'',address:'',city:'',occupation:'',pan:'',aadhaarLast4:'',notes:''};
 const docs=[['idProof','ID Proof','Government-issued identity document'],['addressProof','Address Proof','Proof of current address'],['incomeProof','Income Proof','Income verification document'],['bankStatement','Bank Statement','Recent bank account statement']];
@@ -54,7 +55,7 @@ export default function CustomersScreen({navigation}){
    ]);
  }
  return <View style={[s.page,{paddingTop:Math.max(22,top+22)}]}>
-   <View style={s.header}><View style={{flex:1}}><AppText style={s.title}>Customers</AppText><AppText style={s.subtitle}>Same customer management as web.</AppText></View><Pressable onPress={openAdd} style={s.add}><Ionicons name="add" size={22} color={colors.goldLight}/></Pressable></View>
+   <ServiceHeader title="Customers" subtitle="Manage customer profiles, contact details and documents." showBack={false} actionLabel="Add" onAction={openAdd}/>
    <View style={s.search}><Ionicons name="search" size={18} color={colors.muted}/><AppTextInput value={q} onChangeText={setQ} placeholder="Search name or mobile" placeholderTextColor="#9AA4AD" style={s.searchInput}/></View>
    {busy?<ActivityIndicator style={{marginTop:40}} color={colors.gold}/>:filtered.length===0?<View style={s.empty}><View style={s.emptyIcon}><Ionicons name="people-outline" size={26} color={colors.teal}/></View><AppText style={s.emptyTitle}>{q?'No customers found':'No customers yet'}</AppText><AppText style={s.emptyText}>{q?'Try a different name or mobile number.':'Customer records will appear here after they are created.'}</AppText>{q?<Pressable onPress={()=>setQ('')} style={s.emptyButton}><AppText style={s.emptyButtonText}>Clear Search</AppText></Pressable>:<Pressable onPress={openAdd} style={s.emptyButton}><AppText style={s.emptyButtonText}>Add Customer</AppText></Pressable>}</View>:<ScrollView contentContainerStyle={s.list}>{filtered.map(c=><Pressable key={c._id} onPress={()=>openProfile(c)} style={s.card}>
      <View style={s.row}><View style={s.avatar}><AppText style={s.avatarText}>{(c.name||'?').slice(0,1).toUpperCase()}</AppText></View><View style={{flex:1,marginLeft:12}}><AppText style={s.cardTitle}>{c.name}</AppText><AppText style={s.muted}>{c.customerId} · {c.mobile}</AppText><AppText style={s.muted}>{c.city||'No city'}{c.occupation?' · '+c.occupation:''}</AppText></View><Ionicons name="chevron-forward" size={20} color={colors.muted}/></View>

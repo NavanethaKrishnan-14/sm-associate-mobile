@@ -6,6 +6,7 @@ import {Ionicons} from '@expo/vector-icons';
 import {api,uploadDocument} from '../api/client';
 import {colors} from '../theme/colors';
 import DocumentPickerButton from '../components/DocumentPickerButton';
+import ServiceHeader from '../components/ServiceHeader';
 
 export default function CarSaleScreen({navigation}){
  const {top}=useSafeAreaInsets();
@@ -61,11 +62,7 @@ export default function CarSaleScreen({navigation}){
  const filteredCustomers=customers.filter(c=>(String(c.customerId||'')+' '+String(c.name||'')+' '+String(c.mobile||'')+' '+String(c.city||'')).toLowerCase().includes(normalizedSearch));
  const visibleCustomers=normalizedSearch?filteredCustomers:customers.slice(-5).reverse();
  return <View style={[s.page,{paddingTop:Math.max(22,top+22)}]}>
-  <View style={s.header}>
-   <Pressable onPress={()=>navigation.goBack()} style={s.backButton}><Ionicons name="arrow-back" size={20} color={colors.ink}/></Pressable>
-   <View style={{flex:1}}><AppText style={s.eyebrow}>AUTOMOTIVE</AppText><AppText style={s.title}>Car Sold</AppText><AppText style={s.subtitle}>Track available inventory and completed vehicle sales.</AppText></View>
-   <Pressable onPress={openSale} style={s.sellButton}><Ionicons name="car-outline" size={18} color={colors.goldLight}/><AppText style={s.sellButtonText}>Sell Car</AppText></Pressable>
-  </View>
+  <ServiceHeader title="Car Sold" subtitle="Track available inventory and completed vehicle sales." navigation={navigation} kicker="SM ASSOCIATE / AUTOMOTIVE" actionLabel="Sell Car" actionIcon="car-outline" onAction={openSale}/>
   {busy?<ActivityIndicator style={{marginTop:45}} color={colors.gold}/>:<ScrollView contentContainerStyle={s.list}>
    <View style={s.summaryRow}><View style={s.summary}><AppText style={s.summaryNumber}>{cars.length}</AppText><AppText style={s.summaryLabel}>Cars Remaining</AppText></View><View style={s.summary}><AppText style={s.summaryNumber}>{soldCars.length}</AppText><AppText style={s.summaryLabel}>Cars Sold</AppText></View></View>
    <AppText style={s.sectionLabel}>CARS REMAINING TO SELL</AppText>

@@ -65,13 +65,14 @@ export default function DashboardScreen({navigation}){
         });
       }
       beginNewNote();
+      Alert.alert(noteId?'Note Updated Successfully':'Note Saved Successfully',noteId?'Your note was updated successfully.':'Your note was saved successfully.');
     }catch(error){
       Alert.alert('Notes',error?.response?.data?.message||error?.message||'Unable to save note.');
     }finally{setNotesSaving(false);}
   }
   async function deleteNote(note){
     Alert.alert('Delete note','Delete this note?',[{text:'Cancel',style:'cancel'},{text:'Delete',style:'destructive',onPress:async()=>{
-      try{await api.delete('/dashboard/notes/'+encodeURIComponent(note.id));setNotes(current=>current.filter(item=>item.id!==note.id));if(noteId===note.id)beginNewNote();}
+      try{await api.delete('/dashboard/notes/'+encodeURIComponent(note.id));setNotes(current=>current.filter(item=>item.id!==note.id));if(noteId===note.id)beginNewNote();Alert.alert('Note Deleted Successfully','The note was deleted successfully.');}
       catch(error){Alert.alert('Notes',error?.response?.data?.message||error?.message||'Unable to delete note.');}
     }}]);
   }

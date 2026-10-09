@@ -72,7 +72,8 @@ export default function LoansScreen({navigation}){
    for(const name of customDocs){const key='custom:'+name;if(!files[key])continue;try{await uploadDocument('/loans/'+id+'/documents/custom',files[key],{documentName:name})}catch(error){throw new Error('Loan saved, but '+name+' upload failed: '+(error?.message||'Document upload failed.'))}}
    await api.patch('/loans/'+id+'/documents',{customDocuments:customDocs,...Object.fromEntries(docs.map(([key])=>[key,Boolean(editing?.documents?.[key]||files[key])]))});
    setModal(false);await load();
-  }catch(e){Alert.alert('Loan',e?.message||e?.response?.data?.message||'Unable to save loan.')}finally{setSaving(false)}
+   Alert.alert(editing?'Loan Updated Successfully':'Loan Saved Successfully',editing?'The loan details and documents have been updated successfully.':'The loan and its documents have been saved successfully.');
+  }catch(e){Alert.alert('Loan Save Failed',e?.message||e?.response?.data?.message||'Unable to save loan.')}finally{setSaving(false)}
  }
  async function openFollowUps(l){try{const r=await api.get('/loans/'+l._id+'/follow-ups');setFollowLoan(l);setFollowUps(r.data?.data||[])}catch(e){Alert.alert('Follow-ups',e?.response?.data?.message||'Unable to load follow-ups.')}}
  async function addFollowUp(){if(!followLoan||!followNote||!followDate)return Alert.alert('Follow-up','Date and note are required.');try{await api.post('/loans/'+followLoan._id+'/follow-ups',{followUpDate:followDate,note:followNote});setFollowNote('');setFollowDate('');openFollowUps(followLoan)}catch(e){Alert.alert('Follow-up',e?.response?.data?.message||'Unable to add follow-up.')}}

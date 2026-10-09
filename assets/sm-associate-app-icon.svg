@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<defs>
+ <linearGradient id="navy" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#142e57"/><stop offset=".55" stop-color="#071a37"/><stop offset="1" stop-color="#020b1d"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#fff0a2"/><stop offset=".28" stop-color="#e8b94e"/><stop offset=".55" stop-color="#fff1ad"/><stop offset=".78" stop-color="#b87919"/><stop offset="1" stop-color="#f5d878"/></linearGradient>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feOffset dy="8"/><feComponentTransfer><feFuncA type="linear" slope=".6"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="1024" height="1024" rx="220" fill="#f7f7f5"/>
+<rect x="34" y="34" width="956" height="956" rx="205" fill="url(#navy)" stroke="url(#gold)" stroke-width="24"/>
+<rect x="57" y="57" width="910" height="910" rx="184" fill="none" stroke="#ffe7a0" stroke-opacity=".45" stroke-width="3"/>
+<g filter="url(#shadow)" stroke="url(#gold)" stroke-linejoin="round">
+ <path d="M255 430 L510 220 L765 430" fill="none" stroke-width="30"/>
+ <path d="M365 425 V345 H655 V425" fill="none" stroke-width="14" opacity=".9"/>
+ <path d="M490 345 V425 M560 345 V425 M490 385 H560" fill="none" stroke-width="12"/>
+ <text x="512" y="660" text-anchor="middle" font-family="Georgia,serif" font-weight="bold" font-size="330" letter-spacing="-22" fill="url(#gold)" stroke="none">SM</text>
+ <path d="M145 770 C300 835 460 710 610 705 C740 700 810 755 890 730" fill="none" stroke-width="18"/>
+ <path d="M580 700 C620 656 667 640 721 650 L776 675 L837 682 Q858 687 871 714 L882 735 L850 745 H626 L588 733 Z" fill="url(#gold)" stroke-width="7"/>
+ <path d="M649 682 Q679 654 720 661 L757 679 Z" fill="#09203f" stroke-width="5"/>
+ <path d="M770 684 L824 690 Q842 696 851 713 L787 711 Z" fill="#09203f" stroke-width="5"/>
+ <circle cx="660" cy="737" r="22" fill="#081a34" stroke-width="9"/>
+ <circle cx="825" cy="737" r="22" fill="#081a34" stroke-width="9"/>
+</g>
+</svg>

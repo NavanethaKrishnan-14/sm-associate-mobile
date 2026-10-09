@@ -105,8 +105,8 @@ export default function FinanceEnquiriesScreen({navigation}){
      const refreshedCustomers=await api.get('/customers');
      const customerRows=refreshedCustomers?.data?.data;
      if(Array.isArray(customerRows)){
-      const normalizedMobile=customerMobileInput.replace(/\\D/g,'');
-      const matchingCustomer=customerRows.find(item=>(item?.mobile||'').replace(/\\D/g,'')===normalizedMobile&&(item?.name||'').trim().toLowerCase()===customerNameInput.toLowerCase());
+      const normalizedMobile=customerMobileInput.replace(/\D/g,'');
+      const matchingCustomer=customerRows.find(item=>(item?.mobile||'').replace(/\D/g,'')===normalizedMobile&&(item?.name||'').trim().toLowerCase()===customerNameInput.toLowerCase());
       customerId=matchingCustomer?._id||matchingCustomer?.id||'';
       if(matchingCustomer)setCustomers(customerRows);
      }

@@ -43,6 +43,10 @@ export default function CarSaleScreen({navigation}) {
   const [saving, setSaving] = useState(false);
   const [modal, setModal] = useState(false);
   const [viewCar, setViewCar] = useState(null);
+  const [editModal, setEditModal] = useState(false);
+  const [editingCar, setEditingCar] = useState(null);
+  const [editForm, setEditForm] = useState({buyerId: '', sellingPrice: '', sellingExpenses: '0', saleDate: '', notes: ''});
+  const [actionBusy, setActionBusy] = useState(false);
   const [form, setForm] = useState(emptyForm);
 
   const set = (key, value) => setForm(previous => ({...previous, [key]: value}));
@@ -84,6 +88,82 @@ export default function CarSaleScreen({navigation}) {
   const openSale = () => {
     setForm(emptyForm());
     setModal(true);
+  };
+
+  const openEditSale = car => {
+    const sale = car.sale || car.saleDetails || {};
+    setEditingCar(car);
+    setEditForm({
+      buyerId: idOf(sale.buyerId || sale.buyer || ''),
+      sellingPrice: String(sale.sellingPrice ?? car.sellingPrice ?? car.salePrice ?? ''),
+      sellingExpenses: String(sale.sellingExpenses ?? '0'),
+      saleDate: sale.saleDate ? String(sale.saleDate).slice(0, 10) : '',
+      notes: String(sale.notes || '')
+    });
+    setEditModal(true);
+  };
+
+  async function saveSaleEdit() {
+    if (!editingCar) return;
+    const price = Number(editForm.sellingPrice);
+    const expenses = Number(editForm.sellingExpenses || 0);
+    if (!editForm.buyerId) {
+      Alert.alert('Select a Customer', 'Choose the buyer for this sale.');
+      return;
+    }
+    if (!Number.isFinite(price) || price <= 0) {
+      Alert.alert('Invalid Selling Price', 'Enter a selling price greater than zero.');
+      return;
+    }
+    if (!Number.isFinite(expenses) || expenses < 0) {
+      Alert.alert('Invalid Expenses', 'Enter zero or a positive number for selling expenses.');
+      return;
+    }
+    setActionBusy(true);
+    try {
+      await api.patch('/cars/' + encodeURIComponent(idOf(editingCar)) + '/sale', {
+        buyerId: editForm.buyerId,
+        sellingPrice: price,
+        sellingExpenses: expenses,
+        ...(editForm.saleDate ? {saleDate: editForm.saleDate} : {}),
+        notes: editForm.notes
+      });
+      setEditModal(false);
+      setEditingCar(null);
+      await load();
+      Alert.alert('Sale Updated Successfully', 'The completed sale details have been updated.');
+    } catch (error) {
+      Alert.alert('Unable to Update Sale', error?.response?.data?.message || error?.message || 'Please try again.');
+    } finally {
+      setActionBusy(false);
+    }
+  }
+
+  const deleteSale = car => {
+    Alert.alert(
+      'Delete Completed Sale?',
+      'This will remove the sale record and restore the vehicle to Available Inventory. The vehicle itself will not be deleted.',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Delete Sale',
+          style: 'destructive',
+          onPress: async () => {
+            setActionBusy(true);
+            try {
+              await api.delete('/cars/' + encodeURIComponent(idOf(car)) + '/sale');
+              if (viewCar && idOf(viewCar) === idOf(car)) setViewCar(null);
+              await load();
+              Alert.alert('Sale Deleted', 'The vehicle has been restored to Available Inventory.');
+            } catch (error) {
+              Alert.alert('Unable to Delete Sale', error?.response?.data?.message || error?.message || 'Please try again.');
+            } finally {
+              setActionBusy(false);
+            }
+          }
+        }
+      ]
+    );
   };
 
   const addCustomDocument = () => {
@@ -268,16 +348,29 @@ export default function CarSaleScreen({navigation}) {
           <AppText style={s.sectionLabel}>COMPLETED SALES</AppText>
           {soldCars.length ? soldCars.map(car => {
             const sale = car.sale || car.saleDetails || {};
+            const buyer = sale.buyer || (sale.buyerId && typeof sale.buyerId === 'object' ? sale.buyerId : null);
             return (
-              <Pressable key={idOf(car)} onPress={() => setViewCar(car)} style={({pressed}) => [s.carCard, pressed && s.pressed]}>
-                <View style={s.soldIcon}><Ionicons name="checkmark-circle-outline" size={22} color={colors.teal} /></View>
-                <View style={{flex: 1}}>
-                  <AppText style={s.cardTitle}>{car.vehicleId || car.id || 'Vehicle'} · {[car.make, car.model].filter(Boolean).join(' ')}</AppText>
-                  <AppText style={s.muted}>{car.registrationNumber || 'No registration'} · SOLD</AppText>
-                  <AppText style={s.priceText}>Selling price ₹{money(sale.sellingPrice ?? car.sellingPrice ?? car.salePrice)}</AppText>
+              <View key={idOf(car)} style={s.carCard}>
+                <Pressable onPress={() => setViewCar(car)} style={s.saleInfo}>
+                  <View style={s.soldIcon}><Ionicons name="checkmark-circle-outline" size={22} color={colors.teal} /></View>
+                  <View style={{flex: 1}}>
+                    <AppText style={s.cardTitle}>{car.vehicleId || car.id || 'Vehicle'} · {[car.make, car.model].filter(Boolean).join(' ')}</AppText>
+                    <AppText style={s.muted}>{car.registrationNumber || 'No registration'} · {buyer?.name || 'Buyer not set'}</AppText>
+                    <AppText style={s.priceText}>Selling price ₹{money(sale.sellingPrice ?? car.sellingPrice ?? car.salePrice)}</AppText>
+                  </View>
+                </Pressable>
+                <View style={s.saleActions}>
+                  <Pressable disabled={actionBusy} onPress={() => openEditSale(car)} style={s.editAction} accessibilityLabel="Edit completed sale">
+                    <Ionicons name="create-outline" size={17} color={colors.midnight} />
+                    <AppText style={s.actionText}>Edit</AppText>
+                  </Pressable>
+                  <Pressable disabled={actionBusy} onPress={() => deleteSale(car)} style={s.deleteAction} accessibilityLabel="Delete completed sale">
+                    <Ionicons name="trash-outline" size={17} color="#B42318" />
+                    <AppText style={s.deleteActionText}>Delete</AppText>
+                  </Pressable>
                 </View>
                 <View style={s.soldBadge}><AppText style={s.soldBadgeText}>SOLD</AppText></View>
-              </Pressable>
+              </View>
             );
           }) : <Empty icon="receipt-outline" title="No completed sales" text="Successfully recorded vehicle sales will appear here." />}
         </ScrollView>
@@ -320,6 +413,46 @@ export default function CarSaleScreen({navigation}) {
                 })}
               </ScrollView>
             ) : null}
+          </View>
+        </View>
+      </Modal>
+
+      <Modal visible={editModal} animationType="slide" transparent onRequestClose={() => !actionBusy && setEditModal(false)}>
+        <View style={s.overlay}>
+          <View style={s.modal}>
+            <View style={s.modalHead}>
+              <View>
+                <AppText style={s.modalTitle}>Edit Completed Sale</AppText>
+                <AppText style={s.modalSub}>{editingCar ? [editingCar.make, editingCar.model].filter(Boolean).join(' ') : 'Update sale details'}</AppText>
+              </View>
+              <Pressable disabled={actionBusy} onPress={() => setEditModal(false)} style={s.closeButton}><Ionicons name="close" size={22} color={colors.ink} /></Pressable>
+            </View>
+            <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={s.form}>
+              <AppText style={s.formSection}>BUYER</AppText>
+              {customers.map(customer => (
+                <Pressable key={idOf(customer)} onPress={() => setEditForm(previous => ({...previous, buyerId: idOf(customer)}))} style={[s.option, editForm.buyerId === idOf(customer) && s.active]}>
+                  <View style={s.avatar}><AppText style={s.avatarText}>{String(customer.name || '?').slice(0, 1).toUpperCase()}</AppText></View>
+                  <View style={{flex: 1}}>
+                    <AppText style={s.cardTitle}>{customer.customerId || ''}{customer.customerId ? ' · ' : ''}{customer.name || 'Unnamed customer'}</AppText>
+                    <AppText style={s.muted}>{customer.mobile || 'No mobile'}{customer.city ? ' · ' + customer.city : ''}</AppText>
+                  </View>
+                  <Ionicons name={editForm.buyerId === idOf(customer) ? 'checkmark-circle' : 'ellipse-outline'} size={21} color={editForm.buyerId === idOf(customer) ? colors.teal : colors.muted} />
+                </Pressable>
+              ))}
+              <AppText style={s.formSection}>SALE DETAILS</AppText>
+              <Field label="Selling Price (₹)" value={editForm.sellingPrice} onChangeText={value => setEditForm(previous => ({...previous, sellingPrice: value.replace(/[^0-9.]/g, '')}))} keyboardType="decimal-pad" />
+              <Field label="Selling Expenses (₹)" value={editForm.sellingExpenses} onChangeText={value => setEditForm(previous => ({...previous, sellingExpenses: value.replace(/[^0-9.]/g, '')}))} keyboardType="decimal-pad" />
+              <Field label="Sale Date (YYYY-MM-DD, optional)" value={editForm.saleDate} onChangeText={value => setEditForm(previous => ({...previous, saleDate: value}))} />
+              <Field label="Notes (optional)" value={editForm.notes} onChangeText={value => setEditForm(previous => ({...previous, notes: value}))} />
+              <View style={s.net}>
+                <View><AppText style={s.netLabel}>ESTIMATED NET SALE VALUE</AppText><AppText style={s.netHint}>Selling price minus selling expenses</AppText></View>
+                <AppText style={s.netValue}>₹{money(Math.max(0, Number(editForm.sellingPrice || 0) - Number(editForm.sellingExpenses || 0)))}</AppText>
+              </View>
+              <Pressable disabled={actionBusy} onPress={saveSaleEdit} style={[s.primary, actionBusy && s.disabled]}>
+                {actionBusy ? <ActivityIndicator color={colors.midnight} /> : <Ionicons name="save-outline" size={20} color={colors.midnight} />}
+                <AppText style={s.primaryText}>{actionBusy ? 'Saving Changes…' : 'Save Changes'}</AppText>
+              </Pressable>
+            </ScrollView>
           </View>
         </View>
       </Modal>
@@ -442,7 +575,13 @@ const s = {
   sectionHeader: {flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'},
   sectionLabel: {fontSize: 11, letterSpacing: 1, color: colors.ink, marginTop: 18, marginBottom: 9, fontWeight: '700'},
   iconButton: {width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.white, borderWidth: 1, borderColor: 'rgba(39,168,154,.15)'},
-  carCard: {backgroundColor: colors.white, borderRadius: 20, padding: 14, marginBottom: 9, borderWidth: 1, borderColor: 'rgba(39,168,154,.13)', flexDirection: 'row', alignItems: 'center'},
+  carCard: {backgroundColor: colors.white, borderRadius: 20, padding: 14, marginBottom: 9, borderWidth: 1, borderColor: 'rgba(39,168,154,.13)', flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap'},
+  saleInfo: {flexDirection: 'row', alignItems: 'center', flex: 1, minWidth: 180},
+  saleActions: {flexDirection: 'row', alignItems: 'center', gap: 6, marginLeft: 6},
+  editAction: {flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 9, paddingVertical: 8, borderRadius: 10, backgroundColor: colors.goldLight},
+  deleteAction: {flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 9, paddingVertical: 8, borderRadius: 10, backgroundColor: '#FEF2F2'},
+  actionText: {fontSize: 10, color: colors.midnight, fontWeight: '700'},
+  deleteActionText: {fontSize: 10, color: '#B42318', fontWeight: '700'},
   carIcon: {width: 44, height: 44, borderRadius: 14, backgroundColor: colors.goldLight, alignItems: 'center', justifyContent: 'center', marginRight: 11},
   soldIcon: {width: 44, height: 44, borderRadius: 14, backgroundColor: '#EAF6F1', alignItems: 'center', justifyContent: 'center', marginRight: 11},
   cardTitle: {fontSize: 14, color: colors.ink, fontWeight: '600'},

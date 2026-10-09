@@ -80,9 +80,38 @@ export async function login(email, password) {
   try {
     const response = await api.post('/auth/login', {email: cleanEmail, password: cleanPassword});
     const data = response.data;
-    const token = data?.data?.token || data?.data?.accessToken || data?.token || data?.accessToken;
 
-    if (!token) throw new Error('Login succeeded, but the server did not return an access token.');
+    // Support the current API envelope and older deployments/proxies that
+    // wrap the response in data/result/payload/session objects.
+    const tokenCandidates = [
+      data?.token,
+      data?.accessToken,
+      data?.access_token,
+      data?.data?.token,
+      data?.data?.accessToken,
+      data?.data?.access_token,
+      data?.data?.data?.token,
+      data?.data?.data?.accessToken,
+      data?.result?.token,
+      data?.result?.accessToken,
+      data?.result?.access_token,
+      data?.payload?.token,
+      data?.payload?.accessToken,
+      data?.session?.token,
+      data?.session?.accessToken,
+      data?.auth?.token,
+      data?.auth?.accessToken
+    ];
+    const token = tokenCandidates.find(value => typeof value === 'string' && value.trim())?.trim();
+
+    if (!token) {
+      console.error('Login response did not include a token.', {
+        status: response.status,
+        responseKeys: data && typeof data === 'object' ? Object.keys(data) : [],
+        dataKeys: data?.data && typeof data.data === 'object' ? Object.keys(data.data) : []
+      });
+      throw new Error('The server confirmed login but returned no access token. Please update the backend deployment and try again.');
+    }
 
     await storeAccessToken(token);
 

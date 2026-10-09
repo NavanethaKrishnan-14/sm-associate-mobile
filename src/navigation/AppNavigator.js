@@ -14,6 +14,7 @@ import DashboardScreen from '../screens/DashboardScreen';
 import CustomersScreen from '../screens/CustomersScreen';
 import CarsScreen from '../screens/CarsScreen';
 import LoansScreen from '../screens/LoansScreen';
+import FinanceEnquiriesScreen from '../screens/FinanceEnquiriesScreen';
 import MoreScreen from '../screens/MoreScreen';
 import AdminToolsScreen from '../screens/AdminToolsScreen';
 import CarSaleScreen from '../screens/CarSaleScreen';
@@ -263,6 +264,7 @@ export default function AppNavigator(){
         <Stack.Screen name="AdminTools" component={AdminToolsScreen}/>
         <Stack.Screen name="CarSale" component={CarSaleScreen}/>
         <Stack.Screen name="Documents" component={DocumentsScreen}/>
+        <Stack.Screen name="FinanceEnquiries" component={FinanceEnquiriesScreen}/>
         <Stack.Screen name="CarProfit" component={CarProfitScreen}/>
         <Stack.Screen name="LoanRevenue" component={LoanRevenueScreen}/>
         <Stack.Screen name="OperationalReports" component={OperationalReportsScreen}/>

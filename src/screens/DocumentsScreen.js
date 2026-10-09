@@ -14,19 +14,22 @@ export default function DocumentsScreen({navigation}){
   const [documents,setDocuments]=useState([]);
   const [search,setSearch]=useState('');
   const [loading,setLoading]=useState(true);
+  const [loadError,setLoadError]=useState('');
   const [refreshing,setRefreshing]=useState(false);
   const [compactHeader,setCompactHeader]=useState(false);
   const load=useCallback(async()=>{
+    setLoadError('');
     try{
       const r=await api.get('/documents');
       setDocuments(Array.isArray(r.data?.data)?r.data.data:[]);
     }catch(e){
       setDocuments([]);
+      setLoadError(e?.response?.data?.message||e?.message||'Unable to load documents.');
     }finally{setLoading(false);setRefreshing(false);}
   },[]);
   useFocusEffect(useCallback(()=>{load()},[load]));
   const q=search.trim().toLowerCase();
-  const filtered=documents.filter(d=>[d.name,d.originalName,d.source,d.recordLabel].some(v=>String(v||'').toLowerCase().includes(q)));
+  const filtered=documents.filter(d=>[d.name,d.originalName,d.source,d.recordLabel,d.status].some(v=>String(v||'').toLowerCase().includes(q)));
   const formatDate=value=>value?new Date(value).toLocaleDateString():'—';
   const formatSize=value=>{
     const n=Number(value||0);
@@ -41,7 +44,7 @@ export default function DocumentsScreen({navigation}){
       <Pressable onPress={()=>navigation.goBack()} style={[styles.back,compactHeader&&styles.backCompact]}><Ionicons name="arrow-back" size={compactHeader?19:22} color={colors.ink}/></Pressable>
       <View style={{flex:1,marginLeft:compactHeader?8:10}}>
         <AppText style={[styles.title,compactHeader&&styles.titleCompact]}>Documents</AppText>
-        {!compactHeader&&<AppText style={styles.subtitle}>All uploaded documents</AppText>}
+        {!compactHeader&&<AppText style={styles.subtitle}>Uploaded files and loan checklists</AppText>}
       </View>
       <View style={[styles.count,compactHeader&&styles.countCompact]}><AppText style={styles.countText}>{documents.length}</AppText></View>
     </View>
@@ -53,13 +56,14 @@ export default function DocumentsScreen({navigation}){
 
     <ScrollView onScroll={event=>setCompactHeader(event.nativeEvent.contentOffset.y>35)} scrollEventThrottle={16} contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{setRefreshing(true);load()}} tintColor={colors.gold}/>}>
       {loading?<View style={styles.center}><ActivityIndicator size="large" color={colors.midnight}/></View>:
+       loadError?<View style={styles.empty}><Ionicons name="cloud-offline-outline" size={44} color={colors.muted}/><AppText style={styles.emptyTitle}>Documents could not load</AppText><AppText style={styles.emptyText}>{loadError}</AppText><Pressable onPress={()=>{setLoading(true);load()}} style={styles.retryButton}><AppText style={styles.retryText}>Retry</AppText></Pressable></View>:
        filtered.length===0?<View style={styles.empty}><Ionicons name="folder-open-outline" size={44} color={colors.muted}/><AppText style={styles.emptyTitle}>{documents.length?'No matching documents':'No uploaded documents'}</AppText><AppText style={styles.emptyText}>{documents.length?'Try another document name or record.':'Uploaded Car Buying, Car Sold and Loan documents will appear here.'}</AppText></View>:
        filtered.map(d=><View key={d.id} style={styles.card}>
          <View style={styles.icon}><Ionicons name={sourceIcon[d.source]||'document-outline'} size={21} color={colors.midnight}/></View>
          <View style={{flex:1}}>
            <AppText style={styles.name}>{d.name}</AppText>
            <AppText style={styles.file}>{d.originalName}{d.size?' • '+formatSize(d.size):''}</AppText>
-           <View style={styles.metaRow}><AppText style={styles.source}>{d.source}</AppText><AppText style={styles.date}>{formatDate(d.uploadedAt)}</AppText></View>
+           <View style={styles.metaRow}><AppText style={styles.source}>{d.source}</AppText>{d.status&&<AppText style={styles.status}>{String(d.status).replace(/_/g,' ')}</AppText>}<AppText style={styles.date}>{formatDate(d.uploadedAt)}</AppText></View>
            <AppText style={styles.record} numberOfLines={2}>{d.recordLabel}</AppText>
          </View>
        </View>)

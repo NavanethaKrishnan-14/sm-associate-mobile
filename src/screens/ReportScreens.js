@@ -5,9 +5,10 @@ import {ActivityIndicator, Alert, ScrollView, View, Pressable} from 'react-nativ
 import {Ionicons} from '@expo/vector-icons';
 import {api} from '../api/client';
 import {colors} from '../theme/colors';
+import ServiceHeader from '../components/ServiceHeader';
 
 const money=v=>'₹'+Number(v||0).toLocaleString('en-IN');
-function Layout({title,children,navigation}){ const {top}=useSafeAreaInsets();return <View style={[s.page,{paddingTop:Math.max(22,top+22)}]}><View style={s.header}><Pressable onPress={()=>navigation.goBack()} style={s.back}><Ionicons name="arrow-back" size={22} color={colors.ink}/></Pressable><View><AppText style={s.title}>{title}</AppText><AppText style={s.sub}>SM Associate report</AppText></View></View><ScrollView contentContainerStyle={s.list}>{children}</ScrollView></View>}
+function Layout({title,children,navigation}){ const {top}=useSafeAreaInsets();return <View style={[s.page,{paddingTop:Math.max(22,top+22)}]}><ServiceHeader title={title} subtitle="Review performance, financial summaries and operational activity." navigation={navigation} kicker="SM ASSOCIATE / REPORTS"/><ScrollView contentContainerStyle={s.list}>{children}</ScrollView></View>}
 function Loading(){return <ActivityIndicator style={{marginTop:50}} color={colors.gold}/>}
 function Stat({label,value,icon}){return <View style={s.stat}><View style={s.statTop}><View style={s.statIcon}><Ionicons name={icon} size={18} color={colors.teal}/></View><AppText style={s.statLabel} numberOfLines={2}>{label}</AppText></View><AppText style={s.value} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.78}>{String(value)}</AppText></View>}
 function LoadFailure({message,onRetry}) {

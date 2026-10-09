@@ -81,6 +81,7 @@ export default function FinanceEnquiriesScreen({navigation}){
   setModal(true);
  }
  async function save(){
+  if(saving)return;
   if(editing&&!form.customerId)return Alert.alert('Finance enquiry','Select a customer first.');
   if(!editing&&customerMode==='existing'&&!form.customerId)return Alert.alert('Finance enquiry','Select an existing customer first.');
   if(!editing&&customerMode==='new'&&(!newCustomer.name.trim()||!newCustomer.mobile.trim()))return Alert.alert('Customer details','Enter the new customer name and mobile number.');

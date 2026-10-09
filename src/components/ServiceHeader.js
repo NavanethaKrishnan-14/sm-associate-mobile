@@ -5,7 +5,7 @@ import {AppText} from './AppText';
 import {colors} from '../theme/colors';
 
 export default function ServiceHeader({title,subtitle,navigation,showBack=true,kicker='SM ASSOCIATE / SERVICES',actionLabel,actionIcon='add',onAction,count}){
- return <View style={{marginBottom:18}}>
+ return <View style={{marginHorizontal:18,marginBottom:18}}>
   {showBack&&navigation?<Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={()=>navigation?.canGoBack?.()?navigation.goBack():navigation?.navigate?.('Main')} style={{flexDirection:'row',alignItems:'center',alignSelf:'flex-start',paddingVertical:10,paddingHorizontal:14,marginBottom:12,borderRadius:12,backgroundColor:'#FFFFFF',borderWidth:1,borderColor:'#E1E6E3'}}>
    <AppText style={{fontSize:20,color:colors.ink,marginRight:8}}>‹</AppText>
    <AppText style={{fontSize:13,color:colors.ink}}>Back</AppText>

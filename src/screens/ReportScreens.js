@@ -61,7 +61,7 @@ const s={
  cardIcon:{width:42,height:42,borderRadius:13,backgroundColor:'#E2F1EE',alignItems:'center',justifyContent:'center',marginRight:11,flexShrink:0},
  row:{backgroundColor:'#FFFFFF',borderRadius:13,paddingHorizontal:13,paddingVertical:12,marginBottom:8,flexDirection:'row',alignItems:'center',borderWidth:1,borderColor:'#E1E7E3',minHeight:58},
  rowIcon:{width:34,height:34,borderRadius:10,backgroundColor:'#E2F1EE',alignItems:'center',justifyContent:'center',marginRight:10,flexShrink:0},
- name:{fontSize:13,color:'#26343A',flexShrink:1},
+ name:{fontSize:13,color:'#26343A',flex:1,flexShrink:1},
  muted:{fontSize:11,color:'#71808A',marginTop:4,lineHeight:15},
  profit:{fontSize:13,color:'#147F74',fontWeight:'700',marginLeft:8,flexShrink:0},
  badge:{fontSize:12,color:'#182027',backgroundColor:'#D9F1ED',paddingHorizontal:10,paddingVertical:6,borderRadius:9,overflow:'hidden',marginLeft:8}

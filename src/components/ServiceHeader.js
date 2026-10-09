@@ -15,7 +15,7 @@ export default function ServiceHeader({title,subtitle,navigation,showBack=true,k
     <AppText style={{fontSize:11,color:colors.teal,letterSpacing:2,textAlign:'left'}}>{kicker}</AppText>
     {actionInline&&actionLabel&&onAction?<View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:10,width:'100%',marginTop:8}}>
      <AppText style={{fontSize:25,color:colors.white,textAlign:'left',flex:1}}>{title}</AppText>
-     <Pressable accessibilityRole="button" onPress={onAction} style={{flexDirection:'row',alignItems:'center',gap:5,backgroundColor:colors.teal,paddingHorizontal:12,paddingVertical:10,borderRadius:12,transform:[{translateY:-5}]}}>
+     <Pressable accessibilityRole="button" onPress={onAction} style={{flexDirection:'row',alignItems:'center',gap:5,backgroundColor:colors.teal,paddingHorizontal:12,paddingVertical:10,borderRadius:12,transform:[{translateY:-9}]}}>
       <Ionicons name={actionIcon} size={18} color="#FFFFFF"/><AppText style={{fontSize:12,color:'#FFFFFF'}}>{actionLabel}</AppText>
      </Pressable>
     </View>:<AppText style={{fontSize:25,color:colors.white,marginTop:8,textAlign:'left',width:'100%'}}>{title}</AppText>}

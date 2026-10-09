@@ -45,13 +45,14 @@ export default function CustomersScreen({navigation}){
      }
      await api.patch('/customers/'+id+'/documents',{customDocuments:customDocs,...Object.fromEntries(docs.map(([key])=>[key,Boolean(editing?.documents?.[key]||files[key])]))});
      setModal(false);await load();
-   }catch(e){Alert.alert('Customer',e?.message||e?.response?.data?.message||'Unable to save customer.')}finally{setSaving(false)}
+     Alert.alert(editing?'Customer Updated Successfully':'Customer Saved Successfully',editing?'Customer details and documents were updated successfully.':'Customer details and documents were saved successfully.');
+   }catch(e){Alert.alert('Customer Save Failed',e?.message||e?.response?.data?.message||'Unable to save customer.')}finally{setSaving(false)}
  }
  async function openHistory(item){try{const r=await api.get('/customers/'+item._id+'/history');setHistory(r.data?.data||null)}catch(e){Alert.alert('History',e?.response?.data?.message||'Unable to load customer history.')}}
  function remove(item){
    Alert.alert('Delete customer','Delete '+item.name+'? This cannot be undone.',[
     {text:'Cancel',style:'cancel'},
-    {text:'Delete',style:'destructive',onPress:async()=>{try{await api.delete('/customers/'+item._id);load()}catch(e){Alert.alert('Delete',e?.response?.data?.message||'Unable to delete customer.')}}}
+    {text:'Delete',style:'destructive',onPress:async()=>{try{await api.delete('/customers/'+item._id);await load();Alert.alert('Customer Deleted Successfully','The customer record was deleted successfully.')}catch(e){Alert.alert('Delete',e?.response?.data?.message||'Unable to delete customer.')}}}
    ]);
  }
  return <View style={[s.page,{paddingTop:top+12}]}>

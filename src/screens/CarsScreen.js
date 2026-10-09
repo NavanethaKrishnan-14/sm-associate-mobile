@@ -61,7 +61,8 @@ const r=await api.post('/cars',payload);
    for(const name of customDocs){const key='custom:'+name;if(!files[key])continue;try{await uploadDocument('/cars/'+id+'/documents/custom',files[key],{documentName:name})}catch(error){throw new Error('Vehicle saved, but '+name+' upload failed: '+(error?.message||'Document upload failed.'))}}
    await api.patch('/cars/'+id+'/documents',{customDocuments:customDocs,...Object.fromEntries(docs.map(([key])=>[key,Boolean(editing?.documents?.[key]||files[key])]))});
    setModal(false);await load();
-  }catch(e){setNotice({title:'Vehicle Update',message:e?.message||e?.response?.data?.message||'Unable to save vehicle.',type:'error'})}finally{setSaving(false)}
+   setNotice({title:editing?'Vehicle Updated Successfully':'Vehicle Saved Successfully',message:editing?'The vehicle details and documents have been updated successfully.':'The vehicle and its documents have been saved successfully.',type:'success'});
+  }catch(e){setNotice({title:'Vehicle Save Failed',message:e?.message||e?.response?.data?.message||'Unable to save vehicle.',type:'error'})}finally{setSaving(false)}
  }
  function remove(c){Alert.alert('Delete vehicle','Delete '+c.vehicleId+'? This cannot be undone.',[{text:'Cancel',style:'cancel'},{text:'Delete',style:'destructive',onPress:async()=>{try{await api.delete('/cars/'+c._id);load()}catch(e){Alert.alert('Delete',e?.response?.data?.message||'Unable to delete vehicle.')}}}])}
  return <View style={[s.page,{paddingTop:top+12}]}>

@@ -9,7 +9,7 @@ import {colors} from '../theme/colors';
 const blank={customerId:'',serviceCode:'HOME_LOAN',financeCompany:'',requiredAmount:'',followUpDate:'',notes:'',status:'NEW'};
 const statuses=['NEW','IN_PROGRESS','COMPLETED','CANCELLED'];
 
-export default function FinanceEnquiriesScreen(){
+export default function FinanceEnquiriesScreen({navigation}){
  const {top}=useSafeAreaInsets();
  const [items,setItems]=useState([]);
  const [customers,setCustomers]=useState([]);
@@ -110,7 +110,11 @@ export default function FinanceEnquiriesScreen(){
  const serviceName=(code)=>services.find(s=>s.code===code)?.name||code||'Select service';
 
  return <View style={{flex:1,backgroundColor:'#F2F3F1'}}>
-  <ScrollView contentContainerStyle={{paddingTop:top+18,paddingHorizontal:18,paddingBottom:130}}>
+  <ScrollView contentContainerStyle={{paddingTop:top+12,paddingHorizontal:18,paddingBottom:130}}>
+   <Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={()=>navigation?.canGoBack?.()?navigation.goBack():navigation?.navigate?.('Main')} style={{flexDirection:'row',alignItems:'center',alignSelf:'flex-start',paddingVertical:10,paddingHorizontal:14,marginBottom:12,borderRadius:12,backgroundColor:'#FFFFFF',borderWidth:1,borderColor:'#E1E6E3'}}>
+    <AppText style={{fontSize:20,color:colors.ink,marginRight:8}}>‹</AppText>
+    <AppText style={{fontSize:13,color:colors.ink}}>Back</AppText>
+   </Pressable>
    <View style={{backgroundColor:colors.midnight,borderRadius:22,padding:20,marginBottom:18}}>
     <AppText style={{fontSize:11,color:colors.teal,letterSpacing:2}}>SM ASSOCIATE / SERVICES</AppText>
     <AppText style={{fontSize:27,color:colors.white,marginTop:8}}>Finance enquiries</AppText>

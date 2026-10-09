@@ -302,6 +302,7 @@ export default function CarSaleScreen({navigation}) {
         actionLabel="Sell Car"
         actionIcon="car-outline"
         onAction={openSale}
+        actionInline
       />
 
       {busy ? (

@@ -13,6 +13,7 @@ const groups = [
     title: 'Daily Operations',
     items: [
       ['Car Sold', 'car-sport-outline', 'CarSale', 'Vehicle sales'],
+      ['Finance Enquiries', 'wallet-outline', 'FinanceEnquiries', 'Loans and service requests'],
       ['Vehicle Expenses', 'receipt-outline', 'Expenses', 'Cost tracking'],
       ['User Management', 'people-outline', 'Users', 'People & access'],
     ],
@@ -32,6 +33,11 @@ export default function MoreScreen({navigation}) {
   const {top, bottom} = useSafeAreaInsets();
 
   const go = (section) => {
+    if (section === 'FinanceEnquiries') {
+      navigation.navigate('FinanceEnquiries');
+      return;
+    }
+
     if (section === 'CarSale') {
       navigation.navigate('CarSale');
       return;

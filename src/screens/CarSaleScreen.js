@@ -364,13 +364,11 @@ export default function CarSaleScreen({navigation}) {
                   <View style={s.soldBadge}><AppText style={s.soldBadgeText}>SOLD</AppText></View>
                 </View>
                 <View style={s.saleActions}>
-                  <Pressable disabled={actionBusy} onPress={() => openEditSale(car)} style={s.editAction} accessibilityLabel="Edit completed sale">
-                    <Ionicons name="create-outline" size={17} color={colors.midnight} />
-                    <AppText style={s.actionText}>Edit</AppText>
+                  <Pressable disabled={actionBusy} onPress={() => openEditSale(car)} style={[s.secondaryAction, actionBusy && s.disabled]} accessibilityRole="button" accessibilityLabel="Edit completed sale">
+                    <AppText style={s.secondaryActionText}>Edit</AppText>
                   </Pressable>
-                  <Pressable disabled={actionBusy} onPress={() => deleteSale(car)} style={s.deleteAction} accessibilityLabel="Delete completed sale">
-                    <Ionicons name="trash-outline" size={17} color="#B42318" />
-                    <AppText style={s.deleteActionText}>Delete</AppText>
+                  <Pressable disabled={actionBusy} onPress={() => deleteSale(car)} style={[s.deleteSaleAction, actionBusy && s.disabled]} accessibilityRole="button" accessibilityLabel="Delete completed sale">
+                    <AppText style={s.deleteSaleActionText}>Delete</AppText>
                   </Pressable>
                 </View>
               </View>
@@ -582,11 +580,11 @@ const s = {
   saleCard: {flexDirection: 'column', alignItems: 'stretch'},
   saleTopRow: {flexDirection: 'row', alignItems: 'flex-start', width: '100%', gap: 8},
   saleInfo: {flexDirection: 'row', alignItems: 'center', flex: 1, minWidth: 0},
-  saleActions: {flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 12, alignSelf: 'flex-start'},
-  editAction: {flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 9, paddingVertical: 8, borderRadius: 10, backgroundColor: colors.goldLight},
-  deleteAction: {flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 9, paddingVertical: 8, borderRadius: 10, backgroundColor: '#FEF2F2'},
-  actionText: {fontSize: 10, color: colors.midnight, fontWeight: '700'},
-  deleteActionText: {fontSize: 10, color: '#B42318', fontWeight: '700'},
+  saleActions: {flexDirection: 'row', gap: 8, marginTop: 14, width: '100%'},
+  secondaryAction: {flex: 1, height: 44, borderRadius: 15, borderWidth: 1, borderColor: 'rgba(39,168,154,0.20)', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.white},
+  secondaryActionText: {color: colors.midnight},
+  deleteSaleAction: {flex: 1, height: 44, borderRadius: 13, backgroundColor: '#FFF2F2', borderWidth: 1, borderColor: '#E8CACA', alignItems: 'center', justifyContent: 'center'},
+  deleteSaleActionText: {color: colors.danger},
   carIcon: {width: 44, height: 44, borderRadius: 14, backgroundColor: colors.goldLight, alignItems: 'center', justifyContent: 'center', marginRight: 11},
   soldIcon: {width: 44, height: 44, borderRadius: 14, backgroundColor: '#EAF6F1', alignItems: 'center', justifyContent: 'center', marginRight: 11},
   cardTitle: {fontSize: 14, color: colors.ink, fontWeight: '600'},

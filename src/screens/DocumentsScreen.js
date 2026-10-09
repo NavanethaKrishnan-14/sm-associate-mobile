@@ -6,6 +6,7 @@ import {Ionicons} from '@expo/vector-icons';
 import {useFocusEffect} from '@react-navigation/native';
 import {api} from '../api/client';
 import {colors} from '../theme/colors';
+import ServiceHeader from '../components/ServiceHeader';
 
 const sourceIcon={ "Customer":"person-circle-outline", "Car Buying":"car-sport-outline", "Car Sold":"checkmark-circle-outline", "Loan":"document-text-outline" };
 
@@ -40,14 +41,7 @@ export default function DocumentsScreen({navigation}){
   };
 
   return <View style={styles.page}>
-    <View style={[styles.topBar,compactHeader&&styles.topBarCompact,{paddingTop:top+26}]}>
-      <Pressable onPress={()=>navigation.goBack()} style={[styles.back,compactHeader&&styles.backCompact]}><Ionicons name="arrow-back" size={compactHeader?19:22} color={colors.ink}/></Pressable>
-      <View style={{flex:1,marginLeft:compactHeader?8:10}}>
-        <AppText style={[styles.title,compactHeader&&styles.titleCompact]}>Documents</AppText>
-        {!compactHeader&&<AppText style={styles.subtitle}>Uploaded files and loan checklists</AppText>}
-      </View>
-      <View style={[styles.count,compactHeader&&styles.countCompact]}><AppText style={styles.countText}>{documents.length}</AppText></View>
-    </View>
+    <View style={{paddingTop:top+18,paddingHorizontal:18}}><ServiceHeader title="Documents" subtitle="Browse uploaded customer, vehicle sale and loan documents." navigation={navigation} count={documents.length}/></View>
 
     <View style={styles.searchBox}>
       <Ionicons name="search-outline" size={19} color={colors.muted}/>

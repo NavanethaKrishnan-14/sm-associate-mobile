@@ -4,7 +4,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useFocusEffect} from '@react-navigation/native';
 import {Alert, ActivityIndicator, Linking, Modal, Pressable, ScrollView, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
-import {api,uploadDocument} from '../api/client';
+import {api,uploadDocument,resolveDocumentUrl} from '../api/client';
 import DocumentPickerButton from '../components/DocumentPickerButton';
 import {colors} from '../theme/colors';
 import ServiceHeader from '../components/ServiceHeader';
@@ -67,8 +67,8 @@ export default function CustomersScreen({navigation}){
        <View style={s.profileHero}><View style={s.profileAvatar}><AppText style={s.profileAvatarText}>{(profile.name||'?').slice(0,1).toUpperCase()}</AppText></View><AppText style={s.profileName}>{profile.name}</AppText><AppText style={s.muted}>{profile.customerId||'Customer'}</AppText></View>
        {[['Mobile',profile.mobile],['Alternate Mobile',profile.alternateMobile],['Email',profile.email],['Address',profile.address],['City',profile.city],['Occupation',profile.occupation],['PAN',profile.pan],['Aadhaar Last 4',profile.aadhaarLast4],['Notes',profile.notes]].map(([k,v])=><View key={k} style={s.detailRow}><AppText style={s.detailLabel}>{k}</AppText><AppText style={s.detailValue}>{v||'—'}</AppText></View>)}
        <AppText style={s.section}>Uploaded Documents</AppText>
-       {docs.map(([key,title])=>{const doc=profile.documents?.uploads?.[key];return <View key={key} style={s.viewDoc}><View style={{flex:1}}><AppText style={s.docTitle}>{title}</AppText><AppText style={s.muted}>{doc?.originalName||'Not uploaded'}</AppText></View>{doc?.url&&<Pressable onPress={()=>Linking.openURL(doc.url)} style={s.openDoc}><AppText style={s.openDocText}>Open</AppText></Pressable>}</View>})}
-       {(profile.documents?.customUploads||[]).map(doc=><View key={doc.name} style={s.viewDoc}><View style={{flex:1}}><AppText style={s.docTitle}>{doc.name}</AppText><AppText style={s.muted}>{doc.originalName||'Not uploaded'}</AppText></View>{doc.url&&<Pressable onPress={()=>Linking.openURL(doc.url)} style={s.openDoc}><AppText style={s.openDocText}>Open</AppText></Pressable>}</View>)}
+       {docs.map(([key,title])=>{const doc=profile.documents?.uploads?.[key];return <View key={key} style={s.viewDoc}><View style={{flex:1}}><AppText style={s.docTitle}>{title}</AppText><AppText style={s.muted}>{doc?.originalName||'Not uploaded'}</AppText></View>{doc?.url&&<Pressable onPress={()=>Linking.openURL(resolveDocumentUrl(doc.url))} style={s.openDoc}><AppText style={s.openDocText}>Open</AppText></Pressable>}</View>})}
+       {(profile.documents?.customUploads||[]).map(doc=><View key={doc.name} style={s.viewDoc}><View style={{flex:1}}><AppText style={s.docTitle}>{doc.name}</AppText><AppText style={s.muted}>{doc.originalName||'Not uploaded'}</AppText></View>{doc.url&&<Pressable onPress={()=>Linking.openURL(resolveDocumentUrl(doc.url))} style={s.openDoc}><AppText style={s.openDocText}>Open</AppText></Pressable>}</View>)}
        <View style={s.profileActions}><Pressable onPress={()=>{openEdit(profile);setProfile(null)}} style={s.secondary}><AppText style={s.secondaryText}>Edit</AppText></Pressable><Pressable onPress={()=>{setProfile(null);remove(profile)}} style={s.delete}><AppText style={s.deleteText}>Delete</AppText></Pressable></View>
       </ScrollView>}
     </View></View>

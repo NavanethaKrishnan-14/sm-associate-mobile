@@ -12,7 +12,7 @@ const emptyExpense={carId:'',category:'Repair',description:'',amount:'',date:''}
 export default function AdminToolsScreen({route,navigation}){
  const {top}=useSafeAreaInsets();
  const section=route?.params?.section||'Users';
- return <View style={[s.adminPage,{paddingTop:Math.max(22,top+22)}]}>
+ return <View style={[s.adminPage,{paddingTop:top+12}]}>
  <ServiceHeader title={section} subtitle="Manage business access, expenses and administrative records." navigation={navigation} kicker="SM ASSOCIATE / ADMIN"/>
  <View style={s.adminContent}>{section==='Users'?<Users/>:section==='Expenses'?<Expenses/>:<Reports section={section}/>}</View>
  </View>;

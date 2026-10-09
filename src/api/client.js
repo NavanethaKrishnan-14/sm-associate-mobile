@@ -23,6 +23,14 @@ const configuredApiUrl = normalizeApiUrl(process.env.EXPO_PUBLIC_API_BASE_URL);
 // Vercel production deployment locally through Expo Go.
 export const API_BASE_URL = configuredApiUrl || PRODUCTION_API_URL;
 
+export function resolveDocumentUrl(value) {
+  const url = String(value || '').trim();
+  if (!url) return '';
+  if (/^https?:\/\//i.test(url)) return url;
+  const origin = API_BASE_URL.replace(/\/api\/v1\/?$/i, '');
+  return origin + (url.startsWith('/') ? url : '/' + url);
+}
+
 async function readAccessToken() {
   const keys = ['sm_access_token', 'accessToken', 'token'];
   for (const key of keys) {

@@ -55,8 +55,14 @@ export default function CarSaleScreen({navigation}) {
         throw results[0].reason;
       }
       const allCars = listFrom(results[0].value);
-      setCars(allCars.filter(car => String(car.status || 'AVAILABLE').toUpperCase() !== 'SOLD'));
-      setSoldCars(allCars.filter(car => String(car.status || '').toUpperCase() === 'SOLD'));
+      // A sale record is the source of truth too: older failed requests may have
+      // created the sale row before the car status was updated.
+      setCars(allCars.filter(car =>
+        String(car.status || 'AVAILABLE').toUpperCase() !== 'SOLD' && !car.sale && !car.saleDetails
+      ));
+      setSoldCars(allCars.filter(car =>
+        String(car.status || '').toUpperCase() === 'SOLD' || Boolean(car.sale || car.saleDetails)
+      ));
       setCustomers(results[1].status === 'fulfilled' ? listFrom(results[1].value) : []);
       if (results[1].status === 'rejected') {
         setLoadError('Vehicles loaded, but customer records could not be loaded. Please refresh and try again.');

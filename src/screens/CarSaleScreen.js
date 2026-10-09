@@ -350,15 +350,18 @@ export default function CarSaleScreen({navigation}) {
             const sale = car.sale || car.saleDetails || {};
             const buyer = sale.buyer || (sale.buyerId && typeof sale.buyerId === 'object' ? sale.buyerId : null);
             return (
-              <View key={idOf(car)} style={s.carCard}>
-                <Pressable onPress={() => setViewCar(car)} style={s.saleInfo}>
-                  <View style={s.soldIcon}><Ionicons name="checkmark-circle-outline" size={22} color={colors.teal} /></View>
-                  <View style={{flex: 1}}>
-                    <AppText style={s.cardTitle}>{car.vehicleId || car.id || 'Vehicle'} · {[car.make, car.model].filter(Boolean).join(' ')}</AppText>
-                    <AppText style={s.muted}>{car.registrationNumber || 'No registration'} · {buyer?.name || 'Buyer not set'}</AppText>
-                    <AppText style={s.priceText}>Selling price ₹{money(sale.sellingPrice ?? car.sellingPrice ?? car.salePrice)}</AppText>
-                  </View>
-                </Pressable>
+              <View key={idOf(car)} style={[s.carCard, s.saleCard]}>
+                <View style={s.saleTopRow}>
+                  <Pressable onPress={() => setViewCar(car)} style={s.saleInfo}>
+                    <View style={s.soldIcon}><Ionicons name="checkmark-circle-outline" size={22} color={colors.teal} /></View>
+                    <View style={{flex: 1}}>
+                      <AppText style={s.cardTitle}>{car.vehicleId || car.id || 'Vehicle'} · {[car.make, car.model].filter(Boolean).join(' ')}</AppText>
+                      <AppText style={s.muted}>{car.registrationNumber || 'No registration'} · {buyer?.name || 'Buyer not set'}</AppText>
+                      <AppText style={s.priceText}>Selling price ₹{money(sale.sellingPrice ?? car.sellingPrice ?? car.salePrice)}</AppText>
+                    </View>
+                  </Pressable>
+                  <View style={s.soldBadge}><AppText style={s.soldBadgeText}>SOLD</AppText></View>
+                </View>
                 <View style={s.saleActions}>
                   <Pressable disabled={actionBusy} onPress={() => openEditSale(car)} style={s.editAction} accessibilityLabel="Edit completed sale">
                     <Ionicons name="create-outline" size={17} color={colors.midnight} />
@@ -369,7 +372,6 @@ export default function CarSaleScreen({navigation}) {
                     <AppText style={s.deleteActionText}>Delete</AppText>
                   </Pressable>
                 </View>
-                <View style={s.soldBadge}><AppText style={s.soldBadgeText}>SOLD</AppText></View>
               </View>
             );
           }) : <Empty icon="receipt-outline" title="No completed sales" text="Successfully recorded vehicle sales will appear here." />}
@@ -576,8 +578,10 @@ const s = {
   sectionLabel: {fontSize: 11, letterSpacing: 1, color: colors.ink, marginTop: 18, marginBottom: 9, fontWeight: '700'},
   iconButton: {width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.white, borderWidth: 1, borderColor: 'rgba(39,168,154,.15)'},
   carCard: {backgroundColor: colors.white, borderRadius: 20, padding: 14, marginBottom: 9, borderWidth: 1, borderColor: 'rgba(39,168,154,.13)', flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap'},
-  saleInfo: {flexDirection: 'row', alignItems: 'center', flex: 1, minWidth: 180},
-  saleActions: {flexDirection: 'row', alignItems: 'center', gap: 6, marginLeft: 6},
+  saleCard: {flexDirection: 'column', alignItems: 'stretch'},
+  saleTopRow: {flexDirection: 'row', alignItems: 'flex-start', width: '100%', gap: 8},
+  saleInfo: {flexDirection: 'row', alignItems: 'center', flex: 1, minWidth: 0},
+  saleActions: {flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 12, alignSelf: 'flex-start'},
   editAction: {flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 9, paddingVertical: 8, borderRadius: 10, backgroundColor: colors.goldLight},
   deleteAction: {flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 9, paddingVertical: 8, borderRadius: 10, backgroundColor: '#FEF2F2'},
   actionText: {fontSize: 10, color: colors.midnight, fontWeight: '700'},

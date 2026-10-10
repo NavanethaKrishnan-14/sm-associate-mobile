@@ -1,7 +1,9 @@
+
 {
   "expo": {
     "name": "SM Associate",
     "slug": "sm-associate",
+    "owner": "krishna_1407",
     "version": "1.2.3",
     "orientation": "default",
     "platforms": [
@@ -23,11 +25,6 @@
         "backgroundColor": "#FFFFFF"
       }
     },
-    "newArchEnabled": true,
-    "extra": {
-      "eas": {
-        "projectId": "a3fd5b83-110e-4d7d-b474-233b154bdd78"
-      }
-    }
+    "newArchEnabled": true
   }
 }

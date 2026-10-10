@@ -52,7 +52,7 @@ export default function CustomersScreen({navigation}){
  function remove(item){
    Alert.alert('Delete customer','Delete '+item.name+'? Their uploaded customer documents, finance enquiries, and loans (including loan documents and follow-ups) will also be deleted. Vehicle inventory and completed sale history will remain, with this customer detached. This cannot be undone.',[
     {text:'Cancel',style:'cancel'},
-    {text:'Delete',style:'destructive',onPress:async()=>{try{await api.delete('/customers/'+item._id);await load();Alert.alert('Customer Deleted Successfully','The customer record was deleted successfully.')}catch(e){Alert.alert('Delete',e?.response?.data?.message||'Unable to delete customer.')}}}
+    {text:'Delete',style:'destructive',onPress:async()=>{try{await api.delete('/customers/'+item._id);await load();Alert.alert('Customer Deleted Successfully','Customer documents, finance enquiries, and loans were deleted. Vehicle inventory and completed sale history were retained.')}catch(e){Alert.alert('Delete',e?.response?.data?.message||'Unable to delete customer.')}}}
    ]);
  }
  return <View style={[s.page,{paddingTop:top+12}]}>

@@ -10,6 +10,26 @@ import DocumentPickerButton from '../components/DocumentPickerButton';
 import ServiceHeader from '../components/ServiceHeader';
 
 const idOf = value => String(value?._id ?? value?.id ?? value ?? '');
+
+// Accept both the current API envelope and older/nested customer response shapes.
+const customerIdFrom = value => {
+  if (typeof value === 'string' || typeof value === 'number') {
+    const id = String(value).trim();
+    return id && id !== '[object Object]' ? id : '';
+  }
+  if (!value || typeof value !== 'object') return '';
+  for (const key of ['_id', 'id', 'customerId']) {
+    const id = value[key];
+    if ((typeof id === 'string' || typeof id === 'number') && String(id).trim()) {
+      return String(id).trim();
+    }
+  }
+  for (const key of ['data', 'customer', 'result', 'payload']) {
+    const id = customerIdFrom(value[key]);
+    if (id) return id;
+  }
+  return '';
+};
 const listFrom = response => {
   const body = response?.data;
   const value = body?.data ?? body?.result ?? body?.items ?? body;
@@ -237,10 +257,28 @@ export default function CarSaleScreen({navigation}) {
           mobile: form.customerMobile.trim(),
           city: form.customerCity.trim()
         });
-        const createdCustomer = response?.data?.data ?? response?.data?.result ?? response?.data?.customer ?? response?.data;
-        buyerId = idOf(createdCustomer);
-        if (!buyerId || buyerId === '[object Object]') {
-          throw new Error('Customer was created, but the server did not return a valid customer ID. Refresh customers and try again.');
+        buyerId = customerIdFrom(response?.data);
+
+        // Recover safely if an older deployment returns a nested/wrapped record:
+        // refresh the list and resolve the newly-created or existing customer by mobile.
+        if (!buyerId) {
+          try {
+            const refreshedResponse = await api.get('/customers');
+            const refreshedCustomers = listFrom(refreshedResponse);
+            setCustomers(refreshedCustomers);
+            const normalizeMobile = value => String(value || '').replace(/\\D/g, '');
+            const requestedMobile = normalizeMobile(form.customerMobile);
+            const matchingCustomer = refreshedCustomers.find(customer =>
+              normalizeMobile(customer.mobile) === requestedMobile
+            );
+            buyerId = customerIdFrom(matchingCustomer);
+          } catch (refreshError) {
+            console.warn('Customer was created, but refreshing the customer list failed:', refreshError?.message);
+          }
+        }
+
+        if (!buyerId) {
+          throw new Error('Customer was saved, but its ID could not be resolved. Refresh the customer list and try again.');
         }
       }
 

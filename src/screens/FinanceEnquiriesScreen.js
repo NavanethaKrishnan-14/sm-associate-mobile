@@ -65,7 +65,11 @@ export default function FinanceEnquiriesScreen({navigation}){
   setModal(true);
  }
  function openEdit(item){
-  const customer=item.customerId;
+  const customer=item?.customerId;
+  if(!customer||(typeof customer==='object'&&!customer._id&&!customer.id)){
+   Alert.alert('Customer unavailable','This enquiry is linked to a customer who has already been deleted. Refresh the list; this old enquiry cannot be edited.');
+   return;
+  }
   setEditing(item);
   setCustomerMode('existing');
   setNewCustomer({...blankNewCustomer});

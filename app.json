@@ -23,6 +23,11 @@
         "backgroundColor": "#FFFFFF"
       }
     },
-    "newArchEnabled": true
+    "newArchEnabled": true,
+    "extra": {
+      "eas": {
+        "projectId": "a3fd5b83-110e-4d7d-b474-233b154bdd78"
+      }
+    }
   }
 }

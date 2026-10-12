@@ -1,7 +1,7 @@
 import {AppText} from '../components/AppText';
 import React from 'react';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Pressable, ScrollView, View} from 'react-native';
+import {Alert, Pressable, ScrollView, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {colors} from '../theme/colors';
 import Logo from '../components/Logo';
@@ -51,9 +51,26 @@ export default function MoreScreen({navigation}) {
     navigation.navigate('AdminTools', {section});
   };
 
-  const signOut = async () => {
-    await logout();
-    navigation.replace('Login');
+  const signOut = () => {
+    Alert.alert(
+      'Sign Out',
+      'Are you sure you want to sign out?',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Sign Out',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await logout();
+            } catch (error) {
+              Alert.alert('Sign Out', error?.message || 'Unable to sign out. Please try again.');
+            }
+          },
+        },
+      ],
+      {cancelable: true},
+    );
   };
 
   return (

@@ -101,7 +101,10 @@ export default function DashboardScreen({navigation}){
               <AppText numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.72} style={styles.brandTitle}>Business Management</AppText>
             </View>
           </View>
-          <Pressable onPress={()=>navigation.navigate('More')} style={({pressed})=>[styles.profileButton,pressed&&styles.pressed]} accessibilityRole="button" accessibilityLabel="Open menu">
+          <Pressable onPress={()=>Alert.alert('Sign Out','Are you sure you want to sign out?',[
+            {text:'Cancel',style:'cancel'},
+            {text:'Sign Out',style:'destructive',onPress:()=>navigation.reset({index:0,routes:[{name:'Login'}]})}
+          ])} style={({pressed})=>[styles.profileButton,pressed&&styles.pressed]} accessibilityRole="button" accessibilityLabel="Sign out">
             <View style={styles.profileAvatar}><Ionicons name="person" size={18} color={colors.white}/></View>
           </Pressable>
         </View>

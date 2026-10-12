@@ -248,6 +248,8 @@ export async function getApiHealth() {
 
 export async function logout() {
   await AsyncStorage.multiRemove(['sm_access_token', 'accessToken', 'token']);
+  // Notify the root navigator so it removes the authenticated stack immediately.
+  notifyAuthExpired();
 }
 
 export async function getCurrentUser() {
